@@ -1,5 +1,9 @@
 import TempPage from "@/app/PageTemplates/page";
 
+export const metadata = {
+  title: '대시보드',
+}
+
 export default function DashboardPage() {
   return (
     <div className="min-h-screen">
