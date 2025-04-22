@@ -51,7 +51,7 @@ export default function AuthSidebar() {
       </Form>
       <div className="px-3 text-neutral-400">
         <div className="my-3 mx-2 flex flex-col">
-        <Link href='/dashboard/about'
+        <Link href='/main/about'
           className="m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -59,7 +59,7 @@ export default function AuthSidebar() {
           </svg>
           회원정보
         </Link>
-        <Link href='/dashboard/about'
+        <Link href='/main/about'
           className="m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -67,7 +67,7 @@ export default function AuthSidebar() {
           </svg>
           환경설정
         </Link>
-        <Link href='/dashboard'
+        <Link href='/main'
           className="m-1 p-2 text-yellow-700 rounded-lg hover:bg-neutral-600/50 flex gap-2"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
