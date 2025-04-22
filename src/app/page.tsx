@@ -16,23 +16,13 @@ export default function HomePage() {
           height={38}
           priority
         />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-zinc-300/70 px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
+        <p className="text-xl font-bold">
+          한국다람쥐CLOUD에 오신 것을 환영합니다.
+        </p>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-black gap-2 hover:bg-[#383838] text-zinc-100 font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="/main/nopage"
+            href="/auth"
             rel="noopener noreferrer"
           >
             <Image
@@ -41,14 +31,14 @@ export default function HomePage() {
               width={20}
               height={20}
             />
-            404페이지 가기
+            로그인 페이지
           </Link>
           <Link
             className="rounded-full border border-solid border-zinc-400 transition-colors flex items-center justify-center hover:bg-zinc-200 hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="/main/about"
+            href="/main"
             rel="noopener noreferrer"
           >
-            About
+            메인 페이지
           </Link>
         </div>
       </main>
