@@ -17,14 +17,14 @@ export default function NotFound() {
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Link
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-black text-zinc-100 gap-2 hover:bg-[#383838] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="/dashboard"
+            href="/main/dashboard"
             rel="noopener noreferrer"
           >
             대시보드로 돌아가기
           </Link>
           <Link
             className="rounded-full border border-solid border-black/[.08] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="/dashboard/about"
+            href="/main/about"
             rel="noopener noreferrer"
           >
             About
