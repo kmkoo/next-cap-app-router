@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="bg-neutral-800 text-neutral-100 divide-y-1 divide-zinc-700 flex flex-col w-70 ">
+    <div className="bg-neutral-800 text-neutral-100 divide-y-1 divide-zinc-700 flex flex-col w-70 sticky top-0 h-screen">
       <div className="p-3 shadow-md/30">
         <p className="text-md m-2">한국다람쥐CLOUD</p>
       </div>

@@ -3,6 +3,6 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
+  const body = await request.json();
   return Response.json({ message: 'Hello World', body })
 }
