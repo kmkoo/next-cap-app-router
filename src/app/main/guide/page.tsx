@@ -1,13 +1,13 @@
 import TempPage from "@/app/PageTemplates/page";
 
 export const metadata = {
-  title: 'Dashboard',
+  title: 'Guide',
 }
 
-export default function DashboardPage() {
+export default function GuidePage() {
   return (
     <div className="min-h-screen">
-      <p>Dashboard</p>
+      <p>Guide</p>
       <TempPage />
     </div>
   );

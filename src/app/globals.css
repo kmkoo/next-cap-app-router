@@ -10,3 +10,7 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.sidebar-link {
+  @apply m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2;
+}
