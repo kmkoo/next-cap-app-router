@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+// / 페이지
 export default function HomePage() {
   return (
     <div className="min-h-screen">

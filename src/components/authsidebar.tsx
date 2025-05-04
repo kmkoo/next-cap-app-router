@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// /auth 레이아웃에 사용되는 사이드바(로그인 기능)
 export default function AuthSidebar() {
   const router = useRouter()
 

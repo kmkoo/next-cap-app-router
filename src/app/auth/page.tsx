@@ -1,7 +1,9 @@
+// <head>의 <title> 설정
 export const metadata = {
   title: '로그인',
 }
 
+// /auth 페이지
 export default function authPage() {
   return (
     <div className="min-h-screen static">
