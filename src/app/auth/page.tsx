@@ -9,10 +9,10 @@ export default function authPage() {
     <div className="min-h-screen static">
       <div className="bg-green-300 rounded-r-full h-3/5 w-2/4 fixed top-1/10">
         <div className="justify-items-center m-30">
-          <p className="font-bold text-4xl">원하는 서버를 바로 생성하고<br/>더 나은 환경을 경험하세요<br/><br/>아 디자인 미치겠네 진짜;;</p>
+          <p className="font-bold text-4xl z-1">원하는 서버를 바로 생성하고<br/>더 나은 환경을 경험하세요</p>
         </div>
       </div>
-      <div className="bg-yellow-300/80 rounded-l-full h-1/3 w-1/2 z-1 fixed right-70 top-1/2"/>
+      <div className="bg-yellow-300/80 rounded-l-full h-1/3 w-1/2 z-2 fixed right-70 top-1/2"/>
     </div>
   );
 }
