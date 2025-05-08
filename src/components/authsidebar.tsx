@@ -25,7 +25,7 @@ export default function AuthSidebar() {
       const data = await res.json()
 
       if (data.success) {
-        setMessage('로그인 성공!!')
+        setMessage('로그인 성공')
         router.push('/main/dashboard')
       } else {
         setMessage(data.message)
