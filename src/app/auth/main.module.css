@@ -1,0 +1,76 @@
+/* 배경 컨테이너 */
+.container {
+    /* background-image: url('/cloud.jpg'); */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #F1F3F7;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* 배경을 어둡게 덮는 반투명 레이어 */
+  /* .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+  } */
+  
+  /*애니메이션 지정*/
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  
+  /* 왼쪽 반원 박스 */
+  .leftShape {
+    background-color: rgba(134, 239, 172, 0.85); /* green-300 */
+    background-color: rgba(0, 0, 0, 0.4);
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+    height: 60%;
+    width: 50%;
+    position: fixed;
+    top: 10%;
+    animation: slideUp 1s ease-out forwards;
+    z-index: 1;
+  }
+  
+  /* 오른쪽 반원 박스 */
+  .rightShape {
+    background-color: rgba(253, 224, 71, 0.8); /* yellow-300 */
+    /*background-color: rgba(18, 22, 68, 0.8);*/
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+    height: 33%;
+    width: 50%;
+    position: fixed;
+    right: 17.5rem;
+    top: 50%;
+    animation: slideUp 1s ease-out forwards;
+    z-index: 1;
+  }
+  
+  /*  중앙 텍스트 박스 */
+  .textBlock {
+    margin: 7.5rem;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2.25rem;
+    z-index: 2;
+    position: relative;
+  }
+  

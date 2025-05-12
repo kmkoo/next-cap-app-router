@@ -13,5 +13,5 @@ body {
 
 /* 사이드바 버튼 스타일 */
 .sidebar-link {
-  @apply m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2;
+  @apply m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2 text-[14px];
 }

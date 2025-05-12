@@ -1,18 +1,34 @@
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
-// POST
 export async function POST(request: Request) {
-  const { id, password } = await request.json()
+  const { email, password } = await request.json();
 
-  //DB 연결시 수정
+  // 예시: 더미 유저 (실제로는 DB에서 가져와야 함)
   const dummyUser = {
-    id: 'admin',
-    password: '1234',
+    email: 'admin',
+    name: '홍길동',
+    hashedPassword: await bcrypt.hash('1234', 10),
+  };
+
+  if (email !== dummyUser.email) {
+    return NextResponse.json(
+      { success: false, message: '이메일 또는 비밀번호가 틀렸습니다.' },
+      { status: 401 }
+    );
   }
-  
-  if (id === dummyUser.id && password === dummyUser.password) {
-    return NextResponse.json({ success: true})
-  } else {
-    return NextResponse.json({ success: false, message: '아이디 또는 비밀번호가 틀렸습니다.' }, { status: 401 })
+
+  const isMatch = await bcrypt.compare(password, dummyUser.hashedPassword);
+  if (!isMatch) {
+    return NextResponse.json(
+      { success: false, message: '이메일 또는 비밀번호가 틀렸습니다.' },
+      { status: 401 }
+    );
   }
+
+  return NextResponse.json({
+    success: true,
+    name: dummyUser.name,
+    email: dummyUser.email
+  });
 }
