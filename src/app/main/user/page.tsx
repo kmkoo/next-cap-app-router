@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 
 export default function SettingPage() {
-  const [activeTab, setActiveTab] = useState("notification");
+  const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
   const [formData, setFormData] = useState({
     name: "홍길동",
     email: "honggildong@example.com",
@@ -18,7 +18,7 @@ export default function SettingPage() {
   const [passwordError, setPasswordError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleProfileChange = (e) => {
+  const handleProfileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -26,7 +26,7 @@ export default function SettingPage() {
     }));
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({
       ...prev,
@@ -34,7 +34,7 @@ export default function SettingPage() {
     }));
   };
 
-  const handleProfileSubmit = (e) => {
+  const handleProfileSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSuccessMessage("회원정보가 성공적으로 업데이트되었습니다.");
     setTimeout(() => {
@@ -43,7 +43,7 @@ export default function SettingPage() {
     }, 3000);
   };
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setPasswordError("새 비밀번호가 일치하지 않습니다.");
@@ -114,74 +114,71 @@ export default function SettingPage() {
                   </button>
                 )}
               </div>
-              <div>
-                <form onSubmit={handleProfileSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 font-medium mb-2">이름</label>
-                      {editMode ? (
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleProfileChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                      ) : (
-                        <p className="py-2">{formData.name}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-medium mb-2">이메일</label>
-                      {editMode ? (
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleProfileChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                      ) : (
-                        <p className="py-2">{formData.email}</p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-medium mb-2">전화번호</label>
-                      {editMode ? (
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleProfileChange}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      ) : (
-                        <p className="py-2">{formData.phone}</p>
-                      )}
-                    </div>
+              <form onSubmit={handleProfileSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">이름</label>
+                    {editMode ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleProfileChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    ) : (
+                      <p className="py-2">{formData.name}</p>
+                    )}
                   </div>
-
-                  {editMode && (
-                    <div className="flex justify-end space-x-3 mt-6">
-                      <button
-                        type="button"
-                        onClick={() => setEditMode(false)}
-                        className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
-                      >
-                        취소
-                      </button>
-                      <button
-                        type="submit"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                      >
-                        저장하기
-                      </button>
-                    </div>
-                  )}
-                </form>
-              </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">이메일</label>
+                    {editMode ? (
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleProfileChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                      />
+                    ) : (
+                      <p className="py-2">{formData.email}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">전화번호</label>
+                    {editMode ? (
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleProfileChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    ) : (
+                      <p className="py-2">{formData.phone}</p>
+                    )}
+                  </div>
+                </div>
+                {editMode && (
+                  <div className="flex justify-end space-x-3 mt-6">
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(false)}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition"
+                    >
+                      취소
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                    >
+                      저장하기
+                    </button>
+                  </div>
+                )}
+              </form>
             </div>
 
             <div className="bg-white rounded-lg shadow p-6">

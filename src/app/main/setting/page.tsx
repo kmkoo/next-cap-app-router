@@ -6,10 +6,8 @@ export default function SettingPage() {
   const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
 
   const [settings, setSettings] = useState({
-    emailNotification: true,
-    smsNotification: false,
-    darkMode: false,
-    largeText: false
+    emailNotification: false,
+    showServerAddress: false,
   });
 
   useEffect(() => {
@@ -96,11 +94,11 @@ export default function SettingPage() {
               <h2 className="text-xl font-semibold mb-4">디스플레이 설정</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-700">다크 모드</span>
+                  <span className="text-gray-700">서버 주소 표시</span>
                   <input
                     type="checkbox"
-                    checked={settings.darkMode}
-                    onChange={() => toggleSetting("darkMode")}
+                    checked={settings.showServerAddress}
+                    onChange={() => toggleSetting("showServerAddress")}
                     className="w-5 h-5"
                   />
                 </div>

@@ -1,8 +1,6 @@
 let dummyUserSettings = {
-  emailNotification: true,
-  smsNotification: false,
-  darkMode: false,
-  largeText: false,
+  emailNotification: false,
+  showServerAddress: false,
 };
 
 export async function GET() {
