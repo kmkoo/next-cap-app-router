@@ -4,6 +4,8 @@ import { useState } from "react";
 
 // /main/newserver 페이지
 export default function NewServerPage() {
+  const [activeTab, setActiveTab] = useState<"server" | "website">("server");
+
   const [imageId, setImageId] = useState('ami-id');
   const [instanceType, setInstanceType] = useState('t3.small');
   const [keyName, setKeyName] = useState('');
@@ -26,62 +28,95 @@ export default function NewServerPage() {
   }
 
   return (
-    <main className="p-4">
-      <h1 className="text-xl font-bold mb-4">새 EC2 인스턴스 생성</h1>
-
-      <div className="space-y-2">
-        <input
-          value={imageId}
-          onChange={(e) => setImageId(e.target.value)}
-          placeholder="Image ID"
-          className="border p-2 rounded w-full"
-        />
-        <input
-          value={instanceType}
-          
-          onChange={(e) => setInstanceType(e.target.value)}
-          placeholder="Instance Type"
-          className="border p-2 rounded w-full"
-        />
-        <input
-          value={keyName}
-          onChange={(e) => setKeyName(e.target.value)}
-          placeholder="Key Pair Name (옵션)"
-          className="border p-2 rounded w-full"
-        />
-        <input
-          value={tagName}
-          onChange={(e) => setTagName(e.target.value)}
-          placeholder="Tag Name (옵션)"
-          className="border p-2 rounded w-full"
-        />
-        <input
-          value={userCommand}
-          onChange={(e) => setUserCommand(e.target.value)}
-          placeholder="자동실행 명령어 입력 (옵션)"
-          className="border p-2 rounded w-full"
-        />
-        <button
-          onClick={handleCreate}
-          disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {loading ? "생성 중..." : "인스턴스 생성"}
-        </button>
+    <div className="bg-[#F1F3F7] flex-grow min-h-screen">
+      <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
+        <div className="mx-1 p-1 text-[20px]">서버생성</div>
+        <div className="flex flex-row gap-4 mt-4">
+          <button
+            className={`px-4 py-2 rounded ${
+              activeTab === "server" ? "bg-[#F1F3F7]" : ""
+            }`}
+            onClick={() => setActiveTab("server")}
+          >
+            서버
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${
+              activeTab === "website" ? "bg-[#F1F3F7]" : ""
+            }`}
+            onClick={() => setActiveTab("website")}
+          >
+            웹사이트
+          </button>
+        </div>
       </div>
 
-      {response && (
-        <div className="mt-4 bg-gray-100 p-4 rounded">
-          {response.success ? (
-            <>
-              <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
-              <p><strong>상태:</strong> {response.instance.State?.Name}</p>
-            </>
-          ) : (
-            <p className="text-red-500">오류: {response.error}</p>
-          )}
-        </div>
-      )}
-    </main>
+      <div className="px-6 pt-6">
+        {activeTab === "server" && (
+          <div>
+            <p className="text-gray-600 mb-2">서버 생성 폼</p>
+            <div className="space-y-2">
+              <input
+                value={imageId}
+                onChange={(e) => setImageId(e.target.value)}
+                placeholder="Image ID"
+                className="border p-2 rounded w-full"
+              />
+              <input
+                value={instanceType}
+                
+                onChange={(e) => setInstanceType(e.target.value)}
+                placeholder="Instance Type"
+                className="border p-2 rounded w-full"
+              />
+              <input
+                value={keyName}
+                onChange={(e) => setKeyName(e.target.value)}
+                placeholder="Key Pair Name (옵션)"
+                className="border p-2 rounded w-full"
+              />
+              <input
+                value={tagName}
+                onChange={(e) => setTagName(e.target.value)}
+                placeholder="Tag Name (옵션)"
+                className="border p-2 rounded w-full"
+              />
+              <input
+                value={userCommand}
+                onChange={(e) => setUserCommand(e.target.value)}
+                placeholder="자동실행 명령어 입력 (옵션)"
+                className="border p-2 rounded w-full"
+              />
+              <button
+                onClick={handleCreate}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                {loading ? "생성 중..." : "인스턴스 생성"}
+              </button>
+            </div>
+
+            {response && (
+              <div className="mt-4 bg-gray-100 p-4 rounded">
+                {response.success ? (
+                  <>
+                    <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
+                    <p><strong>상태:</strong> {response.instance.State?.Name}</p>
+                  </>
+                ) : (
+                  <p className="text-red-500">오류: {response.error}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+        {activeTab === "website" && (
+          <div>
+            <p className="text-gray-600 mb-2">웹사이트 생성 폼</p>
+            {/* 추후 웹사이트 생성 폼 컴포넌트 삽입 가능 */}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
