@@ -57,7 +57,7 @@
     height: 33%;
     width: 50%;
     position: fixed;
-    right: 17.5rem;
+    right: 15rem;
     top: 50%;
     animation: slideUp 1s ease-out forwards;
     z-index: 1;
@@ -65,7 +65,7 @@
   
   /*  중앙 텍스트 박스 */
   .textBlock {
-    margin: 7.5rem;
+    margin: 7rem;
     color: white;
     text-align: center;
     font-weight: bold;

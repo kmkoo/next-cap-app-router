@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import styles from './main.module.css';
 
 export const metadata = {
@@ -11,10 +12,14 @@ export default function AuthPage() {
 
       <div className={styles.leftShape}>
         <div className={styles.textBlock}>
-          <img
+          {/* img태그를 Image 태그로 바꿨습니다.
+              Next.js 권장사항이래요 */}
+          <Image
             src="/logo1.png"
             alt="OneClick 로고"
-            style={{ width: '200px', margin: '0 auto' }}
+            width={200}
+            height={0}
+            className='my-0 mx-auto'
           />
           <p>
             원하는 서버를 바로 생성하고<br />
