@@ -55,59 +55,59 @@ export default function NewServerPage() {
         {activeTab === "server" && (
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
-            <div className="space-y-2">
-              <input
-                value={imageId}
-                onChange={(e) => setImageId(e.target.value)}
-                placeholder="Image ID"
-                className="border p-2 rounded w-full"
-              />
-              <input
-                value={instanceType}
-                
-                onChange={(e) => setInstanceType(e.target.value)}
-                placeholder="Instance Type"
-                className="border p-2 rounded w-full"
-              />
-              <input
-                value={keyName}
-                onChange={(e) => setKeyName(e.target.value)}
-                placeholder="Key Pair Name (옵션)"
-                className="border p-2 rounded w-full"
-              />
-              <input
-                value={tagName}
-                onChange={(e) => setTagName(e.target.value)}
-                placeholder="Tag Name (옵션)"
-                className="border p-2 rounded w-full"
-              />
-              <input
-                value={userCommand}
-                onChange={(e) => setUserCommand(e.target.value)}
-                placeholder="자동실행 명령어 입력 (옵션)"
-                className="border p-2 rounded w-full"
-              />
-              <button
-                onClick={handleCreate}
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                {loading ? "생성 중..." : "인스턴스 생성"}
-              </button>
-            </div>
-
-            {response && (
-              <div className="mt-4 bg-gray-100 p-4 rounded">
-                {response.success ? (
-                  <>
-                    <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
-                    <p><strong>상태:</strong> {response.instance.State?.Name}</p>
-                  </>
-                ) : (
-                  <p className="text-red-500">오류: {response.error}</p>
-                )}
+              <div className="space-y-2 flex flex-col">
+                <input
+                  value={imageId}
+                  onChange={(e) => setImageId(e.target.value)}
+                  placeholder="Image ID"
+                  className="border p-2 rounded w-100"
+                />
+                <input
+                  value={instanceType}
+                  
+                  onChange={(e) => setInstanceType(e.target.value)}
+                  placeholder="Instance Type"
+                  className="border p-2 rounded w-100"
+                />
+                <input
+                  value={keyName}
+                  onChange={(e) => setKeyName(e.target.value)}
+                  placeholder="Key Pair Name (옵션)"
+                  className="border p-2 rounded w-100"
+                />
+                <input
+                  value={tagName}
+                  onChange={(e) => setTagName(e.target.value)}
+                  placeholder="Tag Name (옵션)"
+                  className="border p-2 rounded w-100"
+                />
+                <input
+                  value={userCommand}
+                  onChange={(e) => setUserCommand(e.target.value)}
+                  placeholder="자동실행 명령어 입력 (옵션)"
+                  className="border p-2 rounded w-100"
+                />
+                <button
+                  onClick={handleCreate}
+                  disabled={loading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {loading ? "생성 중..." : "인스턴스 생성"}
+                </button>
               </div>
-            )}
+
+              {response && (
+                <div className="mt-4 bg-gray-100 p-4 rounded">
+                  {response.success ? (
+                    <>
+                      <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
+                      <p><strong>상태:</strong> {response.instance.State?.Name}</p>
+                    </>
+                  ) : (
+                    <p className="text-red-500">오류: {response.error}</p>
+                  )}
+                </div>
+              )}
           </div>
         )}
         {activeTab === "website" && (
