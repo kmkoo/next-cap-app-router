@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PageWrapper from "@/components/page-wrapper";
+import WebWrapper from "@/components/web-wrapper";
 
 export default function SettingPage() {
   const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
@@ -43,6 +45,7 @@ export default function SettingPage() {
   };
 
   return (
+    <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
       <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
         <div className="mx-1 p-1 text-[20px] font-semibold">환경설정</div>
@@ -67,8 +70,9 @@ export default function SettingPage() {
           </button>
         </div>
       </div>
-
+      
       <div className="px-6 pt-6">
+      <WebWrapper key={activeTab}>
         {activeTab === "notification" && (
           <div className="space-y-4">
             <div className="bg-white rounded-lg shadow p-6">
@@ -87,7 +91,6 @@ export default function SettingPage() {
             </div>
           </div>
         )}
-
         {activeTab === "display" && (
           <div className="space-y-4">
             <div className="bg-white rounded-lg shadow p-6">
@@ -106,7 +109,9 @@ export default function SettingPage() {
             </div>
           </div>
         )}
+        </WebWrapper>
       </div>
     </div>
+    </PageWrapper>
   );
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import PageWrapper from "@/components/page-wrapper";
 
 export default function ResetPasswordPage() {
   const [name, setName] = useState('')
@@ -41,6 +42,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
+    <PageWrapper>
     <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-xl">
         <h2 className="text-[30px] text-center mb-8">비밀번호 재설정</h2>
@@ -153,5 +155,6 @@ export default function ResetPasswordPage() {
         </form>
       </div>
     </div>
+    </PageWrapper>
   )
 }
