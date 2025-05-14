@@ -15,27 +15,27 @@ export async function getInstanceData(instanceIds:string[]) {
 }
 
 export async function createInstance(params:{
-  imageId: string,
   instanceType: _InstanceType,
   serverTag: string,
   serverOwner: string,
   userCommand?: string,
 }) {
-  const { imageId, instanceType, serverTag, serverOwner, userCommand } = params;
+  const {instanceType, serverTag, serverOwner, userCommand } = params;
 
   // 서버가 생성된 후 실행할 명령어를 command에 받아옴
 	const script = `#!/bin/bash\n${userCommand}`;
 	const userData = Buffer.from(script).toString("base64");
 
   const command = new RunInstancesCommand({
-    ImageId: imageId,
+    ImageId: process.env.AWS_IMAGEID,
     InstanceType: instanceType,
     MinCount: 1,
     MaxCount: 1,
+    KeyName: process.env.AWS_KEYNAME,  //키페어 보안엄중
     TagSpecifications: [{
       ResourceType: 'instance',
       Tags: [
-        { Key: "Name", Value: "squirrel-ec2" },
+        { Key: "Name", Value: "squirrel-ec2-user" },
         { Key: "group", Value: "capstone" },
         { Key: "username", Value: "capstone-squirrel" },
         { Key: "serviceName", Value: serverTag },

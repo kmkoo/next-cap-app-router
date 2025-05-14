@@ -6,13 +6,13 @@ import { useState } from "react";
 export default function NewServerPage() {
   const [activeTab, setActiveTab] = useState<"server" | "website">("server");
 
-  const [imageId, setImageId] = useState('ami-id');
-  const [instanceType, setInstanceType] = useState('t3.small');
-  const [keyName, setKeyName] = useState('');
-  const [tagName, setTagName] = useState('');
+  const [serverScale, setServerScale] = useState("small");
+  const [serverName, setServerName] = useState('');
   const [userCommand, setUserCommand] = useState('');
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+
+  const serverOwner = "유저이름";  // 유저 이름 들어가도록 수정예정
   
 
   const handleCreate = async () => {
@@ -20,7 +20,7 @@ export default function NewServerPage() {
     const res = await fetch('/api/aws/ec2/create', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ imageId, keyName, tagName, userCommand }),
+      body: JSON.stringify({ serverScale, serverName, serverOwner, userCommand }),
     });
     const data = await res.json();
     setResponse(data);
@@ -56,29 +56,20 @@ export default function NewServerPage() {
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
               <div className="space-y-2 flex flex-col">
-                <input
-                  value={imageId}
-                  onChange={(e) => setImageId(e.target.value)}
-                  placeholder="Image ID"
+                <label>서버 규모</label>
+                <select 
+                  value={serverScale}
+                  onChange={(e) => setServerScale(e.target.value)}
                   className="border p-2 rounded w-100"
-                />
+                >
+                  <option value="small">작음</option>
+                  <option value="medium">보통</option>
+                  <option value="big">큼</option>
+                </select>
                 <input
-                  value={instanceType}
-                  
-                  onChange={(e) => setInstanceType(e.target.value)}
-                  placeholder="Instance Type"
-                  className="border p-2 rounded w-100"
-                />
-                <input
-                  value={keyName}
-                  onChange={(e) => setKeyName(e.target.value)}
-                  placeholder="Key Pair Name (옵션)"
-                  className="border p-2 rounded w-100"
-                />
-                <input
-                  value={tagName}
-                  onChange={(e) => setTagName(e.target.value)}
-                  placeholder="Tag Name (옵션)"
+                  value={serverName}
+                  onChange={(e) => setServerName(e.target.value)}
+                  placeholder="서버 이름"
                   className="border p-2 rounded w-100"
                 />
                 <input
