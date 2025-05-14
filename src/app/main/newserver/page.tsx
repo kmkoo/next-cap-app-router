@@ -14,7 +14,6 @@ export default function NewServerPage() {
 
   const serverOwner = "유저이름";  // 유저 이름 들어가도록 수정예정
   
-
   const handleCreate = async () => {
     setLoading(true);
     const res = await fetch('/api/aws/ec2/create', {
