@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
-import WebWrapper from "@/components/web-wrapper";
 
 
 export default function DashboardPage() {
@@ -50,7 +49,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="px-6 pt-6">
-        <WebWrapper key={activeTab}>
+        <PageWrapper key={activeTab}>
         {activeTab === "all" && (
           <div>
 
@@ -71,7 +70,7 @@ export default function DashboardPage() {
             {/* 비용 내용 */}
           </div>
         )}
-        </WebWrapper>
+        </PageWrapper>
       </div>
     </div>
     </PageWrapper>

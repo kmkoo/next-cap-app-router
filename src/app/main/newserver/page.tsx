@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
-import WebWrapper from "@/components/web-wrapper";
 
 // /main/newserver 페이지
 export default function NewServerPage() {
@@ -55,7 +54,7 @@ export default function NewServerPage() {
       </div>
 
       <div className="px-6 pt-6">
-        <WebWrapper key={activeTab}>
+        <PageWrapper key={activeTab}>
         {activeTab === "server" && (
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
@@ -111,7 +110,7 @@ export default function NewServerPage() {
             {/* 추후 웹사이트 생성 폼 컴포넌트 삽입 가능 */}
           </div>
         )}
-        </WebWrapper>
+        </PageWrapper>
       </div>
     </div>
     </PageWrapper>

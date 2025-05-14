@@ -2,7 +2,6 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import PageWrapper from "@/components/page-wrapper";
-import WebWrapper from "@/components/web-wrapper";
 
 export default function SettingPage() {
   const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
@@ -102,7 +101,7 @@ export default function SettingPage() {
             {successMessage}
           </div>
         )}
-        <WebWrapper key={activeTab}>
+        <PageWrapper key={activeTab}>
         {activeTab === "notification" && (
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6">
@@ -254,7 +253,7 @@ export default function SettingPage() {
             </div>
           </div>
         )}
-        </WebWrapper>
+        </PageWrapper>
       </div>
     </div>
     </PageWrapper>

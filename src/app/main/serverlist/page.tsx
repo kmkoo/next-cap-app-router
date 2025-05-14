@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import PageWrapper from "@/components/page-wrapper";
-import WebWrapper from "@/components/web-wrapper";
 
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
@@ -100,7 +99,7 @@ export default function ServerListPage() {
 
       <div className="px-6 pt-6">
         <div className="overflow-x-hidden">
-          <WebWrapper key={activeTab}>
+          <PageWrapper key={activeTab}>
           <table className="min-w-full bg-white rounded shadow">
             <thead className="bg-gray-100 text-left">
               <tr>
@@ -195,7 +194,7 @@ export default function ServerListPage() {
               )}
             </tbody>
           </table>
-          </WebWrapper>
+          </PageWrapper>
         </div>
       </div>
     </div>
