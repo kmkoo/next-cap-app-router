@@ -104,7 +104,7 @@ export default function ServerListPage() {
                 <th className="px-4 py-2">서버 종류</th>
                 <th className="px-4 py-2">서버 생성 시기</th>
                 <th className="px-4 py-2">주소</th>
-                <th className="px-4 py-2">중단</th>
+                <th className="px-4 py-2">상태</th>
                 <th className="px-4 py-2">삭제</th>
               </tr>
             </thead>
@@ -166,7 +166,7 @@ export default function ServerListPage() {
                       }}
                       disabled={server.status === "stopped"}
                     >
-                      {server.status === "stopped" ? "중단됨" : "중단"}
+                      {server.status === "stopped" ? "중단됨" : "실행중"}
                     </button>
                   </td>
                   <td className="px-4 py-2">
