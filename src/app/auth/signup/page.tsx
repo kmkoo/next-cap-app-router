@@ -11,9 +11,19 @@ export default function SignupPage() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [success, setSuccess] = useState(false);
+    const [emailVerified, setEmailVerified] = useState(false);
+    const [verifyCodeSent, setVerifyCodeSent] = useState(false);
+    const [enteredCode, setEnteredCode] = useState("");
+    const [verificationSuccess, setVerificationSuccess] = useState(false);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!emailVerified) {
+            setErrorMessage("이메일 인증을 완료해주세요.");
+            return;
+        }
 
         if (password !== confirmPassword) {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
@@ -36,6 +46,37 @@ export default function SignupPage() {
         }
         } catch {
         setErrorMessage("서버 오류가 발생했습니다.");
+        }
+    };
+
+    const handleSendVerification = async () => {
+        const res = await fetch("/api/email/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            setVerifyCodeSent(true);
+            setErrorMessage("인증 코드가 이메일로 전송되었습니다.");
+        } else {
+            setErrorMessage("인증 코드 전송에 실패했습니다.");
+        }
+    };
+    
+    const handleVerifyCode = async () => {
+        const res = await fetch("/api/email/check", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, code: enteredCode }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            setEmailVerified(true);
+            setVerificationSuccess(true);
+            setErrorMessage("");
+        } else {
+            setErrorMessage(data.message || "인증 실패");
         }
     };
 
@@ -86,14 +127,68 @@ export default function SignupPage() {
                             </svg>
                         </span>
                         <input
-                        type="email"
-                        placeholder="이메일"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-transparent focus:outline-none text-[14px]"
-                        required
+                            type="email"
+                            placeholder="이메일"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full bg-transparent focus:outline-none text-[14px]"
+                            required
+                            readOnly={emailVerified}
                         />
+                        {emailVerified ? (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEmailVerified(false);
+                                    setVerifyCodeSent(false);
+                                    setEnteredCode("");
+                                    setVerificationSuccess(false);
+                                    setErrorMessage("");
+                                }}
+                                className="text-sm text-red-500 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                            >
+                                다시입력
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={handleSendVerification}
+                                className="text-sm text-blue-600 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                            >
+                                인증코드 전송
+                            </button>
+                        )}
                     </div>
+
+                    {verifyCodeSent && !emailVerified && (
+                        <div className="flex items-center bg-white rounded-md px-2 py-2 mt-2">
+                            <span className="mx-8 text-gray-500 flex items-center justify-center h-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                    <path d="M15 12a3 3 0 1 0 -6 0a3 3 0 0 0 6 0"></path>
+                                    <path d="M12 3c4.97 0 9 4.03 9 9s-4.03 9 -9 9s-9 -4.03 -9 -9s4.03 -9 9 -9z"></path>
+                                </svg>
+                            </span>
+                            <input
+                                type="text"
+                                value={enteredCode}
+                                onChange={(e) => setEnteredCode(e.target.value)}
+                                placeholder="인증 코드 입력"
+                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleVerifyCode}
+                                className="text-sm text-green-600 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                            >
+                                확인
+                            </button>
+                        </div>
+                    )}
+
+
+                        {verificationSuccess && (
+                        <p className="text-green-500 text-sm mt-1">✅ 이메일 인증 완료</p>
+                    )}
 
                     <div className="flex items-center bg-white rounded-md px-2 py-2">
                         <span className="mx-8 text-gray-500">
@@ -147,9 +242,10 @@ export default function SignupPage() {
                     <button
                         type="submit"
                         className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition"
-                    >
+                        >
                         가입하기
                     </button>
+
                 </form>
             </div>
         </div>
