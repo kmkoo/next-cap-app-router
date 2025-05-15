@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import PageWrapper from "@/components/page-wrapper";
 
 export default function SignupPage() {
     const [name, setName] = useState("");
@@ -39,6 +40,7 @@ export default function SignupPage() {
     };
 
     return (
+        <PageWrapper>
         <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
             <div className="w-full max-w-xl">
                 <h2 className="text-[30px] text-center mb-8">회원가입</h2>
@@ -151,5 +153,6 @@ export default function SignupPage() {
                 </form>
             </div>
         </div>
+        </PageWrapper>
     );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import PageWrapper from "@/components/page-wrapper";
 
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
@@ -73,6 +74,7 @@ export default function ServerListPage() {
   };
 
   return (
+    <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
       <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
         <div className="mx-1 p-1 text-[20px]">서버리스트</div>
@@ -96,7 +98,8 @@ export default function ServerListPage() {
       </div>
 
       <div className="px-6 pt-6">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-hidden">
+          <PageWrapper key={activeTab}>
           <table className="min-w-full bg-white rounded shadow">
             <thead className="bg-gray-100 text-left">
               <tr>
@@ -191,8 +194,10 @@ export default function ServerListPage() {
               )}
             </tbody>
           </table>
+          </PageWrapper>
         </div>
       </div>
     </div>
+    </PageWrapper>
   );
 }
