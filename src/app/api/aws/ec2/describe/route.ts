@@ -5,13 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { instances } = body;
+    
+    // if (!instances) {
+    //   return NextResponse.json({ success: false, error: "인스턴스 리스트를 받지 못했습니다." }, { status: 400 });
+    // }
 
-    if (!instances) {
-      return NextResponse.json({ success: false, error: "인스턴스 리스트를 받지 못했습니다." }, { status: 400 });
-    }
-
-    const instanceList = await getInstanceData(instances);
-    return NextResponse.json({ success: true, instanceList });
+    const instanceList = await getInstanceData([process.env.AWS_IID!]);
+    return NextResponse.json({ success: true, instanceList, instances });
   } catch (error) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
