@@ -28,6 +28,18 @@ export default function NewServerPage() {
     setLoading(false);
   }
 
+  const handleDesc = async () => {
+    setLoading(true);
+    const res = await fetch('/api/aws/ec2/describe', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "instances": "NONE" }),  // 이부분 나중에 바꿔야됨
+    });
+    const data = await res.json();
+    setResponse(data);
+    setLoading(false);
+  }
+
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
@@ -87,6 +99,13 @@ export default function NewServerPage() {
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                   {loading ? "생성 중..." : "인스턴스 생성"}
+                </button>
+                <button
+                  onClick={handleDesc}
+                  disabled={loading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {loading ? "확인 중..." : "인스턴스 확인"}
                 </button>
               </div>
 
