@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+
 import { useState } from "react";
+import PageWrapper from "@/components/page-wrapper";
 
 // /main/newserver 페이지
 export default function NewServerPage() {
@@ -28,6 +29,7 @@ export default function NewServerPage() {
   }
 
   return (
+    <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
       <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
         <div className="mx-1 p-1 text-[20px]">서버생성</div>
@@ -52,6 +54,7 @@ export default function NewServerPage() {
       </div>
 
       <div className="px-6 pt-6">
+        <PageWrapper key={activeTab}>
         {activeTab === "server" && (
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
@@ -107,7 +110,9 @@ export default function NewServerPage() {
             {/* 추후 웹사이트 생성 폼 컴포넌트 삽입 가능 */}
           </div>
         )}
+        </PageWrapper>
       </div>
     </div>
+    </PageWrapper>
   );
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import PageWrapper from "@/components/page-wrapper";
 
 export default function FindIdPage() {
   const [name, setName] = useState('')
@@ -33,6 +34,7 @@ export default function FindIdPage() {
   }
 
   return (
+    <PageWrapper>
     <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-xl">
         <h2 className="text-[30px] text-center mb-8">이메일 찾기</h2>
@@ -86,5 +88,6 @@ export default function FindIdPage() {
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
     </div>
+    </PageWrapper>
   );
 }
