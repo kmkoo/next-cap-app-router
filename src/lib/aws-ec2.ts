@@ -29,16 +29,19 @@ export async function createInstance(params:{
   const command = new RunInstancesCommand({
     ImageId: process.env.AWS_IMAGEID,
     InstanceType: instanceType,
+    SecurityGroupIds: [
+      process.env.AWS_SECURITYGROUPID!,
+    ],
     MinCount: 1,
     MaxCount: 1,
-    KeyName: process.env.AWS_KEYNAME,  //키페어 보안엄중
+    // KeyName: process.env.AWS_KEYNAME,  //키페어 보안엄중
     TagSpecifications: [{
       ResourceType: 'instance',
       Tags: [
-        { Key: "Name", Value: "squirrel-ec2-user" },
+        { Key: "Name", Value: `squirrel-ec2-user-${serverTag}` },
         { Key: "group", Value: "capstone" },
         { Key: "username", Value: "capstone-squirrel" },
-        { Key: "serviceName", Value: serverTag },
+        { Key: "serverName", Value: serverTag },
         { Key: "owner", Value: serverOwner },
       ]
     }],
