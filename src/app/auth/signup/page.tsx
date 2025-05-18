@@ -231,8 +231,8 @@ export default function SignupPage() {
                     <div className="flex items-center text-sm text-gray-600">
                         <input type="checkbox" id="terms" className="mr-2" required />
                         <label htmlFor="terms">
-                            <a href="/terms" className="text-blue-600 hover:underline">이용약관</a> 및{" "}
-                            <a href="/privacy" className="text-blue-600 hover:underline">개인정보 처리방침</a>에 동의합니다.
+                            <a href="/auth/terms" className="text-blue-600 hover:underline">이용약관</a> 및{" "}
+                            <a href="/auth/privacy" className="text-blue-600 hover:underline">개인정보 처리방침</a>에 동의합니다.
                         </label>
                     </div>
 
@@ -241,7 +241,7 @@ export default function SignupPage() {
 
                     <button
                         type="submit"
-                        className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition"
+                        className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
                         >
                         가입하기
                     </button>

@@ -78,7 +78,7 @@ export default function FindIdPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition"
+            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
           >
             이메일 찾기
           </button>
