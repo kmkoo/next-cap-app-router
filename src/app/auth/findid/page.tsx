@@ -37,7 +37,7 @@ export default function FindIdPage() {
     <PageWrapper>
     <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-xl">
-        <h2 className="text-[30px] text-center mb-8">이메일 찾기</h2>
+        <h2 className="text-[30px] text-center mb-8">아이디 찾기</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex items-center bg-white rounded-md px-2 py-2">
             <span className="mx-8 text-gray-500">
@@ -78,7 +78,7 @@ export default function FindIdPage() {
 
           <button
             type="submit"
-            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition"
+            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
           >
             이메일 찾기
           </button>
