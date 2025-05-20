@@ -1,13 +1,16 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from 'react';
-import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Sidebar() {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
+  const [isTextVisible, setIsTextVisible] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const storedName = localStorage.getItem('userName') || '사용자';
@@ -16,94 +19,169 @@ export default function Sidebar() {
     setUserEmail(storedEmail);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      const timeout = setTimeout(() => setIsTextVisible(true), 100);
+      return () => clearTimeout(timeout);
+    } else {
+      setIsTextVisible(false);
+    }
+  }, [isOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
     router.push('/auth');
   };
 
+  const toggleSidebar = () => setIsOpen(prev => !prev);
+
+  const navItemsTop = [
+    {
+      href: '/main/dashboard',
+      label: '대시보드',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+          <path d="M13.45 11.55l2.05 -2.05" />
+          <path d="M6.4 20a9 9 0 1 1 11.2 0z" />
+        </svg>
+      )
+    },
+    {
+      href: '/main/serverlist',
+      label: '서버 리스트',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+          <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+          <path d="M7 8l0 .01" />
+          <path d="M7 16l0 .01" />
+        </svg>
+      )
+    },
+    {
+      href: '/main/newserver',
+      label: '서버 생성',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+          <path d="M15 20h-9a3 3 0 0 1 -3 -3v-2a3 3 0 0 1 3 -3h12" />
+          <path d="M7 8v.01" />
+          <path d="M7 16v.01" />
+          <path d="M20 15l-2 3h3l-2 3" />
+        </svg>
+      )
+    },
+    {
+      href: '/main/guide',
+      label: '사용 가이드',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+          <path d="M12 9h.01" />
+          <path d="M11 12h1v4h1" />
+        </svg>
+      )
+    }
+  ];
+
+  const navItemsBottom = [
+    {
+      href: '/main/user',
+      label: '회원정보',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+          <path d="M6 21v-2a4 4 0 0 1 4 -4h2.5" />
+          <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+          <path d="M19.001 15.5v1.5" />
+          <path d="M19.001 21v1.5" />
+          <path d="M22.032 17.25l-1.299 .75" />
+          <path d="M17.27 20l-1.3 .75" />
+          <path d="M15.97 17.25l1.3 .75" />
+          <path d="M20.733 20l1.3 .75" />
+        </svg>
+      )
+    },
+    {
+      href: '/main/setting',
+      label: '환경설정',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+          <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+          <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+        </svg>
+      )
+    }
+  ];
+
   return (
-    <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-zinc-700 flex flex-col w-60 sticky top-0 h-screen">
-      <div className="pt-4 px-4 py-2 border-b border-gray-900">
-        <Link href='/main' className="m-1 p-2 text-[12px]">
-          한국다람쥐 CLOUD
-        </Link>
-        <div className="m-1 pt-2 px-2 text-[20px]">
-          {userName}
-          <p className="text-neutral-400 text-[10px]">{userEmail}</p>
+    <div className={`bg-[#373A3C] text-neutral-100 flex flex-col h-screen sticky top-0 transition-[width] duration-300 ${isOpen ? 'w-60 px-4' : 'w-14 items-center'}`}>
+      <div className="w-full h-[110px] py-2 border-b border-neutral-600/50 flex flex-col justify-between">
+        <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}>
+          {isTextVisible && (
+            <div className="flex items-center gap-2">
+    <img
+      src="/logo1.svg"
+      alt="logo1"
+      className="w-6 h-6"
+      style={{ filter: 'brightness(0) invert(1)' }}
+    />
+    <img
+      src="/logo2.svg"
+      alt="logo2"
+      className="w-12 h-6"
+      style={{ filter: 'brightness(0) invert(1)' }}
+    />
+  </div>
+          )}
+          <button onClick={toggleSidebar} className="text-neutral-300 hover:text-white cursor-pointer">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
+        {isTextVisible && (
+          <div className="pt-2">
+            <div className="text-[20px]">{userName}</div>
+            <p className="text-neutral-400 text-[10px]">{userEmail}</p>
+          </div>
+        )}
       </div>
 
-      <div className="px-3 grow">
-        <div className="my-7 mx-2 flex flex-col">
-          <Link href='/main/dashboard' className="sidebar-link text-[14px]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-              <path d="M13.45 11.55l2.05 -2.05"></path>
-              <path d="M6.4 20a9 9 0 1 1 11.2 0z"></path>
-            </svg>
-            대시보드
-          </Link>
-          <Link href='/main/serverlist' className="sidebar-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-              <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-              <path d="M7 8l0 .01"></path>
-              <path d="M7 16l0 .01"></path>
-            </svg>
-            서버 리스트
-          </Link>
-          <Link href='/main/newserver' className="sidebar-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-              <path d="M15 20h-9a3 3 0 0 1 -3 -3v-2a3 3 0 0 1 3 -3h12"></path>
-              <path d="M7 8v.01"></path>
-              <path d="M7 16v.01"></path>
-              <path d="M20 15l-2 3h3l-2 3"></path>
-            </svg>
-            서버 생성
-          </Link>
-          <Link href='/main/guide' className="sidebar-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-              <path d="M12 9h.01"></path>
-              <path d="M11 12h1v4h1"></path>
-            </svg>
-            사용 가이드
-          </Link>
+      <div className="flex flex-col justify-between flex-1 w-full">
+        <div className={`mt-6 flex flex-col ${isOpen ? 'gap-2' : 'items-center space-y-4'}`}>
+          {navItemsTop.map(({ href, label, icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}
+            >
+              <div>{icon}</div>
+              {isTextVisible && <span className="text-sm">{label}</span>}
+            </Link>
+          ))}
         </div>
-      </div>
 
-      <div className="px-3 text-neutral-400">
-        <div className="my-3 mx-2 flex flex-col">
-          <Link href='/main/user' className="sidebar-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-              <path d="M6 21v-2a4 4 0 0 1 4 -4h2.5"></path>
-              <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-              <path d="M19.001 15.5v1.5"></path>
-              <path d="M19.001 21v1.5"></path>
-              <path d="M22.032 17.25l-1.299 .75"></path>
-              <path d="M17.27 20l-1.3 .75"></path>
-              <path d="M15.97 17.25l1.3 .75"></path>
-              <path d="M20.733 20l1.3 .75"></path>
+        <div className={`mb-6 flex flex-col border-t border-neutral-600/50 pt-4 ${isOpen ? 'gap-2' : 'items-center space-y-4'}`}>
+          {navItemsBottom.map(({ href, label, icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}
+            >
+              <div>{icon}</div>
+              {isTextVisible && <span className="text-sm">{label}</span>}
+            </Link>
+          ))}
+          <button onClick={handleLogout} className={`text-yellow-700 hover:text-red-700 transition cursor-pointer hover:bg-gray-100 rounded-md ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}>
+            <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3" />
+              <path d="M18 15l3 -3" />
             </svg>
-            회원정보
-          </Link>
-          <Link href='/main/setting' className="sidebar-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
-              <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
-            </svg>
-            환경설정
-          </Link>
-          <button onClick={handleLogout} className="sidebar-link text-yellow-700 text-left">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
-              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
-              <path d="M9 12h12l-3 -3"></path>
-              <path d="M18 15l3 -3"></path>
-            </svg>
-            로그아웃
+            {isTextVisible && <span className="text-sm">로그아웃</span>}
           </button>
         </div>
       </div>

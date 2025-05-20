@@ -1,10 +1,12 @@
-'use client'
+'use client';
+
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function AuthSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,9 +42,25 @@ export default function AuthSidebar() {
   };
 
   return (
-    <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-zinc-700 flex flex-col w-60 min-h-screen right-0 sticky top-0 h-screen">
-      <div className="flex flex-col grow mx-6 justify-center">
-        <div className="flex gap-2 mb-4">
+    <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-neutral-600/50 flex flex-col w-60 min-h-screen right-0 sticky top-0 h-screen">
+      <div className="flex flex-col grow mx-6 justify-center pb-30">
+        <div className="flex justify-center mb-10">
+          <Link href="/auth">
+            <img
+              src="/logo1.svg"
+              alt="logo2"
+              className="w-24 h-12"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+            <img
+              src="/logo2.svg"
+              alt="logo2"
+              className="w-24 h-12"
+              style={{ filter: 'brightness(0) invert(1)' }}
+              />
+          </Link>
+        </div>
+        <div className="flex gap-2 mb-4 items-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
             <path d="M21 12h-13l3 -3" />
@@ -84,7 +102,7 @@ export default function AuthSidebar() {
           <button
             type="submit"
             disabled={isLoading}
-            className="p-1.5 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px]"
+            className="p-1.5 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px] cursor-pointer"
           >
             {isLoading ? '로그인중...' : '로그인'}
           </button>
@@ -95,7 +113,10 @@ export default function AuthSidebar() {
 
       <div className="px-3 text-neutral-400">
         <div className="my-3 mx-2 flex flex-col">
-          <Link href='/auth/signup' className="m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2 text-[14px]">
+          <Link
+            href="/auth/signup"
+            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/signup' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
               <path d="M16 19h6" />
@@ -105,7 +126,10 @@ export default function AuthSidebar() {
             회원가입
           </Link>
 
-          <Link href='/auth/findid' className="m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2 text-[14px]">
+          <Link
+            href="/auth/findid"
+            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/findid' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
               <path d="M21 21l-6 -6" />
@@ -113,7 +137,10 @@ export default function AuthSidebar() {
             아이디찾기
           </Link>
 
-          <Link href='/auth/resetpw' className="m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2 text-[14px]">
+          <Link
+            href="/auth/resetpw"
+            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/resetpw' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />
               <path d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
