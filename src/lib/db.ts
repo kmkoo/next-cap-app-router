@@ -9,7 +9,6 @@ import dbi from './dbcon';
 //   userPassword: string;
 //   settingName: string;
 // };
-
 // type Server = {
 //   serverNumber: number;
 //   userNumber: number;
