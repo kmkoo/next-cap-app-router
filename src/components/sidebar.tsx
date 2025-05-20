@@ -122,19 +122,13 @@ export default function Sidebar() {
         <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}>
           {isTextVisible && (
             <div className="flex items-center gap-2">
-    <img
-      src="/logo1.svg"
-      alt="logo1"
-      className="w-6 h-6"
-      style={{ filter: 'brightness(0) invert(1)' }}
-    />
-    <img
-      src="/logo2.svg"
-      alt="logo2"
-      className="w-12 h-6"
-      style={{ filter: 'brightness(0) invert(1)' }}
-    />
-  </div>
+              <img
+                src="/logo2.svg"
+                alt="logo2"
+                className="w-12 h-6"
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
+            </div>
           )}
           <button onClick={toggleSidebar} className="text-neutral-300 hover:text-white cursor-pointer">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

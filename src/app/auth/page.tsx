@@ -1,10 +1,11 @@
-// app/auth/page.tsx
+import PageWrapper from "@/components/page-wrapper"
 export const metadata = {
   title: '메인',
 };
 
 export default function AuthPage() {
   return (
+    <PageWrapper>
     <main className="min-h-screen flex items-center justify-center bg-white px-6 py-20">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl w-full gap-12">
         
@@ -34,6 +35,7 @@ export default function AuthPage() {
           </video>
         </div>
       </div>
-    </main>
+      </main>
+      </PageWrapper>
   );
 }

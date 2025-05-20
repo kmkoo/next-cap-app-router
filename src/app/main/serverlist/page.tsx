@@ -19,7 +19,7 @@ type Server = {
 export default function ServerListPage() {
   const [activeTab, setActiveTab] = useState<"all" | "server" | "website">("all");
   const [servers, setServers] = useState<Server[]>([]);
-  const [showAddress, setShowAddress] = useState(true);
+  const [showAddress, setShowAddress] = useState<boolean | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function ServerListPage() {
       {
         id: "1",
         name: "마인크랙트 서버",
-        type: "server",
+        type: "서버",
         createdAt: "2024-12-01",
         address: "192.168.0.1",
         status: "running",
@@ -35,7 +35,7 @@ export default function ServerListPage() {
       {
         id: "2",
         name: "포트폴리오 사이트",
-        type: "website",
+        type: "웹사이트",
         createdAt: "2024-12-05",
         address: "example.com",
         status: "stopped",
@@ -153,7 +153,7 @@ export default function ServerListPage() {
                     <span
                       className={`relative ${
                         !showAddress
-                          ? "text-transparent select-none after:content-['\\2022\\2022\\2022\\2022\\2022\\2022'] after:absolute after:inset-0 after:text-black"
+                          ? "text-transparent select-none after:content-['••••••'] after:absolute after:inset-0 after:text-black"
                           : ""
                       }`}
                     >
