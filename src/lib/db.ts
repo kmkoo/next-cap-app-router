@@ -1,4 +1,4 @@
-import dbi from './dbcon';
+import dbi from '@/lib/dbcon';
 // import type { RowDataPacket } from 'mysql2';
 
 // type User = {
@@ -9,6 +9,7 @@ import dbi from './dbcon';
 //   userPassword: string;
 //   settingName: string;
 // };
+
 // type Server = {
 //   serverNumber: number;
 //   userNumber: number;
