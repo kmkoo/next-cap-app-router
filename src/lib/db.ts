@@ -122,7 +122,7 @@ export async function update_Server(
  * @param keyColumn WHERE 절 기준 키 컬럼 명 (예: 'userNumber')
  * @param keyValue WHERE 절 기준 키 값 (예: 42)
  */
-export async function deletee_User(
+export async function delete_User(
   keyColumn: string,
   keyValue: any
 ): Promise<ResultSetHeader> {
@@ -137,7 +137,7 @@ export async function deletee_User(
  * @param keyColumn WHERE 절 기준 키 컬럼 명 (예: 'serverNumber')
  * @param keyValue WHERE 절 기준 키 값 (예: 7)
  */
-export async function deletee_Server(
+export async function delete_Server(
   keyColumn: string,
   keyValue: any
 ): Promise<ResultSetHeader> {
@@ -146,14 +146,3 @@ export async function deletee_Server(
     [keyValue]
   );
 }
-
-export default {
-  select_User,
-  select_Server,
-  insert_User,
-  insert_Server,
-  update_User,
-  update_Server,
-  deletee_User,
-  deletee_Server,
-};
