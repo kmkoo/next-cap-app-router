@@ -11,6 +11,7 @@ export default function ResetPasswordPage() {
   const [confirmPw, setConfirmPw] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [emailError, setEmailError] = useState('')
 
   const [emailVerified, setEmailVerified] = useState(false)
   const [verifyCodeSent, setVerifyCodeSent] = useState(false)
@@ -25,36 +26,37 @@ export default function ResetPasswordPage() {
     });
     const data = await res.json();
     if (data.success) {
-      setVerifyCodeSent(true);
-      setError("인증 코드가 이메일로 전송되었습니다.");
+      setVerifyCodeSent(true)
+      setEmailError("인증 코드가 이메일로 전송되었습니다.")
     } else {
-      setError("인증 코드 전송에 실패했습니다.");
+      setEmailError("인증 코드 전송에 실패했습니다.")
     }
-  };
+  }
 
   const handleVerifyCode = async () => {
     const res = await fetch("/api/email/check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code: enteredCode }),
-    });
-    const data = await res.json();
+    })
+    const data = await res.json()
     if (data.success) {
-      setEmailVerified(true);
-      setVerificationSuccess(true);
-      setError("");
+      setEmailVerified(true)
+      setVerificationSuccess(true)
+      setEmailError("")
     } else {
-      setError(data.message || "인증 실패");
+      setEmailError(data.message || "인증 실패")
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage('')
     setError('')
+    setEmailError('')
 
     if (!emailVerified) {
-      setError("이메일 인증을 완료해주세요.")
+      setEmailError("이메일 인증을 완료해주세요.")
       return
     }
 
@@ -145,7 +147,7 @@ export default function ResetPasswordPage() {
                     setVerifyCodeSent(false)
                     setEnteredCode("")
                     setVerificationSuccess(false)
-                    setError("")
+                    setEmailError("")
                   }}
                   className="text-sm text-red-500 whitespace-nowrap ml-2 pr-2 cursor-pointer hover:underline"
                 >
@@ -161,6 +163,10 @@ export default function ResetPasswordPage() {
                 </button>
               )}
             </div>
+
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1 ml-2">{emailError}</p>
+            )}
 
             {verifyCodeSent && !emailVerified && (
               <div className="flex items-center bg-white rounded-md px-2 py-2">

@@ -29,7 +29,6 @@ export default function AuthSidebar() {
       if (data.success) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("userEmail", data.email);
-        setMessage("로그인 성공");
         router.push("/main/dashboard");
       } else {
         setMessage(data.message);
