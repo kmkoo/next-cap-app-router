@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     // }
 
     const instanceList = await getInstanceData([process.env.AWS_IID!]);
-    return NextResponse.json({ success: true, instanceList, instances });
+    return NextResponse.json({ success: true, instanceList });
   } catch (error) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }

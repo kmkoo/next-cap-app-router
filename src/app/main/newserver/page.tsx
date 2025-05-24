@@ -113,8 +113,8 @@ export default function NewServerPage() {
                 <div className="mt-4 bg-gray-100 p-4 rounded">
                   {response.success ? (
                     <>
-                      <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
-                      <p><strong>상태:</strong> {response.instance.State?.Name}</p>
+                      <p><strong>인스턴스:</strong> {response.instanceList}</p>
+                      <p><strong>상태:</strong> {response.instanceList.instance.State?.Name}</p>
                     </>
                   ) : (
                     <p className="text-red-500">오류: {response.error}</p>
