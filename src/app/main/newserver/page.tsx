@@ -52,6 +52,18 @@ export default function NewServerPage() {
     setLoading(false);
   }
 
+  const handleStart = async () => {
+    setLoading(true);
+    const res = await fetch('/api/aws/ec2/start', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "instances": instanceId }),  // 이부분 나중에 바꿔야됨
+    });
+    const data = await res.json();
+    setResponse(data);
+    setLoading(false);
+  }
+
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
@@ -82,70 +94,79 @@ export default function NewServerPage() {
         {activeTab === "server" && (
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
-              <div className="space-y-2 flex flex-col">
-                <label>서버 규모</label>
-                <select 
-                  value={serverScale}
-                  onChange={(e) => setServerScale(e.target.value)}
-                  className="border p-2 rounded w-100"
-                >
-                  <option value="small">작음</option>
-                  <option value="medium">보통</option>
-                  <option value="big">큼</option>
-                </select>
-                <input
-                  value={serverName}
-                  onChange={(e) => setServerName(e.target.value)}
-                  placeholder="서버 이름"
-                  className="border p-2 rounded w-100"
-                />
-                <input
-                  value={userCommand}
-                  onChange={(e) => setUserCommand(e.target.value)}
-                  placeholder="자동실행 명령어 입력 (옵션)"
-                  className="border p-2 rounded w-100"
-                />
-                <input
-                  value={instanceId}
-                  onChange={(e) => setUserInstanceId(e.target.value)}
-                  placeholder="인스턴스"
-                  className="border p-2 rounded w-100"
-                />
-                <button
-                  onClick={handleCreate}
-                  disabled={loading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  {loading ? "생성 중..." : "인스턴스 생성"}
-                </button>
-                <button
-                  onClick={handleDesc}
-                  disabled={loading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  {loading ? "확인 중..." : "인스턴스 확인"}
-                </button>
-                <button
-                  onClick={handleStop}
-                  disabled={loading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  {loading ? "작업 중..." : "인스턴스 종료"}
-                </button>
-              </div>
+            <div className="space-y-2 flex flex-col">
+              <label>서버 규모</label>
+              <select 
+                value={serverScale}
+                onChange={(e) => setServerScale(e.target.value)}
+                className="border p-2 rounded w-80"
+              >
+                <option value="small">작음</option>
+                <option value="medium">보통</option>
+                <option value="big">큼</option>
+              </select>
+              <input
+                value={serverName}
+                onChange={(e) => setServerName(e.target.value)}
+                placeholder="서버 이름"
+                className="border p-2 rounded w-80"
+              />
+              <input
+                value={userCommand}
+                onChange={(e) => setUserCommand(e.target.value)}
+                placeholder="자동실행 명령어 입력 (옵션)"
+                className="border p-2 rounded w-80"
+              />
+              <input
+                value={instanceId}
+                onChange={(e) => setUserInstanceId(e.target.value)}
+                placeholder="인스턴스"
+                className="border p-2 rounded w-80"
+              />
+              <button
+                onClick={handleCreate}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
+              >
+                {loading ? "생성 중..." : "인스턴스 생성"}
+              </button>
+              <button
+                onClick={handleDesc}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
+              >
+                {loading ? "확인 중..." : "인스턴스 확인"}
+              </button>
+              <button
+                onClick={handleStop}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
+              >
+                {loading ? "작업 중..." : "인스턴스 종료"}
+              </button>
+              <button
+                onClick={handleStart}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
+              >
+                {loading ? "작업 중..." : "인스턴스 시작"}
+              </button>
+            </div>
 
-              {response && (
-                <div className="mt-4 bg-gray-100 p-4 rounded flex">
-                  {response.success ? (
-                    <>
-                      <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverTag")?.Value)}</p>
-                      <p><strong>상태:</strong> {response.instanceList.State.Name}</p>
-                    </>
-                  ) : (
-                    <p className="text-red-500">오류: {response.error}</p>
-                  )}
-                </div>
-              )}
+            {response && (
+              <div className="mt-4 bg-gray-100 p-4 rounded border-1 w-250 wrap-anywhere">
+                {response.success ? (
+                  <>
+                    <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverTag")?.Value)}</p>
+                    <p><strong>상태:</strong> {response.instanceList.State.Name}</p>
+                  </>
+                ) : (
+                  <>
+                  <p className="text-red-500">오류: {response.error}</p>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
         {activeTab === "website" && (
