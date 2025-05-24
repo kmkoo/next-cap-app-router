@@ -23,10 +23,14 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    const defaultSettings = {
+      emailNotification: false,
+      showServerAddress: false,
+    };
+    
     await db.query(
       "INSERT INTO User (userName, userPhone, userEmail, userPassword, settingName) VALUES (?, ?, ?, ?, ?)",
-      [name, phone, email, hashedPassword, "default"]
+      [name, phone, email, hashedPassword, JSON.stringify(defaultSettings)]
     );
 
     return NextResponse.json({ success: true, message: "회원가입 성공" });
