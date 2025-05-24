@@ -10,6 +10,7 @@ export default function NewServerPage() {
   const [serverScale, setServerScale] = useState("small");
   const [serverName, setServerName] = useState('');
   const [userCommand, setUserCommand] = useState('');
+  const [instanceId, setUserInstanceId] = useState('');  // 중지 테스트용
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +34,18 @@ export default function NewServerPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ "instances": "NONE" }),  // 이부분 나중에 바꿔야됨
+    });
+    const data = await res.json();
+    setResponse(data);
+    setLoading(false);
+  }
+
+  const handleStop = async () => {
+    setLoading(true);
+    const res = await fetch('/api/aws/ec2/stop', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ "instances": instanceId }),  // 이부분 나중에 바꿔야됨
     });
     const data = await res.json();
     setResponse(data);
@@ -92,6 +105,12 @@ export default function NewServerPage() {
                   placeholder="자동실행 명령어 입력 (옵션)"
                   className="border p-2 rounded w-100"
                 />
+                <input
+                  value={instanceId}
+                  onChange={(e) => setUserInstanceId(e.target.value)}
+                  placeholder="인스턴스"
+                  className="border p-2 rounded w-100"
+                />
                 <button
                   onClick={handleCreate}
                   disabled={loading}
@@ -105,6 +124,13 @@ export default function NewServerPage() {
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                 >
                   {loading ? "확인 중..." : "인스턴스 확인"}
+                </button>
+                <button
+                  onClick={handleStop}
+                  disabled={loading}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {loading ? "작업 중..." : "인스턴스 종료"}
                 </button>
               </div>
 
