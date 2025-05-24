@@ -1,4 +1,4 @@
-import { _InstanceType, DescribeInstancesCommand, EC2Client, RunInstancesCommand, StartInstancesCommand, StopInstancesCommand, TerminateInstancesCommand } from "@aws-sdk/client-ec2";
+import { _InstanceType, DescribeInstancesCommand, EC2Client, RebootInstancesCommand, RunInstancesCommand, StartInstancesCommand, StopInstancesCommand, TerminateInstancesCommand } from "@aws-sdk/client-ec2";
 
 const ec2Client = new EC2Client({ region: process.env.AWS_REGION });
 
@@ -71,6 +71,15 @@ export async function stopInstance(instanceIds:string[]) {
   
   const response = await ec2Client.send(command);
   return response.StoppingInstances;
+}
+
+export async function rebootInstance(instanceIds:string[]) {
+  const command = new RebootInstancesCommand({
+    InstanceIds: instanceIds,
+  });
+
+  const response = await ec2Client.send(command)
+  return response;
 }
 
 export async function terminateInstance(instanceIds:string[]) {

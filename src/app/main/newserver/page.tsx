@@ -109,7 +109,7 @@ export default function NewServerPage() {
               </div>
 
               {response && (
-                <div className="mt-4 bg-gray-100 p-4 rounded">
+                <div className="mt-4 bg-gray-100 p-4 rounded flex">
                   {response.success ? (
                     <>
                       <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverTag")?.Value)}</p>
