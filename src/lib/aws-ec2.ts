@@ -30,7 +30,7 @@ export async function createInstance(params:{
     ImageId: process.env.AWS_IMAGEID,
     InstanceType: instanceType,
     // SecurityGroupIds: [
-    //   process.env.AWS_SECURITYGROUPID!,
+    //   process.env.AWS_SECURITYGROUPID!, //보안그룹을 설정하면 network-interface 관련 권한이 추가로 필요한듯?
     // ],
     MinCount: 1,
     MaxCount: 1,
@@ -46,7 +46,7 @@ export async function createInstance(params:{
       ]
     }],
 		UserData: userData,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
   
   const response = await ec2Client.send(command);
