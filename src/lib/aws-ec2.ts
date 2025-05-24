@@ -5,7 +5,7 @@ const ec2Client = new EC2Client({ region: process.env.AWS_REGION });
 export async function getInstanceData(instanceIds:string[]) {
   const command = new DescribeInstancesCommand({
     InstanceIds: instanceIds,
-    DryRun: true,  // 실제 작동 방지
+    //DryRun: true,  // 실제 작동 방지
   });
 
   const response = await ec2Client.send(command);
