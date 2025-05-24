@@ -112,7 +112,7 @@ export default function NewServerPage() {
                 <div className="mt-4 bg-gray-100 p-4 rounded">
                   {response.success ? (
                     <>
-                      <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverName")?.Value)}</p>
+                      <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverTag")?.Value)}</p>
                       <p><strong>상태:</strong> {response.instanceList.State.Name}</p>
                     </>
                   ) : (
