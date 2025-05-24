@@ -21,8 +21,18 @@ export default function ServerListPage() {
   const [servers, setServers] = useState<Server[]>([]);
   const [showAddress, setShowAddress] = useState<boolean | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [userName, setUserName] = useState("");
+
+  const [list, setList] = useState();
+
+
+  useEffect(() =>{
+    const storedName: string = localStorage.getItem('userName')!;
+    setUserName(storedName);
+  }, []);
 
   useEffect(() => {
+
     const dummyServers: Server[] = [
       {
         id: "1",
@@ -50,7 +60,18 @@ export default function ServerListPage() {
           setShowAddress(data.showServerAddress);
         }
       });
-  }, []);
+
+    fetch("/api/getServerList", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userName }),
+    })
+    .then((res) => res.json())
+    .then((data) => { setList(data); });
+
+  }, [userName]);
 
   const filteredServers = servers.filter((server) => {
     if (activeTab === "all") return true;
@@ -194,6 +215,7 @@ export default function ServerListPage() {
               )}
             </tbody>
           </table>
+          <p>{JSON.stringify(list)}</p>
           </PageWrapper>
         </div>
       </div>
