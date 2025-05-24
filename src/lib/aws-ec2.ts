@@ -29,9 +29,9 @@ export async function createInstance(params:{
   const command = new RunInstancesCommand({
     ImageId: process.env.AWS_IMAGEID,
     InstanceType: instanceType,
-    SecurityGroupIds: [
-      process.env.AWS_SECURITYGROUPID!,
-    ],
+    // SecurityGroupIds: [
+    //   process.env.AWS_SECURITYGROUPID!,
+    // ],
     MinCount: 1,
     MaxCount: 1,
     // KeyName: process.env.AWS_KEYNAME,  //키페어 보안엄중
