@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
+import TopBar from "@/components/topbar";
 
 export default function SettingPage() {
   const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
@@ -10,7 +11,7 @@ export default function SettingPage() {
     emailNotification: false,
     showServerAddress: false,
   });
-  const [isFetched, setIsFetched] = useState(false); // 설정 불러오기 완료 여부
+  const [isFetched, setIsFetched] = useState(false);
 
   useEffect(() => {
     const email = localStorage.getItem("userEmail");
@@ -52,53 +53,46 @@ export default function SettingPage() {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const renderToggle = (checked: boolean, onClick: () => void) => (
+    <button
+      onClick={onClick}
+      className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ${
+        checked ? "bg-[#3A3A3A]" : "bg-gray-300"
+      }`}
+    >
+      <span
+        className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ${
+          checked ? "translate-x-6" : "translate-x-1"
+        }`}
+      />
+    </button>
+  );
+
   return (
     <PageWrapper>
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-        <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-          <div className="mx-1 p-1 text-[20px] font-semibold">환경설정</div>
-          <div className="flex flex-row gap-4 mt-4">
-            <button
-              className={`px-4 py-2 ${
-                activeTab === "notification"
-                  ? "bg-[#F1F3F7] font-medium rounded-t-lg"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => setActiveTab("notification")}
-            >
-              알림
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                activeTab === "display"
-                  ? "bg-[#F1F3F7] font-medium rounded-t-lg"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-              onClick={() => setActiveTab("display")}
-            >
-              디스플레이
-            </button>
-          </div>
-        </div>
-
+        <TopBar
+          title="환경설정"
+          tabs={[
+            { key: "notification", label: "알림" },
+            { key: "display", label: "디스플레이" },
+          ]}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <div className="px-6 pt-6">
           <PageWrapper key={activeTab}>
             {activeTab === "notification" && (
               <div className="space-y-4">
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">알림 설정</h2>
+                  <h2 className="text-[16px] mb-4">알림 설정</h2>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">이메일 알림</span>
                       {isFetched ? (
-                        <input
-                          type="checkbox"
-                          checked={settings.emailNotification}
-                          onChange={() => toggleSetting("emailNotification")}
-                          className="w-5 h-5"
-                        />
+                        renderToggle(settings.emailNotification, () => toggleSetting("emailNotification"))
                       ) : (
-                        <div className="w-5 h-5 bg-gray-200 rounded animate-pulse" />
+                        <div className="w-11 h-6 bg-gray-200 rounded-full animate-pulse" />
                       )}
                     </div>
                   </div>
@@ -108,19 +102,14 @@ export default function SettingPage() {
             {activeTab === "display" && (
               <div className="space-y-4">
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-xl font-semibold mb-4">디스플레이 설정</h2>
+                  <h2 className="text-[16px] mb-4">디스플레이 설정</h2>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-700">서버 주소 표시</span>
                       {isFetched ? (
-                        <input
-                          type="checkbox"
-                          checked={settings.showServerAddress}
-                          onChange={() => toggleSetting("showServerAddress")}
-                          className="w-5 h-5"
-                        />
+                        renderToggle(settings.showServerAddress, () => toggleSetting("showServerAddress"))
                       ) : (
-                        <div className="w-5 h-5 bg-gray-200 rounded animate-pulse" />
+                        <div className="w-11 h-6 bg-gray-200 rounded-full animate-pulse" />
                       )}
                     </div>
                   </div>

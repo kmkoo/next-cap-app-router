@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PageWrapper from "@/components/page-wrapper";
+import TopBar from "@/components/topbar";
 
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
@@ -27,7 +28,7 @@ export default function ServerListPage() {
       {
         id: "1",
         name: "마인크랙트 서버",
-        type: "서버",
+        type: "server",
         createdAt: "2024-12-01",
         address: "192.168.0.1",
         status: "running",
@@ -35,7 +36,7 @@ export default function ServerListPage() {
       {
         id: "2",
         name: "포트폴리오 사이트",
-        type: "웹사이트",
+        type: "website",
         createdAt: "2024-12-05",
         address: "example.com",
         status: "stopped",
@@ -82,27 +83,16 @@ export default function ServerListPage() {
   return (
     <PageWrapper>
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-        <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-          <div className="mx-1 p-1 text-[20px]">서버리스트</div>
-          <div className="flex flex-row gap-4 mt-4">
-            {[
-              { key: "all", label: "전체" },
-              { key: "server", label: "서버" },
-              { key: "website", label: "웹사이트" },
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                className={`px-4 py-2 rounded ${
-                  activeTab === key ? "bg-[#F1F3F7]" : ""
-                }`}
-                onClick={() => setActiveTab(key as typeof activeTab)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
+        <TopBar
+          title="서버리스트"
+          tabs={[
+            { key: "all", label: "전체" },
+            { key: "server", label: "서버" },
+            { key: "website", label: "웹사이트" },
+          ]}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
         <div className="px-6 pt-6">
           <div className="overflow-x-hidden">
             <PageWrapper key={activeTab}>

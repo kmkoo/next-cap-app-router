@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
+import TopBar from "@/components/topbar";
 
-// /main/newserver 페이지
 export default function NewServerPage() {
   const [activeTab, setActiveTab] = useState<"server" | "website">("server");
 
@@ -13,7 +13,7 @@ export default function NewServerPage() {
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const serverOwner = "유저이름";  // 유저 이름 들어가도록 수정예정
+  const serverOwner = "유저이름";
   
 
   const handleCreate = async () => {
@@ -43,28 +43,15 @@ export default function NewServerPage() {
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-      <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-        <div className="mx-1 p-1 text-[20px]">서버생성</div>
-        <div className="flex flex-row gap-4 mt-4">
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "server" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("server")}
-          >
-            서버
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "website" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("website")}
-          >
-            웹사이트
-          </button>
-        </div>
-      </div>
-
+      <TopBar
+        title="서버생성"
+        tabs={[
+          { key: "server", label: "서버" },
+          { key: "website", label: "웹사이트" },
+        ]}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <div className="px-6 pt-6">
         <PageWrapper key={activeTab}>
         {activeTab === "server" && (
