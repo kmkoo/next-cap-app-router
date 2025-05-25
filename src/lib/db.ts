@@ -1,4 +1,4 @@
-import dbi from './dbcon.js';
+import dbi from './dbcon';
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 /**
@@ -8,7 +8,7 @@ import type { RowDataPacket, ResultSetHeader } from 'mysql2';
  */
 async function selectQuery(
   sql: string,
-  params: any[] = []
+  params: unknown[] = []
 ): Promise<RowDataPacket[]> {
   const [rows] = await dbi.query<RowDataPacket[]>(sql, params);
   return rows;
@@ -21,7 +21,7 @@ async function selectQuery(
  */
 async function modifyQuery(
   sql: string,
-  params: any[] = []
+  params: unknown[] = []
 ): Promise<ResultSetHeader> {
   const [result] = await dbi.query<ResultSetHeader>(sql, params);
   return result;
@@ -54,7 +54,7 @@ export async function select_Server(
  */
 export async function insert_User(
   columns: string,
-  values: any[]
+  values: unknown[]
 ): Promise<ResultSetHeader> {
   const placeholders = values.map(() => '?').join(',');
   return modifyQuery(
@@ -70,7 +70,7 @@ export async function insert_User(
  */
 export async function insert_Server(
   columns: string,
-  values: any[]
+  values: unknown[]
 ): Promise<ResultSetHeader> {
   const placeholders = values.map(() => '?').join(',');
   return modifyQuery(
@@ -88,9 +88,9 @@ export async function insert_Server(
  */
 export async function update_User(
   setClause: string,
-  values: any[],
+  values: unknown[],
   keyColumn: string,
-  keyValue: any
+  keyValue: unknown
 ): Promise<ResultSetHeader> {
   return modifyQuery(
     `UPDATE User SET ${setClause} WHERE ${keyColumn} = ?`,
@@ -107,9 +107,9 @@ export async function update_User(
  */
 export async function update_Server(
   setClause: string,
-  values: any[],
+  values: unknown[],
   keyColumn: string,
-  keyValue: any
+  keyValue: unknown
 ): Promise<ResultSetHeader> {
   return modifyQuery(
     `UPDATE Server SET ${setClause} WHERE ${keyColumn} = ?`,
@@ -122,9 +122,9 @@ export async function update_Server(
  * @param keyColumn WHERE 절 기준 키 컬럼 명 (예: 'userNumber')
  * @param keyValue WHERE 절 기준 키 값 (예: 42)
  */
-export async function delete_User(
+export async function deletee_User(
   keyColumn: string,
-  keyValue: any
+  keyValue: unknown
 ): Promise<ResultSetHeader> {
   return modifyQuery(
     `DELETE FROM User WHERE ${keyColumn} = ?`,
@@ -137,12 +137,23 @@ export async function delete_User(
  * @param keyColumn WHERE 절 기준 키 컬럼 명 (예: 'serverNumber')
  * @param keyValue WHERE 절 기준 키 값 (예: 7)
  */
-export async function delete_Server(
+export async function deletee_Server(
   keyColumn: string,
-  keyValue: any
+  keyValue: unknown
 ): Promise<ResultSetHeader> {
   return modifyQuery(
     `DELETE FROM Server WHERE ${keyColumn} = ?`,
     [keyValue]
   );
 }
+
+export default {
+  select_User,
+  select_Server,
+  insert_User,
+  insert_Server,
+  update_User,
+  update_Server,
+  deletee_User,
+  deletee_Server,
+};
