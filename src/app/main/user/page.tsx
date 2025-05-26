@@ -21,7 +21,11 @@ export default function SettingPage() {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const userEmail = typeof window !== "undefined" ? localStorage.getItem("userEmail") : null;
-  
+  const [passwordEditMode, setPasswordEditMode] = useState(false);
+  const [deleteMode, setDeleteMode] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+
   useEffect(() => {
     if (!userEmail) return;
 
@@ -66,9 +70,6 @@ export default function SettingPage() {
     const data = await res.json();
     if (data.success) {
       setVerifyCodeSent(true);
-      alert("인증 코드가 이메일로 전송되었습니다.");
-    } else {
-      alert("인증 코드 전송 실패");
     }
   };
 
@@ -104,7 +105,7 @@ export default function SettingPage() {
       setTimeout(() => {
         setSuccessMessage("");
         setEditMode(false);
-      }, 3000);
+      }, 1000);
     } else {
       alert("업데이트 실패");
     }
@@ -146,118 +147,200 @@ export default function SettingPage() {
     if (data.success) {
       setSuccessMessage("비밀번호가 성공적으로 변경되었습니다.");
       setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setTimeout(() => setSuccessMessage(""), 1000);
     } else {
       setPasswordError(data.message || "비밀번호 변경 실패");
     }
   };
 
-  return (
-    <PageWrapper>
-      <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-        <TopBar
-          title="회원정보"
-          tabs={[
-            { key: "notification", label: "내 계정" },
-            { key: "display", label: "청구" },
-          ]}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-        <div className="px-6 pt-6">
-          {successMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{successMessage}</div>}
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) {
+      setDeleteError("비밀번호를 입력해주세요.");
+      return;
+    }
 
-          <PageWrapper key={activeTab}>
-            {activeTab === "notification" && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-[16px]">내 프로필</h2>
-                    {!editMode && !isLoading && (
-                      <button onClick={() => setEditMode(true)} className="p-2 text-gray-500 hover:text-black rounded-md transition cursor-pointer">
+    const res = await fetch("/api/user/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail, password: deletePassword }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      alert("계정이 삭제되었습니다.");
+      localStorage.clear();
+      window.location.href = "/";
+    } else {
+      setDeleteError(data.message || "계정 삭제 실패");
+    }
+  };
+
+return (
+  <PageWrapper>
+    <div className="bg-[#F1F3F7] flex-grow min-h-screen">
+      <TopBar
+        title="회원정보"
+        tabs={[
+          { key: "notification", label: "내 계정" },
+          { key: "display", label: "청구" },
+        ]}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <div className="px-6 pt-6">
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
+
+        <PageWrapper key={activeTab}>
+          {activeTab === "notification" && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-[16px]">내 프로필</h2>
+                  {!isLoading && (
+                    editMode ? (
+                      <div className="flex space-x-3">
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          className="p-2 text-red-700 hover:text-red-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                        <button
+                          type="submit"
+                          form="profile-form"
+                          className="p-2 text-green-700 hover:text-green-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setEditMode(true)}
+                        className="p-2 text-gray-500 hover:text-black rounded-md transition cursor-pointer"
+                      >
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                       </button>
+                    )
+                  )}
+                </div>
+
+                <form id="profile-form" onSubmit={handleProfileSubmit} className="space-y-4">
+                  {['name', 'phone', 'email'].map((field) => (
+                    <div key={field} className="flex items-center gap-11 px-5 text-[15px]">
+                      {field === 'name' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+                          <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                        </svg>
+                      )}
+                      {field === 'phone' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
+                        </svg>
+                      )}
+                      {field === 'email' && (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                          <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
+                          <path d="M3 7l9 6l9 -6"></path>
+                        </svg>
+                      )}
+                      {editMode ? (
+                        <input
+                          type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+                          name={field}
+                          value={(formData as any)[field]}
+                          onChange={handleProfileChange}
+                          className="flex-1 min-h-[38px] px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1"
+                          required={field !== 'phone'}
+                        />
+                      ) : isLoading ? (
+                        <div className="flex-1 h-[34px] bg-gray-200 rounded animate-pulse" />
+                      ) : (
+                        <p className="flex-1 min-h-[38px] flex items-center py-1">{(formData as any)[field]}</p>
+                      )}
+                      {editMode && field === 'email' && !isEmailVerified && (
+                        <div className="ml-2">
+                          {!verifyCodeSent ? (
+                            <button type="button" onClick={handleSendVerification} className="text-blue-600 hover:underline text-sm">
+                              인증 코드 보내기
+                            </button>
+                          ) : (
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                placeholder="인증코드 입력"
+                                value={enteredCode}
+                                onChange={(e) => setEnteredCode(e.target.value)}
+                                className="min-h-[38px] border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1"
+                              />
+                              <button type="button" onClick={handleVerifyCode} className="text-blue-600 hover:underline text-sm">
+                                인증 확인
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </form>
+
+                <div className="mt-12">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-[16px]">비밀번호 변경</h2>
+                    {!passwordEditMode ? (
+                      <button
+                        onClick={() => setPasswordEditMode(true)}
+                        className="p-2 text-gray-500 hover:text-black rounded-md transition cursor-pointer"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                      </button>
+                    ) : (
+                      <div className="flex space-x-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPasswordEditMode(false)
+                            setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
+                            setPasswordError("")
+                          }}
+                          className="p-2 text-red-700 hover:text-red-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                        <button
+                          type="submit"
+                          form="pw-form"
+                          className="p-2 text-green-700 hover:text-green-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </button>
+                      </div>
                     )}
                   </div>
-
-                  <form onSubmit={handleProfileSubmit} className="space-y-4">
-                    {['name', 'phone', 'email'].map((field) => (
-                      <div key={field} className="flex items-center gap-11 px-5 text-[15px]">
-                        {field === 'name' && (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-                          </svg>
-                        )}
-                        {field === 'phone' && (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                            <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
-                          </svg>
-                        )}
-                        {field === 'email' && (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-                            <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
-                            <path d="M3 7l9 6l9 -6"></path>
-                          </svg>
-                        )}
-
-                        {editMode ? (
-                          <input
-                            type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
-                            name={field}
-                            value={(formData as any)[field]}
-                            onChange={handleProfileChange}
-                            className="flex-1 px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required={field !== 'phone'}
-                          />
-                        ) : isLoading ? (
-                          <div className="flex-1 h-10 bg-gray-200 rounded animate-pulse" />
-                        ) : (
-                          <p className="py-2">{(formData as any)[field]}</p>
-                        )}
-
-                        {editMode && field === 'email' && !isEmailVerified && (
-                          <div className="ml-2">
-                            {!verifyCodeSent ? (
-                              <button type="button" onClick={handleSendVerification} className="text-blue-600 hover:underline text-sm">
-                                인증 코드 보내기
-                              </button>
-                            ) : (
-                              <div className="flex gap-2">
-                                <input
-                                  type="text"
-                                  placeholder="인증코드 입력"
-                                  value={enteredCode}
-                                  onChange={(e) => setEnteredCode(e.target.value)}
-                                  className="border border-gray-300 rounded px-2 py-1 text-sm"
-                                />
-                                <button type="button" onClick={handleVerifyCode} className="text-blue-600 hover:underline text-sm">
-                                  인증 확인
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    {editMode && (
-                      <div className="flex justify-end space-x-3 mt-6">
-                        <button type="button" onClick={handleCancelEdit} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
-                          취소
-                        </button>
-                        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                          저장하기
-                        </button>
-                      </div>
-                    )}
-                  </form>
-
-                  <div className="mt-12">
-                    <h2 className="text-[16px] mb-6">비밀번호 변경</h2>
-                    <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                  {passwordEditMode && (
+                    <form id="pw-form" onSubmit={handlePasswordSubmit} className="space-y-4">
                       {['currentPassword', 'newPassword', 'confirmPassword'].map((field, idx) => (
                         <div key={field}>
                           <label className="block text-gray-700 text-[14px] mb-2">
@@ -268,40 +351,91 @@ export default function SettingPage() {
                             name={field}
                             value={(passwordForm as any)[field]}
                             onChange={handlePasswordChange}
-                            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1"
                             required
                           />
                         </div>
                       ))}
                       {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
-                      <div className="flex justify-end mt-4">
-                        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                          비밀번호 변경
+                    </form>
+                  )}
+                </div>
+
+                <div className="mt-12">
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-[16px] text-red-500">계정 삭제</h2>
+                    {!deleteMode ? (
+                      <button
+                        onClick={() => setDeleteMode(true)}
+                        className="p-2 text-red-500/60 hover:text-red-500 rounded-md transition cursor-pointer"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"></polyline>
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          <line x1="10" y1="11" x2="10" y2="17"></line>
+                          <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                      </button>
+                    ) : (
+                      <div className="flex space-x-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeleteMode(false);
+                            setDeletePassword("");
+                            setDeleteError("");
+                          }}
+                          className="p-2 text-green-700 hover:text-green-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                          </svg>
+                        </button>
+                        <button
+                          onClick={handleDeleteAccount}
+                          className="p-2 text-red-700 hover:text-red-500 rounded-md transition cursor-pointer"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
                         </button>
                       </div>
-                    </form>
+                    )}
                   </div>
-
-                  <div className="mt-12">
-                    <h2 className="text-[16px] mb-6">계정 삭제</h2>
-                    <p className="text-gray-600 mb-4">계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.</p>
-                    <button className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">계정 삭제</button>
-                  </div>
+                  {deleteMode ? (
+                    <div className="space-y-3">
+                      <p className="text-red-500">계정을 삭제하려면 비밀번호를 입력해주세요.</p>
+                      <input
+                        type="password"
+                        placeholder="비밀번호 입력"
+                        value={deletePassword}
+                        onChange={(e) => setDeletePassword(e.target.value)}
+                        className="w-full px-4 py-1 text-red-500 border border-red-500 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                      />
+                      {deleteError && <p className="text-red-500 text-sm">{deleteError}</p>}
+                    </div>
+                  ) : (
+                    <p className="text-red-500 mb-4">계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.</p>
+                  )}
                 </div>
-              </div>
-            )}
 
-            {activeTab === "display" && (
-              <div className="space-y-4">
-                <div className="bg-white rounded-lg shadow p-6">
-                  <h2 className="text-[16px] mb-6">결제 정보</h2>
-                  <p className="text-gray-600">청구 관련 정보를 이곳에서 관리할 수 있습니다.</p>
-                </div>
               </div>
-            )}
-          </PageWrapper>
-        </div>
+            </div>
+          )}
+
+          {activeTab === "display" && (
+            <div className="space-y-4">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-[16px] mb-6">결제 정보</h2>
+                <p className="text-gray-600">청구 관련 정보를 이곳에서 관리할 수 있습니다.</p>
+              </div>
+            </div>
+          )}
+        </PageWrapper>
       </div>
-    </PageWrapper>
-  );
+    </div>
+  </PageWrapper>
+)
+
 }
