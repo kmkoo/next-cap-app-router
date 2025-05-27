@@ -46,7 +46,7 @@ export async function createInstance(params:{
       ]
     }],
 		UserData: userData,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
   
   const response = await ec2Client.send(command);
