@@ -13,14 +13,10 @@ export default function NewServerPage() {
   const [loading, setLoading] = useState(false);
   const [serverOwner, setServerOwner] = useState('');
 
-<<<<<<< HEAD
-  const serverOwner = "유저이름";
-=======
   useEffect(() => {
     const storedName: string = localStorage.getItem('userName')!;
     setServerOwner(storedName);
   }, []);
->>>>>>> origin/develop
   
   const handleCreate = async () => {
     setLoading(true);
