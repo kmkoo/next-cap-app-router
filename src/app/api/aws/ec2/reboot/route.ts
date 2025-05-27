@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getInstanceData } from '@/lib/aws-ec2';
+import { rebootInstance } from '@/lib/aws-ec2';
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,10 +10,10 @@ export async function POST(req: NextRequest) {
     //   return NextResponse.json({ success: false, error: "인스턴스 리스트를 받지 못했습니다." }, { status: 400 });
     // }
 
-    const instanceList = await getInstanceData([process.env.AWS_IID!]);
-    return NextResponse.json({ success: true, instanceList });
+    await rebootInstance([instances!]);
+    return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
   }
-	
+  
 }

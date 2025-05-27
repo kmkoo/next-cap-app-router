@@ -22,8 +22,18 @@ export default function ServerListPage() {
   const [servers, setServers] = useState<Server[]>([]);
   const [showAddress, setShowAddress] = useState<boolean | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [userName, setUserName] = useState("");
+
+  const [list, setList] = useState();
+
+
+  useEffect(() =>{
+    const storedName: string = localStorage.getItem('userName')!;
+    setUserName(storedName);
+  }, []);
 
   useEffect(() => {
+
     const dummyServers: Server[] = [
       {
         id: "1",
@@ -57,7 +67,18 @@ export default function ServerListPage() {
       .catch((err) => {
         console.error("설정 불러오기 실패:", err);
       });
-  }, []);
+
+    fetch("/api/getServerList", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userName }),
+    })
+    .then((res) => res.json())
+    .then((data) => { setList(data); });
+
+  }, [userName]);
 
   const filteredServers = servers.filter((server) => {
     if (activeTab === "all") return true;
@@ -146,6 +167,7 @@ export default function ServerListPage() {
                             <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"></path>
                           </svg>
                         </div>
+<<<<<<< HEAD
                         {showAddress === null ? (
                           <div className="w-24 h-5 bg-gray-200 rounded animate-pulse" />
                         ) : (
@@ -196,6 +218,77 @@ export default function ServerListPage() {
               </table>
             </PageWrapper>
           </div>
+=======
+                      )}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        width="20"
+                        height="20"
+                        strokeWidth="2"
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyToClipboard(server.address);
+                          setCopiedId(server.id);
+                          setTimeout(() => setCopiedId(null), 1500);
+                        }}
+                      >
+                        <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"></path>
+                        <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"></path>
+                      </svg>
+                    </div>
+                    <span
+                      className={`relative ${
+                        !showAddress
+                          ? "text-transparent select-none after:content-['••••••'] after:absolute after:inset-0 after:text-black"
+                          : ""
+                      }`}
+                    >
+                      {server.address}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      className="text-blue-500 hover:underline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStop(server.id);
+                      }}
+                      disabled={server.status === "stopped"}
+                    >
+                      {server.status === "stopped" ? "중단됨" : "실행중"}
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button
+                      className="text-red-500 hover:underline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(server.id);
+                      }}
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {filteredServers.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-400">
+                    등록된 서버가 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <p>{JSON.stringify(list)}</p>
+          </PageWrapper>
+>>>>>>> origin/develop
         </div>
       </div>
     </PageWrapper>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
 
@@ -9,31 +9,25 @@ export default function NewServerPage() {
 
   const [serverScale, setServerScale] = useState("small");
   const [serverName, setServerName] = useState('');
-  const [userCommand, setUserCommand] = useState('');
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [serverOwner, setServerOwner] = useState('');
 
+<<<<<<< HEAD
   const serverOwner = "유저이름";
+=======
+  useEffect(() => {
+    const storedName: string = localStorage.getItem('userName')!;
+    setServerOwner(storedName);
+  }, []);
+>>>>>>> origin/develop
   
-
   const handleCreate = async () => {
     setLoading(true);
     const res = await fetch('/api/aws/ec2/create', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverScale, serverName, serverOwner, userCommand }),
-    });
-    const data = await res.json();
-    setResponse(data);
-    setLoading(false);
-  }
-
-  const handleDesc = async () => {
-    setLoading(true);
-    const res = await fetch('/api/aws/ec2/describe', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "instances": "NONE" }),  // 이부분 나중에 바꿔야됨
+      body: JSON.stringify({ serverScale, serverName, serverOwner }),
     });
     const data = await res.json();
     setResponse(data);
@@ -57,57 +51,47 @@ export default function NewServerPage() {
         {activeTab === "server" && (
           <div>
             <p className="text-gray-600 mb-2">서버 생성 폼</p>
-              <div className="space-y-2 flex flex-col">
-                <label>서버 규모</label>
-                <select 
-                  value={serverScale}
-                  onChange={(e) => setServerScale(e.target.value)}
-                  className="border p-2 rounded w-100"
-                >
-                  <option value="small">작음</option>
-                  <option value="medium">보통</option>
-                  <option value="big">큼</option>
-                </select>
-                <input
-                  value={serverName}
-                  onChange={(e) => setServerName(e.target.value)}
-                  placeholder="서버 이름"
-                  className="border p-2 rounded w-100"
-                />
-                <input
-                  value={userCommand}
-                  onChange={(e) => setUserCommand(e.target.value)}
-                  placeholder="자동실행 명령어 입력 (옵션)"
-                  className="border p-2 rounded w-100"
-                />
-                <button
-                  onClick={handleCreate}
-                  disabled={loading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  {loading ? "생성 중..." : "인스턴스 생성"}
-                </button>
-                <button
-                  onClick={handleDesc}
-                  disabled={loading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  {loading ? "확인 중..." : "인스턴스 확인"}
-                </button>
-              </div>
+            <div className="space-y-2 flex flex-col">
+              <label>서버 규모</label>
+              <select 
+                value={serverScale}
+                onChange={(e) => setServerScale(e.target.value)}
+                className="border p-2 rounded w-80"
+              >
+                <option value="small">작음</option>
+                <option value="medium">보통</option>
+                <option value="big">큼</option>
+              </select>
+              <label>서버 이름</label>
+              <p className="text-stone-500">서버 이름은 고유해야합니다.</p>
+              <input
+                value={serverName}
+                onChange={(e) => setServerName(e.target.value)}
+                placeholder="서버 이름"
+                className="border p-2 rounded w-80"
+              />
+              <button
+                onClick={handleCreate}
+                disabled={loading}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
+              >
+                {loading ? "생성 중..." : "서버 만들기"}
+              </button>
+            </div>
 
-              {response && (
-                <div className="mt-4 bg-gray-100 p-4 rounded">
-                  {response.success ? (
-                    <>
-                      <p><strong>인스턴스 ID:</strong> {response.instance.InstanceId}</p>
-                      <p><strong>상태:</strong> {response.instance.State?.Name}</p>
-                    </>
-                  ) : (
-                    <p className="text-red-500">오류: {response.error}</p>
-                  )}
-                </div>
-              )}
+            {response && (
+              <div className="mt-4 bg-gray-100 p-4 rounded border-1 w-250 wrap-anywhere">
+                {response.success ? (
+                  <>
+                    <p><strong>서버 생성에 성공했습니다.</strong></p>
+                  </>
+                ) : (
+                  <>
+                  <p className="text-red-500">서버를 생성하지 못했습니다. {response.errorMassage}</p>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         )}
         {activeTab === "website" && (

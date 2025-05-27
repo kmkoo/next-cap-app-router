@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "인스턴스 리스트를 받지 못했습니다." }, { status: 400 });
     }
 
-    const instanceList = await stopInstance(instances);
+    const instanceList = await stopInstance([instances]);
     return NextResponse.json({ success: true, instanceList });
   } catch (error) {
     return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
