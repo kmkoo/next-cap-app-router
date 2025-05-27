@@ -52,11 +52,11 @@ export async function POST(req: NextRequest) {
 
     const instance = await createInstance({ instanceType, serverTag:serverName, serverOwner }); // 인스턴스 생성
     await db.query( // 인스턴스 생성 후 DB에 입력
-      `INSERT INTO Server (userNumber, serverName, serverType)
-      SELECT userNumber, ?, ?
+      `INSERT INTO Server (userNumber, serverName, serverType, instanceId)
+      SELECT userNumber, ?, ?, ?
       FROM User
       WHERE userName = ?`,
-      [serverName, instanceType, serverOwner]
+      [serverName, instanceType, instance![0].InstanceId, serverOwner]
     );
     return NextResponse.json({ success: true, instance });
   } catch (error) {
