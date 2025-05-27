@@ -215,6 +215,7 @@ export default function ServerListPage() {
                   )}
                 </tbody>
               </table>
+              <p>{JSON.stringify(list)}</p>
             </PageWrapper>
           </div>
         </div>
