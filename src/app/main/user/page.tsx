@@ -168,9 +168,8 @@ export default function SettingPage() {
     const data = await res.json();
 
     if (data.success) {
-      alert("계정이 삭제되었습니다.");
       localStorage.clear();
-      window.location.href = "/";
+      window.location.href = "/auth";
     } else {
       setDeleteError(data.message || "계정 삭제 실패");
     }
