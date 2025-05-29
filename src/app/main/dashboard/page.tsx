@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
-
+import TopBar from "@/components/topbar";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"all" | "server" | "website" | "cost">("all");
@@ -10,44 +10,17 @@ export default function DashboardPage() {
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-      <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-        <div className="mx-1 p-1 text-[20px]">대시보드</div>
-        <div className="flex flex-row gap-4 mt-4">
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "all" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("all")}
-          >
-            전체
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "server" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("server")}
-          >
-            서버
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "website" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("website")}
-          >
-            웹사이트
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "cost" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("cost")}
-          >
-            비용
-          </button>
-        </div>
-      </div>
-
+      <TopBar
+        title="대시보드"
+        tabs={[
+          { key: "all", label: "전체" },
+          { key: "server", label: "서버" },
+          { key: "website", label: "웹사이트" },
+          { key: "cost", label: "비용" },
+        ]}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <div className="px-6 pt-6">
         <PageWrapper key={activeTab}>
         {activeTab === "all" && (

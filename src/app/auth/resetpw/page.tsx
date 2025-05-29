@@ -1,9 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import PageWrapper from "@/components/page-wrapper"
 
 export default function ResetPasswordPage() {
+  const router = useRouter()
+
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -27,9 +30,6 @@ export default function ResetPasswordPage() {
     const data = await res.json();
     if (data.success) {
       setVerifyCodeSent(true)
-      setEmailError("인증 코드가 이메일로 전송되었습니다.")
-    } else {
-      setEmailError("인증 코드 전송에 실패했습니다.")
     }
   }
 
@@ -76,6 +76,9 @@ export default function ResetPasswordPage() {
 
       if (data.success) {
         setMessage('비밀번호가 성공적으로 재설정되었습니다.')
+        setTimeout(() => {
+          router.push('/auth')
+        }, 1000)
       } else {
         setError(data.message)
       }
@@ -166,6 +169,10 @@ export default function ResetPasswordPage() {
 
             {emailError && (
               <p className="text-red-500 text-sm mt-1 ml-2">{emailError}</p>
+            )}
+
+            {verificationSuccess && (
+                <p className="text-green-500 text-sm mt-1">✅ 이메일 인증 완료</p>
             )}
 
             {verifyCodeSent && !emailVerified && (

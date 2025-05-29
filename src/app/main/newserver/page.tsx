@@ -1,63 +1,29 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
+import TopBar from "@/components/topbar";
 
-// /main/newserver 페이지
 export default function NewServerPage() {
   const [activeTab, setActiveTab] = useState<"server" | "website">("server");
 
   const [serverScale, setServerScale] = useState("small");
   const [serverName, setServerName] = useState('');
-  const [userCommand, setUserCommand] = useState('');
-  const [instanceId, setUserInstanceId] = useState('');  // 중지 테스트용
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [serverOwner, setServerOwner] = useState('');
 
-  const serverOwner = "유저이름";  // 유저 이름 들어가도록 수정예정
+  useEffect(() => {
+    const storedName: string = localStorage.getItem('userName')!;
+    setServerOwner(storedName);
+  }, []);
   
   const handleCreate = async () => {
     setLoading(true);
     const res = await fetch('/api/aws/ec2/create', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverScale, serverName, serverOwner, userCommand }),
-    });
-    const data = await res.json();
-    setResponse(data);
-    setLoading(false);
-  }
-
-  const handleDesc = async () => {
-    setLoading(true);
-    const res = await fetch('/api/aws/ec2/describe', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "instances": "NONE" }),  // 이부분 나중에 바꿔야됨
-    });
-    const data = await res.json();
-    setResponse(data);
-    setLoading(false);
-  }
-
-  const handleStop = async () => {
-    setLoading(true);
-    const res = await fetch('/api/aws/ec2/stop', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "instances": instanceId }),  // 이부분 나중에 바꿔야됨
-    });
-    const data = await res.json();
-    setResponse(data);
-    setLoading(false);
-  }
-
-  const handleStart = async () => {
-    setLoading(true);
-    const res = await fetch('/api/aws/ec2/start', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ "instances": instanceId }),  // 이부분 나중에 바꿔야됨
+      body: JSON.stringify({ serverScale, serverName, serverOwner }),
     });
     const data = await res.json();
     setResponse(data);
@@ -67,28 +33,15 @@ export default function NewServerPage() {
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] flex-grow min-h-screen">
-      <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-        <div className="mx-1 p-1 text-[20px]">서버생성</div>
-        <div className="flex flex-row gap-4 mt-4">
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "server" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("server")}
-          >
-            서버
-          </button>
-          <button
-            className={`px-4 py-2 rounded ${
-              activeTab === "website" ? "bg-[#F1F3F7]" : ""
-            }`}
-            onClick={() => setActiveTab("website")}
-          >
-            웹사이트
-          </button>
-        </div>
-      </div>
-
+      <TopBar
+        title="서버생성"
+        tabs={[
+          { key: "server", label: "서버" },
+          { key: "website", label: "웹사이트" },
+        ]}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <div className="px-6 pt-6">
         <PageWrapper key={activeTab}>
         {activeTab === "server" && (
@@ -105,22 +58,12 @@ export default function NewServerPage() {
                 <option value="medium">보통</option>
                 <option value="big">큼</option>
               </select>
+              <label>서버 이름</label>
+              <p className="text-stone-500">서버 이름은 고유해야합니다.</p>
               <input
                 value={serverName}
                 onChange={(e) => setServerName(e.target.value)}
                 placeholder="서버 이름"
-                className="border p-2 rounded w-80"
-              />
-              <input
-                value={userCommand}
-                onChange={(e) => setUserCommand(e.target.value)}
-                placeholder="자동실행 명령어 입력 (옵션)"
-                className="border p-2 rounded w-80"
-              />
-              <input
-                value={instanceId}
-                onChange={(e) => setUserInstanceId(e.target.value)}
-                placeholder="인스턴스"
                 className="border p-2 rounded w-80"
               />
               <button
@@ -128,28 +71,7 @@ export default function NewServerPage() {
                 disabled={loading}
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
               >
-                {loading ? "생성 중..." : "인스턴스 생성"}
-              </button>
-              <button
-                onClick={handleDesc}
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
-              >
-                {loading ? "확인 중..." : "인스턴스 확인"}
-              </button>
-              <button
-                onClick={handleStop}
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
-              >
-                {loading ? "작업 중..." : "인스턴스 종료"}
-              </button>
-              <button
-                onClick={handleStart}
-                disabled={loading}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-50"
-              >
-                {loading ? "작업 중..." : "인스턴스 시작"}
+                {loading ? "생성 중..." : "서버 만들기"}
               </button>
             </div>
 
@@ -157,12 +79,11 @@ export default function NewServerPage() {
               <div className="mt-4 bg-gray-100 p-4 rounded border-1 w-250 wrap-anywhere">
                 {response.success ? (
                   <>
-                    <p><strong>인스턴스:</strong> {JSON.stringify(response.instanceList.Tags?.find((tag: { Key: string; }) => tag.Key === "serverTag")?.Value)}</p>
-                    <p><strong>상태:</strong> {response.instanceList.State.Name}</p>
+                    <p><strong>서버 생성에 성공했습니다.</strong></p>
                   </>
                 ) : (
                   <>
-                  <p className="text-red-500">오류: {response.error}</p>
+                  <p className="text-red-500">서버를 생성하지 못했습니다. {response.errorMassage}</p>
                   </>
                 )}
               </div>

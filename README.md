@@ -12,7 +12,7 @@ pnpm dev
 bun dev
 ```
 
-## EC2에 Redis 설치 필요
+## EC2에 Redis 설치 필요!
 
 ## 로컬 환경에 Redis 설치
 

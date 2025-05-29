@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 
 export default function SignupPage() {
+    const router = useRouter();
+
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
@@ -42,6 +45,9 @@ export default function SignupPage() {
                 setSuccess(true);
                 setErrorMessage("");
                 setEmailError("");
+                setTimeout(() => {
+                    router.push("/auth");
+                }, 1000);
             } else {
                 setErrorMessage(data.message || "회원가입에 실패했습니다.");
             }

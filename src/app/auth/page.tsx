@@ -13,7 +13,7 @@ export default function AuthPage() {
         <div className="flex-[0.8]">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-snug">
             복잡한 설정 없이<br />
-            간편하게 시작하는 클라우드 플랫폼
+            간편하게 시작하는 클라우드<br /> 플랫폼
           </h1>
           <p className="text-base md:text-lg text-gray-600">
             원하는 서버를 바로 생성하고<br />

@@ -1,11 +1,9 @@
 import PageWrapper from "@/components/page-wrapper";
 
-// <head>의 <title> 설정
 export const metadata = {
   title: 'Guide',
 }
 
-// /main/guide 페이지
 export default function GuidePage() {
   return (
     <PageWrapper>
