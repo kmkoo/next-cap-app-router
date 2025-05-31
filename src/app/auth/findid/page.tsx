@@ -36,10 +36,10 @@ export default function FindIdPage() {
   return (
     <PageWrapper>
     <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-xl">
+      <div className="w-full max-w-md">
         <h2 className="text-[30px] text-center mb-8">아이디 찾기</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex items-center bg-white rounded-md px-2 py-2">
+          <div className="flex items-center bg-white rounded-md px-2 py-5">
             <span className="mx-8 text-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                 width="20" height="20" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"
@@ -53,12 +53,12 @@ export default function FindIdPage() {
               placeholder="이름"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-transparent focus:outline-none text-[14px]"
+              className="w-full bg-transparent focus:outline-none text-[16px]"
               required
             />
           </div>
 
-          <div className="flex items-center bg-white rounded-md px-2 py-2">
+          <div className="flex items-center bg-white rounded-md px-2 py-5">
             <span className="mx-8 text-gray-500 flex items-center justify-center h-6">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -71,14 +71,14 @@ export default function FindIdPage() {
               placeholder="전화번호"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full bg-transparent focus:outline-none text-[14px]"
+              className="w-full bg-transparent focus:outline-none text-[16px]"
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
+            className="w-full bg-[#3A3A3A] text-white py-4 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
           >
             이메일 찾기
           </button>

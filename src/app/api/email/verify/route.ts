@@ -28,7 +28,7 @@ export async function POST(req: Request) {
           </div>
           <hr style="border:none; border-top:1px solid #ddd; margin:40px 0;" />
           <p style="font-size:13px; color:#666;">
-            이 이메일은 SQUD 계정을 보유하신 고객님께 전송된 것입니다. 본 메일은 마케팅 메일이 아니며, 수신 거부 링크가 없습니다.
+            이 이메일은 SQUD 계정을 보유 혹은 가입하시는 고객님께 전송된 것입니다. 본 메일은 마케팅 메일이 아니며, 수신 거부 링크가 없습니다.
           </p>
           <p style="font-size:13px; color:#666; margin-top:30px;">
             ⓒ SQUD Corp. All rights reserved.

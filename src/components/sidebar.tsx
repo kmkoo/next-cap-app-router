@@ -23,8 +23,6 @@ export default function Sidebar() {
     if (isOpen) {
       const timeout = setTimeout(() => setIsTextVisible(true), 100);
       return () => clearTimeout(timeout);
-    } else {
-      setIsTextVisible(false);
     }
   }, [isOpen]);
 
@@ -34,7 +32,13 @@ export default function Sidebar() {
     router.push('/auth');
   };
 
-  const toggleSidebar = () => setIsOpen(prev => !prev);
+  const toggleSidebar = () => {
+  if (isOpen) {
+    setIsTextVisible(false);
+  }
+  setIsOpen(prev => !prev);
+};
+
 
   const navItemsTop = [
     {
@@ -117,17 +121,19 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className={`bg-[#373A3C] text-neutral-100 flex flex-col h-screen sticky top-0 transition-[width] duration-300 ${isOpen ? 'w-60 px-4' : 'w-14 items-center'}`}>
+    <div className={`bg-[#373A3C] text-neutral-100 flex flex-col h-screen sticky top-0 transition-[width] duration-300 ${isOpen ? 'w-65 px-4' : 'w-14 items-center'}`}>
       <div className="w-full h-[110px] py-2 border-b border-neutral-600/50 flex flex-col justify-between">
         <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}>
           {isTextVisible && (
             <div className="flex items-center gap-2">
+              <Link href="/main/dashboard">
               <img
                 src="/logo2.svg"
                 alt="logo2"
                 className="w-12 h-6"
                 style={{ filter: 'brightness(0) invert(1)' }}
-              />
+                />
+                </Link>
             </div>
           )}
           <button onClick={toggleSidebar} className="text-neutral-300 hover:text-white cursor-pointer">
@@ -145,12 +151,12 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col justify-between flex-1 w-full">
-        <div className={`mt-6 flex flex-col ${isOpen ? 'gap-2' : 'items-center space-y-4'}`}>
+        <div className={`mt-6 flex flex-col ${isOpen ? 'gap-2' : 'items-center gap-2'}`}>
           {navItemsTop.map(({ href, label, icon }) => (
             <Link
               key={href}
               href={href}
-              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}
+              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}
             >
               <div>{icon}</div>
               {isTextVisible && <span className="text-sm">{label}</span>}
@@ -158,18 +164,18 @@ export default function Sidebar() {
           ))}
         </div>
 
-        <div className={`mb-6 flex flex-col border-t border-neutral-600/50 pt-4 ${isOpen ? 'gap-2' : 'items-center space-y-4'}`}>
+        <div className={`mb-6 flex flex-col border-t border-neutral-600/50 pt-4 gap-2 ${isOpen ? '' : 'items-center'}`}>
           {navItemsBottom.map(({ href, label, icon }) => (
             <Link
               key={href}
               href={href}
-              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}
+              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}
             >
               <div>{icon}</div>
               {isTextVisible && <span className="text-sm">{label}</span>}
             </Link>
           ))}
-          <button onClick={handleLogout} className={`text-yellow-700 hover:text-red-700 transition cursor-pointer hover:bg-gray-100 rounded-md ${isOpen ? 'flex items-center gap-3 px-3 py-2' : 'flex flex-col items-center p-2'}`}>
+          <button onClick={handleLogout} className={`text-yellow-700 hover:text-red-700 transition cursor-pointer hover:bg-gray-100 rounded-md ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}>
             <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
               <path d="M9 12h12l-3 -3" />

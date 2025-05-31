@@ -267,14 +267,14 @@ return (
                           required={field !== 'phone'}
                         />
                       ) : isLoading ? (
-                        <div className="flex-1 h-[34px] bg-gray-200 rounded animate-pulse" />
+                        <div className="flex-1 h-[38px] bg-gray-200 rounded animate-pulse" />
                       ) : (
                         <p className="flex-1 min-h-[38px] flex items-center py-1">{(formData as any)[field]}</p>
                       )}
                       {editMode && field === 'email' && !isEmailVerified && (
                         <div className="ml-2">
                           {!verifyCodeSent ? (
-                            <button type="button" onClick={handleSendVerification} className="text-blue-600 hover:underline text-sm">
+                            <button type="button" onClick={handleSendVerification} className="h-[38px] px-3 rounded-md text-white bg-blue-400 hover:bg-blue-500 cursor-pointer text-sm">
                               인증 코드 보내기
                             </button>
                           ) : (
@@ -284,9 +284,9 @@ return (
                                 placeholder="인증코드 입력"
                                 value={enteredCode}
                                 onChange={(e) => setEnteredCode(e.target.value)}
-                                className="min-h-[38px] border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1"
+                                className="min-h-[38px] border border-gray-300 rounded px-2 py-1 mr-2 text-sm focus:outline-none focus:ring-1"
                               />
-                              <button type="button" onClick={handleVerifyCode} className="text-blue-600 hover:underline text-sm">
+                              <button type="button" onClick={handleVerifyCode} className="h-[38px] px-3 rounded-md text-white bg-blue-400 hover:bg-blue-500 cursor-pointer text-sm">
                                 인증 확인
                               </button>
                             </div>
@@ -384,7 +384,7 @@ return (
                             setDeletePassword("");
                             setDeleteError("");
                           }}
-                          className="p-2 text-green-700 hover:text-green-500 rounded-md transition cursor-pointer"
+                          className="p-2 text-red-700 hover:text-red-500 rounded-md transition cursor-pointer"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -393,7 +393,7 @@ return (
                         </button>
                         <button
                           onClick={handleDeleteAccount}
-                          className="p-2 text-red-700 hover:text-red-500 rounded-md transition cursor-pointer"
+                          className="p-2 text-green-700 hover:text-green-500 rounded-md transition cursor-pointer"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>

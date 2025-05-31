@@ -41,7 +41,7 @@ export default function AuthSidebar() {
   };
 
   return (
-    <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-neutral-600/50 flex flex-col w-60 min-h-screen right-0 sticky top-0 h-screen">
+    <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-neutral-600/50 flex flex-col w-65 min-h-screen right-0 sticky top-0 h-screen">
       <div className="flex flex-col grow mx-6 justify-center pb-30">
         <div className="flex justify-center mb-10">
           <Link href="/auth">
@@ -59,17 +59,17 @@ export default function AuthSidebar() {
               />
           </Link>
         </div>
-        <div className="flex gap-2 mb-4 items-center">
+        <div className="flex gap-2 mb-3 items-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
             <path d="M21 12h-13l3 -3" />
             <path d="M11 15l-3 -3" />
           </svg>
-          <p className="text-[14px]">로그인</p>
+          <p className="text-[16px]">로그인</p>
         </div>
 
         <form onSubmit={handleLogin} className="flex flex-col">
-          <div className="flex items-center p-1.5 my-2 rounded-lg bg-neutral-600">
+          <div className="flex items-center p-3 my-2 rounded-lg bg-neutral-600">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
               <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
@@ -79,11 +79,11 @@ export default function AuthSidebar() {
               placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-1 border-none outline-none text-white w-full text-[13px]"
+              className="px-1 border-none outline-none text-white w-full text-[14px]"
             />
           </div>
 
-          <div className="flex items-center p-1.5 my-2 rounded-lg bg-neutral-600">
+          <div className="flex items-center p-3 my-2 rounded-lg bg-neutral-600">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
               <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
@@ -94,14 +94,14 @@ export default function AuthSidebar() {
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-1 border-none outline-none text-white w-full text-[13px]"
+              className="px-1 border-none outline-none text-white w-full text-[14px]"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="p-1.5 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px] cursor-pointer"
+            className="p-3 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px] cursor-pointer"
           >
             {isLoading ? '로그인중...' : '로그인'}
           </button>
@@ -111,10 +111,10 @@ export default function AuthSidebar() {
       </div>
 
       <div className="px-3 text-neutral-400">
-        <div className="my-3 mx-2 flex flex-col">
+        <div className="my-5 mx-2 flex flex-col">
           <Link
             href="/auth/signup"
-            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/signup' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+            className={`m-1 p-3 rounded-md transition cursor-pointer ${pathname === '/auth/signup' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
@@ -127,7 +127,7 @@ export default function AuthSidebar() {
 
           <Link
             href="/auth/findid"
-            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/findid' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+            className={`m-1 p-3 rounded-md transition cursor-pointer ${pathname === '/auth/findid' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
@@ -138,7 +138,7 @@ export default function AuthSidebar() {
 
           <Link
             href="/auth/resetpw"
-            className={`m-1 p-2 rounded-md transition cursor-pointer ${pathname === '/auth/resetpw' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
+            className={`m-1 p-3 rounded-md transition cursor-pointer ${pathname === '/auth/resetpw' ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} flex gap-2 text-[14px]`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />

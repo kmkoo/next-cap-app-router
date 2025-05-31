@@ -66,7 +66,7 @@ export default function SignupPage() {
         if (data.success) {
             setVerifyCodeSent(true);
         } else {
-            setEmailError("인증 코드 전송에 실패했습니다.");
+            setEmailError("이메일을 다시 입력해주십시오.");
         }
     };
 
@@ -89,10 +89,10 @@ export default function SignupPage() {
     return (
         <PageWrapper>
             <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
-                <div className="w-full max-w-xl">
+                <div className="w-full max-w-md">
                     <h2 className="text-[30px] text-center mb-8">회원가입</h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="flex items-center bg-white rounded-md px-2 py-2">
+                        <div className="flex items-center bg-white rounded-md px-2 py-4">
                             <span className="mx-8 text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                     <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
@@ -104,12 +104,12 @@ export default function SignupPage() {
                                 placeholder="이름"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                                className="w-full bg-transparent focus:outline-none text-[16px]"
                                 required
                             />
                         </div>
 
-                        <div className="flex items-center bg-white rounded-md px-2 py-2">
+                        <div className="flex items-center bg-white rounded-md px-2 py-4">
                             <span className="mx-8 text-gray-500 flex items-center justify-center h-6">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                     <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path>
@@ -120,12 +120,12 @@ export default function SignupPage() {
                                 placeholder="전화번호"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
-                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                                className="w-full bg-transparent focus:outline-none text-[16px]"
                                 required
                             />
                         </div>
 
-                        <div className="flex items-center bg-white rounded-md px-2 py-2">
+                        <div className="flex items-center bg-white rounded-md pl-2">
                             <span className="mx-8 text-gray-500 flex items-center justify-center h-6">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                     <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
@@ -137,7 +137,7 @@ export default function SignupPage() {
                                 placeholder="이메일"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                                className="w-full bg-transparent focus:outline-none text-[16px] py-4"
                                 required
                                 readOnly={emailVerified}
                             />
@@ -151,7 +151,7 @@ export default function SignupPage() {
                                         setVerificationSuccess(false);
                                         setEmailError("");
                                     }}
-                                    className="text-sm text-red-500 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                                    className="h-[56px] px-7 rounded-r text-sm text-white bg-[#3A3A3A] whitespace-nowrap hover:bg-[#2B2B2B] cursor-pointer"
                                 >
                                     다시입력
                                 </button>
@@ -159,7 +159,7 @@ export default function SignupPage() {
                                 <button
                                     type="button"
                                     onClick={handleSendVerification}
-                                    className="text-sm text-blue-600 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                                    className="h-[56px] px-3 rounded-r text-sm text-white bg-blue-400 whitespace-nowrap hover:bg-blue-500 cursor-pointer"
                                 >
                                     인증코드 전송
                                 </button>
@@ -170,7 +170,7 @@ export default function SignupPage() {
                         )}
 
                         {verifyCodeSent && !emailVerified && (
-                            <div className="flex items-center bg-white rounded-md px-2 py-2 mt-2">
+                            <div className="flex items-center bg-white rounded-md pl-2 mt-2">
                                 <span className="mx-8 text-gray-500 flex items-center justify-center h-6">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                         <path d="M15 12a3 3 0 1 0 -6 0a3 3 0 0 0 6 0"></path>
@@ -182,12 +182,12 @@ export default function SignupPage() {
                                     value={enteredCode}
                                     onChange={(e) => setEnteredCode(e.target.value)}
                                     placeholder="인증 코드 입력"
-                                    className="w-full bg-transparent focus:outline-none text-[14px]"
+                                    className="w-full bg-transparent focus:outline-none text-[16px] py-4"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleVerifyCode}
-                                    className="text-sm text-green-600 whitespace-nowrap ml-2 pr-2 hover:underline cursor-pointer"
+                                    className="h-[56px] px-10 rounded-r text-sm text-white bg-blue-400 whitespace-nowrap hover:bg-blue-500 cursor-pointer"
                                 >
                                     확인
                                 </button>
@@ -198,7 +198,7 @@ export default function SignupPage() {
                             <p className="text-green-500 text-sm mt-1">✅ 이메일 인증 완료</p>
                         )}
 
-                        <div className="flex items-center bg-white rounded-md px-2 py-2">
+                        <div className="flex items-center bg-white rounded-md px-2 py-4">
                             <span className="mx-8 text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                     <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z"></path>
@@ -211,12 +211,12 @@ export default function SignupPage() {
                                 placeholder="비밀번호"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                                className="w-full bg-transparent focus:outline-none text-[16px]"
                                 required
                             />
                         </div>
 
-                        <div className="flex items-center bg-white rounded-md px-2 py-2">
+                        <div className="flex items-center bg-white rounded-md px-2 py-4">
                             <span className="mx-8 text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                                     <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"></path>
@@ -231,7 +231,7 @@ export default function SignupPage() {
                                 placeholder="비밀번호 확인"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full bg-transparent focus:outline-none text-[14px]"
+                                className="w-full bg-transparent focus:outline-none text-[16px]"
                                 required
                             />
                         </div>
@@ -249,7 +249,7 @@ export default function SignupPage() {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#3A3A3A] text-white py-2 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
+                            className="w-full bg-[#3A3A3A] text-white py-4 rounded-md hover:bg-[#2B2B2B] transition cursor-pointer"
                         >
                             가입하기
                         </button>
