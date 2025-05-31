@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export default function AuthSidebar() {
@@ -39,6 +39,16 @@ export default function AuthSidebar() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
 
   return (
     <div className="bg-[#373A3C] text-neutral-100 divide-y-1 divide-neutral-600/50 flex flex-col w-65 min-h-screen right-0 sticky top-0 h-screen">
@@ -101,9 +111,14 @@ export default function AuthSidebar() {
           <button
             type="submit"
             disabled={isLoading}
-            className="p-3 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px] cursor-pointer"
+            className="h-[45px] p-3 my-2 rounded-lg hover:bg-neutral-800/50 bg-neutral-800 text-[14px] cursor-pointer"
           >
-            {isLoading ? '로그인중...' : '로그인'}
+            {isLoading ?
+              <svg className="w-6 h-6 mx-auto animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+              : '로그인'}
           </button>
         </form>
 

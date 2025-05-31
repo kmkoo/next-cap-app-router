@@ -25,6 +25,8 @@ export default function SettingPage() {
   const [deleteMode, setDeleteMode] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
   const [deleteError, setDeleteError] = useState("");
+  const [isSending, setIsSending] = useState(false);
+
 
   useEffect(() => {
     if (!userEmail) return;
@@ -62,16 +64,20 @@ export default function SettingPage() {
   };
 
   const handleSendVerification = async () => {
+    setIsSending(true);
     const res = await fetch("/api/email/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: formData.email }),
     });
     const data = await res.json();
+    setIsSending(false);
+
     if (data.success) {
       setVerifyCodeSent(true);
     }
   };
+
 
   const handleVerifyCode = async () => {
     const res = await fetch("/api/email/verify", {
@@ -199,7 +205,7 @@ return (
             <div className="space-y-6">
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-[16px]">내 프로필</h2>
+                  <h2 className="py-1.5 text-[16px]">내 프로필</h2>
                   {!isLoading && (
                     editMode ? (
                       <div className="flex space-x-3">
@@ -272,10 +278,17 @@ return (
                         <p className="flex-1 min-h-[38px] flex items-center py-1">{(formData as any)[field]}</p>
                       )}
                       {editMode && field === 'email' && !isEmailVerified && (
-                        <div className="ml-2">
+                        <div className="h-[38px] ml-2">
                           {!verifyCodeSent ? (
                             <button type="button" onClick={handleSendVerification} className="h-[38px] px-3 rounded-md text-white bg-blue-400 hover:bg-blue-500 cursor-pointer text-sm">
-                              인증 코드 보내기
+                              {isSending ? (
+                                  <svg className="w-6 h-6 mx-[37px] animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                  </svg>
+                              ) : (
+                                  "인증 코드 보내기"
+                              )}
                             </button>
                           ) : (
                             <div className="flex gap-2">

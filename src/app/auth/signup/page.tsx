@@ -19,6 +19,8 @@ export default function SignupPage() {
     const [verifyCodeSent, setVerifyCodeSent] = useState(false);
     const [enteredCode, setEnteredCode] = useState("");
     const [verificationSuccess, setVerificationSuccess] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,18 +59,27 @@ export default function SignupPage() {
     };
 
     const handleSendVerification = async () => {
+        if (!email) {
+            setEmailError("이메일을 입력해주세요.");
+            return;
+        }
+
+        setIsSending(true);
         const res = await fetch("/api/email/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
         });
         const data = await res.json();
+        setIsSending(false);
+
         if (data.success) {
             setVerifyCodeSent(true);
         } else {
             setEmailError("이메일을 다시 입력해주십시오.");
         }
     };
+
 
     const handleVerifyCode = async () => {
         const res = await fetch("/api/email/check", {
@@ -161,7 +172,14 @@ export default function SignupPage() {
                                     onClick={handleSendVerification}
                                     className="h-[56px] px-3 rounded-r text-sm text-white bg-blue-400 whitespace-nowrap hover:bg-blue-500 cursor-pointer"
                                 >
-                                    인증코드 전송
+                                    {isSending ? (
+                                        <svg className="w-6 h-6 mx-[37px] animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                        </svg>
+                                    ) : (
+                                        "인증 코드 보내기"
+                                    )}
                                 </button>
                             )}
                         </div>
