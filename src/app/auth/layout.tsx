@@ -19,11 +19,13 @@ export default function AuthLayout({
   }, [router]);
 
   return (
-    <div className='flex min-h-screen min-w-screen'>
+    <div className="flex min-h-screen min-w-screen">
       <div className="flex-1">
         {children}
       </div>
-      <AuthSidebar />
+      <div className="hidden md:block">
+        <AuthSidebar />
+      </div>
     </div>
   );
 }

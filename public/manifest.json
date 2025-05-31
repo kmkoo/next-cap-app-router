@@ -1,0 +1,20 @@
+{
+  "name": "SQUD",
+  "short_name": "SQUD",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c356d",
+  "icons": [
+    {
+      "src": "/icons/squd_icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/squd_icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

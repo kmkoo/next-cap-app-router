@@ -6,7 +6,7 @@ export const metadata = {
 export default function AuthPage() {
   return (
     <PageWrapper>
-    <main className="min-h-screen flex items-center justify-center bg-white px-6 py-20">
+    <main className="min-h-screen flex items-center justify-center bg-[#F1F3F7] px-6 py-20">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl w-full gap-12">
         
         {/* 왼쪽: 텍스트 영역 (작게) */}

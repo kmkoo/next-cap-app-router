@@ -21,8 +21,10 @@ export default function MainLayout({
 
   return (
     <div className="flex">
-      <Sidebar />
-      {children}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 }
