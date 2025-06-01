@@ -59,7 +59,7 @@ export default function AuthLayout({
       )}
 
       <div className="flex min-h-screen min-w-screen relative">
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 h-screen overflow-y-auto scrollbar-hide">{children}</div>
         <div className="hidden md:block">
           <AuthSidebar isOpen={true} closeSidebar={() => {}} />
         </div>

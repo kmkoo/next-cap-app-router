@@ -16,3 +16,15 @@ body {
 .sidebar-link {
   @apply m-1 p-2 rounded-lg hover:bg-neutral-600/50 flex gap-2 text-[14px];
 }
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE 10+ */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}

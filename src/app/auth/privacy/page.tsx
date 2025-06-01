@@ -4,7 +4,7 @@ export const metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-3xl mx-auto p-6 text-xs leading-relaxed text-gray-800">
+    <div className="max-w-3xl mx-auto p-6 text-xs leading-relaxed text-gray-800 mt-10">
       <h1 className="text-base font-bold mb-4">개인정보처리방침</h1>
 
       <p className="mb-2">

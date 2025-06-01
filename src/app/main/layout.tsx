@@ -20,11 +20,13 @@ export default function MainLayout({
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <div className="hidden md:block">
         <Sidebar />
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
+        {children}
+      </div>
     </div>
   );
 }
