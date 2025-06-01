@@ -102,7 +102,7 @@ export default function SignupPage() {
             <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
                 <div className="w-full max-w-md">
                     <h2 className="text-[30px] text-center mb-8">회원가입</h2>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-3">
                         <div className="flex items-center bg-white rounded-md px-2 py-4">
                             <span className="mx-8 text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" width="20" height="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -162,7 +162,7 @@ export default function SignupPage() {
                                         setVerificationSuccess(false);
                                         setEmailError("");
                                     }}
-                                    className="h-[56px] px-7 rounded-r text-sm text-white bg-[#3A3A3A] whitespace-nowrap hover:bg-[#2B2B2B] cursor-pointer"
+                                    className="h-[56px] px-7 rounded-r text-sm text-white bg-neutral-600 whitespace-nowrap hover:bg-neutral-700 cursor-pointer"
                                 >
                                     다시입력
                                 </button>
@@ -170,7 +170,7 @@ export default function SignupPage() {
                                 <button
                                     type="button"
                                     onClick={handleSendVerification}
-                                    className="h-[56px] px-3 rounded-r text-sm text-white bg-blue-400 whitespace-nowrap hover:bg-blue-500 cursor-pointer"
+                                    className="h-[56px] px-3 rounded-r text-sm text-white bg-neutral-600 whitespace-nowrap hover:bg-neutral-700 cursor-pointer"
                                 >
                                     {isSending ? (
                                         <svg className="w-6 h-6 mx-[37px] animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -205,7 +205,7 @@ export default function SignupPage() {
                                 <button
                                     type="button"
                                     onClick={handleVerifyCode}
-                                    className="h-[56px] px-10 rounded-r text-sm text-white bg-blue-400 whitespace-nowrap hover:bg-blue-500 cursor-pointer"
+                                    className="h-[56px] px-12 rounded-r text-sm text-white bg-neutral-600 whitespace-nowrap hover:bg-neutral-700 cursor-pointer"
                                 >
                                     확인
                                 </button>

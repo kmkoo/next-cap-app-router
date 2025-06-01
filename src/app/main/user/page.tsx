@@ -280,7 +280,7 @@ return (
                       {editMode && field === 'email' && !isEmailVerified && (
                         <div className="h-[38px] ml-2">
                           {!verifyCodeSent ? (
-                            <button type="button" onClick={handleSendVerification} className="h-[38px] px-3 rounded-md text-white bg-blue-400 hover:bg-blue-500 cursor-pointer text-sm">
+                            <button type="button" onClick={handleSendVerification} className="h-[38px] px-3 rounded-md text-white bg-neutral-600 hover:bg-neutral-700 cursor-pointer text-sm">
                               {isSending ? (
                                   <svg className="w-6 h-6 mx-[37px] animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -299,7 +299,7 @@ return (
                                 onChange={(e) => setEnteredCode(e.target.value)}
                                 className="min-h-[38px] border border-gray-300 rounded px-2 py-1 mr-2 text-sm focus:outline-none focus:ring-1"
                               />
-                              <button type="button" onClick={handleVerifyCode} className="h-[38px] px-3 rounded-md text-white bg-blue-400 hover:bg-blue-500 cursor-pointer text-sm">
+                              <button type="button" onClick={handleVerifyCode} className="h-[38px] px-3 rounded-md text-white bg-neutral-600 hover:bg-neutral-700 cursor-pointer text-sm">
                                 인증 확인
                               </button>
                             </div>

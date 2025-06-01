@@ -37,8 +37,8 @@ export default function FindIdPage() {
     <PageWrapper>
     <div className="bg-[#F1F3F7] min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <h2 className="text-[30px] text-center mb-8">아이디 찾기</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <h2 className="text-[30px] text-center mb-8">이메일 찾기</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex items-center bg-white rounded-md px-2 py-5">
             <span className="mx-8 text-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
