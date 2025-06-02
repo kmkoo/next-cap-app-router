@@ -1,13 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Link from 'next/link';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
-export default function Sidebar() {
+export default function Sidebar({
+  isOpen,
+  closeSidebar,
+}: {
+  isOpen: boolean;
+  closeSidebar: () => void;
+}) {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
-  const [isOpen, setIsOpen] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isTextVisible, setIsTextVisible] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -20,11 +26,11 @@ export default function Sidebar() {
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    if (!isCollapsed) {
       const timeout = setTimeout(() => setIsTextVisible(true), 100);
       return () => clearTimeout(timeout);
     }
-  }, [isOpen]);
+  }, [isCollapsed]);
 
   const handleLogout = () => {
     localStorage.removeItem('userName');
@@ -32,13 +38,10 @@ export default function Sidebar() {
     router.push('/auth');
   };
 
-  const toggleSidebar = () => {
-  if (isOpen) {
-    setIsTextVisible(false);
-  }
-  setIsOpen(prev => !prev);
-};
-
+  const toggleCollapse = () => {
+    if (!isCollapsed) setIsTextVisible(false);
+    setIsCollapsed(!isCollapsed);
+  };
 
   const navItemsTop = [
     {
@@ -121,22 +124,15 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className={`bg-[#373A3C] text-neutral-100 flex flex-col h-screen sticky top-0 transition-[width] duration-300 ${isOpen ? 'w-65 px-4' : 'w-14 items-center'}`}>
+    <div className={`fixed md:relative top-0 left-0 h-full z-50 bg-[#373A3C] text-neutral-100 transition-all duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 flex flex-col ${isCollapsed ? 'w-14 items-center' : 'w-64 px-4'}`}>
       <div className="w-full h-[110px] py-2 border-b border-neutral-600/50 flex flex-col justify-between">
-        <div className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}>
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
           {isTextVisible && (
-            <div className="flex items-center gap-2">
-              <Link href="/main/dashboard">
-              <img
-                src="/logo2.svg"
-                alt="logo2"
-                className="w-12 h-6"
-                style={{ filter: 'brightness(0) invert(1)' }}
-                />
-                </Link>
-            </div>
+            <Link href="/main/dashboard">
+              <img src="/logo2.svg" alt="logo2" className="w-12 h-6" style={{ filter: 'brightness(0) invert(1)' }} />
+            </Link>
           )}
-          <button onClick={toggleSidebar} className="text-neutral-300 hover:text-white cursor-pointer">
+          <button onClick={toggleCollapse} className="hidden md:block text-neutral-300 hover:text-white cursor-pointer">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -151,31 +147,23 @@ export default function Sidebar() {
       </div>
 
       <div className="flex flex-col justify-between flex-1 w-full">
-        <div className={`mt-6 flex flex-col ${isOpen ? 'gap-2' : 'items-center gap-2'}`}>
+        <div className={`mt-6 flex flex-col ${isCollapsed ? 'items-center gap-2' : 'gap-2'}`}>
           {navItemsTop.map(({ href, label, icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}
-            >
+            <Link key={href} href={href} onClick={closeSidebar} className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isCollapsed ? 'flex flex-col items-center p-3' : 'flex items-center gap-3 p-3'}`}>
               <div>{icon}</div>
               {isTextVisible && <span className="text-sm">{label}</span>}
             </Link>
           ))}
         </div>
 
-        <div className={`mb-6 flex flex-col border-t border-neutral-600/50 pt-4 gap-2 ${isOpen ? '' : 'items-center'}`}>
+        <div className={`mb-6 flex flex-col border-t border-neutral-600/50 pt-4 gap-2 ${isCollapsed ? 'items-center' : ''}`}>
           {navItemsBottom.map(({ href, label, icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}
-            >
+            <Link key={href} href={href} onClick={closeSidebar} className={`${pathname === href ? 'bg-neutral-600/50 text-white' : 'text-neutral-400 hover:text-white hover:bg-neutral-600/50'} rounded-md transition cursor-pointer ${isCollapsed ? 'flex flex-col items-center p-3' : 'flex items-center gap-3 p-3'}`}>
               <div>{icon}</div>
               {isTextVisible && <span className="text-sm">{label}</span>}
             </Link>
           ))}
-          <button onClick={handleLogout} className={`text-yellow-700 hover:text-red-700 transition cursor-pointer hover:bg-gray-100 rounded-md ${isOpen ? 'flex items-center gap-3 p-3' : 'flex flex-col items-center p-3'}`}>
+          <button onClick={handleLogout} className={`text-yellow-700 hover:text-red-700 hover:bg-gray-100 rounded-md transition cursor-pointer ${isCollapsed ? 'flex flex-col items-center p-3' : 'flex items-center gap-3 p-3'}`}>
             <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
               <path d="M9 12h12l-3 -3" />
