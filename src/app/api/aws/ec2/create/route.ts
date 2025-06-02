@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const { serverScale, serverName, serverOwner } = body;
 
 
-    if (!serverOwner || !serverName || !serverScale) {
+    if (!serverOwner || !serverName || serverName.trim() === "" || !serverScale) {
       return NextResponse.json({ success: false, errorMassage: "Missing parameters" }, { status: 400 });
     }
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     );
 
     if (userRow[0].isExist === 0) { // DB 조회 -> 없는 사용자면 거부
-      return NextResponse.json({ success: false, errorMassage: "알수 없는 사용자 입니다." }, { status: 400 });
+      return NextResponse.json({ success: false, errorMassage: "알수 없는 사용자 입니다." }, { status: 404 });
     }
 
     if (serverRow[0].isExist === 1) { // DB 조회 -> 이미 있는 서버 이름이면 거부
