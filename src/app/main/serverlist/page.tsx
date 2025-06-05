@@ -80,10 +80,6 @@ export default function ServerListPage() {
     );
   };
 
-  const handleDelete = (id: string) => {
-    setServers((prev) => prev.filter((s) => s.id !== id));
-  };
-
   return (
     <PageWrapper>
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
@@ -91,8 +87,6 @@ export default function ServerListPage() {
           title="서버리스트"
           tabs={[
             { key: "all", label: "전체" },
-            // { key: "server", label: "서버" },
-            // { key: "website", label: "웹사이트" },
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -107,25 +101,17 @@ export default function ServerListPage() {
                   <div key={server.id} className="bg-white rounded-lg shadow p-5 space-y-2">
                     <div className="flex justify-between items-center">
                       <h3 className="text-[16px] font-medium">{server.name}</h3>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleStop(server.id)}
-                          disabled={server.status === "stopped"}
-                          className={`px-3 py-1 rounded text-sm ${
-                            server.status === "stopped"
-                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                              : "bg-blue-500 text-white hover:bg-blue-600"
-                          }`}
-                        >
-                          {server.status === "stopped" ? "중단됨" : "중단"}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(server.id)}
-                          className="px-3 py-1 rounded text-sm bg-red-500 text-white hover:bg-red-600"
-                        >
-                          삭제
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => handleStop(server.id)}
+                        disabled={server.status === "stopped"}
+                        className={`px-3 py-1 rounded text-sm ${
+                          server.status === "stopped"
+                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            : "bg-blue-500 text-white hover:bg-blue-600"
+                        }`}
+                      >
+                        {server.status === "stopped" ? "중단됨" : "중단"}
+                      </button>
                     </div>
 
                     <div className="text-sm text-gray-600">종류: {server.type}</div>

@@ -67,9 +67,9 @@ export default function NewServerPage() {
                         onChange={(e) => setServerScale(e.target.value)}
                         className="flex-1 min-h-[38px] px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1"
                       >
-                        <option value="small">소규모 ( 1 ~ 2 명 )</option>
-                        <option value="medium">중간규모 ( 3 ~ 5 명 )</option>
-                        <option value="big">대규모 ( 5명 이상 )</option>
+                        <option value="small">소규모 ( 3인 이하 )</option>
+                        <option value="medium">중규모 ( 3 ~ 5 인 )</option>
+                        <option value="big">대규모 ( 5인 이상 )</option>
                       </select>
                     </div>
 
