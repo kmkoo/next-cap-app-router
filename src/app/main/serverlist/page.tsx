@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text);
@@ -14,7 +20,7 @@ type Server = {
   type: string;
   createdAt: string;
   address: string;
-  status: "running" | "stopped";
+  status: string;
 };
 
 export default function ServerListPage() {
@@ -24,7 +30,7 @@ export default function ServerListPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
 
-  const [list, setList] = useState();
+  // const [list, setList] = useState();
 
 
   useEffect(() =>{
@@ -76,8 +82,19 @@ export default function ServerListPage() {
       body: JSON.stringify({ userName }),
     })
     .then((res) => res.json())
-    .then((data) => { setList(data); });
-
+    .then((data) => {
+      if (data.success && Array.isArray(data.serverList)) {
+        const serverList: Server[] = data.serverList.map((row: any) => ({
+          id: row.serverNumber.toString(),
+          name: row.serverName,
+          type: row.serverType,
+          createdAt: dayjs(row.createdAt).tz("Asia/Seoul").format("YYYY-MM-DD"),
+          address: row.serverAddr,
+          status: row.status,
+        }));
+        setServers(serverList); 
+      }
+    });
   }, [userName]);
 
   const filteredServers = servers.filter((server) => {
@@ -215,7 +232,7 @@ export default function ServerListPage() {
                   )}
                 </tbody>
               </table>
-              <p>{JSON.stringify(list)}</p>
+              {/* <p>{JSON.stringify(list)}</p> */}
             </PageWrapper>
           </div>
         </div>
