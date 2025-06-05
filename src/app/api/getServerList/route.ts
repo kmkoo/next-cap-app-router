@@ -1,14 +1,29 @@
+import db from "@/lib/dbcon";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  try{
-    const body = await req.json();
-    const { username } = body;
+  const body = await req.json();
+  const { userName } = body;
 
-    const serverList = await getServer(username); // 유저소유의 서버리스트 가져오기
+  try {
+    console.log(userName);
+    const [rows]: any = await db.query(
+      `SELECT serverNumber, serverName, serverType, createdAt, serverAddr, status
+        FROM Server
+        WHERE userNumber = (
+          SELECT userNumber 
+          FROM User 
+          WHERE userName = ?)`,
+      userName
+    );
 
-    return Response.json({ serverList })
-  } catch {
-    return NextResponse.json({ error: "서버리스트를 불러오는 중 문제가 발생했습니다." }, { status: 500});
+    if (rows.length === 0) {
+      return NextResponse.json({ success: false, message: "소유한 서버를 찾을 수 없습니다." }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, serverList: rows });
+  } catch (error) {
+    console.error("서버 조회중 오류:", error);
+    return NextResponse.json({ success: false, message: "서버 조회 오류" }, { status: 500 });
   }
 }
