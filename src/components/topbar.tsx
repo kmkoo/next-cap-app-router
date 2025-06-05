@@ -1,5 +1,7 @@
 "use client";
 
+import { ReactNode } from "react";
+
 interface TabItem<T extends string> {
   key: T;
   label: string;
@@ -10,15 +12,20 @@ export default function TopBar<T extends string>({
   tabs,
   activeTab,
   setActiveTab,
+  rightElement,
 }: {
   title: string;
   tabs: TabItem<T>[];
   activeTab: T;
   setActiveTab: (key: T) => void;
+  rightElement?: ReactNode;
 }) {
   return (
     <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-      <div className="mx-1 p-1 text-[20px]">{title}</div>
+      <div className="flex justify-between items-center mx-1 p-1 text-[20px]">
+        <div>{title}</div>
+        {rightElement && <div>{rightElement}</div>}
+      </div>
       <div className="flex flex-row gap-4 mt-4">
         {tabs.map((tab) => (
           <button

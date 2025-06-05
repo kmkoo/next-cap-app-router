@@ -3,19 +3,24 @@
 import { useEffect, useState } from "react";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts';
+import { use } from "react";
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   Tooltip,
+//   ResponsiveContainer,
+//   CartesianGrid,
+// } from 'recharts';
 
-export default function ServerDetailPage({ params }: { params: { name: string } }) {
+export default function ServerDetailPage({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = use(params);
+  const serverName = decodeURIComponent(name);
+
   const [server, setServer] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"env" | "config" | "log">("env");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("serverDetail");
@@ -25,17 +30,17 @@ export default function ServerDetailPage({ params }: { params: { name: string } 
     }
 
     const data = JSON.parse(raw);
-    if (data.name !== decodeURIComponent(params.name)) {
+    if (data.name !== serverName) {
       window.location.href = "/403";
       return;
     }
 
     setServer(data);
-  }, [params.name]);
+  }, [serverName]);
 
-  if (!server) return <div>로딩 중...</div>;
+  if (!server) return;
 
-  // 데이터 (현재는 예시)
+  // 데이터 (샘플)
   const monitoringData = {
     ipv4: "0.0.0.0",
     ports: [22, 3000, 8080],
@@ -80,12 +85,12 @@ export default function ServerDetailPage({ params }: { params: { name: string } 
   const setSave = () =>{
     alert("설정 저장. 인스턴스 DB 수정 및 인스턴스 재설정");
   }
-  const userAdd = () =>{
-    alert("닉네임, 권한 설정 창 생성 후 추가. 유저와 서버 매칭 DB에 권한과 함께 추가");
-  }
-  const userDel = () =>{
-    alert("유저 삭제. 유저와 서버 매칭 DB에서 삭제");
-  }
+  // const userAdd = () =>{
+  //   alert("닉네임, 권한 설정 창 생성 후 추가. 유저와 서버 매칭 DB에 권한과 함께 추가");
+  // }
+  // const userDel = () =>{
+  //   alert("유저 삭제. 유저와 서버 매칭 DB에서 삭제");
+  // }
   const cancel = () =>{
     alert("설정 변경 취소. 서버 리스트 페이지로 이동");
   }
@@ -102,53 +107,100 @@ export default function ServerDetailPage({ params }: { params: { name: string } 
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          rightElement={
+            <div className="relative">
+              <button
+                className="px-3 py-2 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 text-sm"
+                onClick={() => setDropdownOpen((prev) => !prev)}
+              >
+                서버 상태 ▼
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow w-32 text-sm z-50">
+                  <button
+                    disabled={monitoringData.isRunning}
+                    onClick={() => {
+                      serverRestart();
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 ${!monitoringData.isRunning?"hover:bg-gray-100":""}`}
+                    style={{color:!monitoringData.isRunning?"#000000":"#cccccc"}}
+                  >
+                    서버 가동
+                  </button>
+                  <button
+                    disabled={!monitoringData.isRunning}
+                    onClick={() => {
+                      serverStop();
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 ${monitoringData.isRunning?"hover:bg-gray-100":""}`}
+                    style={{color:monitoringData.isRunning?"#000000":"#cccccc"}}
+                  >
+                    서버 중단
+                  </button>
+                  <button
+                    onClick={() => {
+                      serverDel();
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 hover:bg-red-100 text-red-600`}
+                  >
+                    서버 삭제
+                  </button>
+                </div>
+              )}
+            </div>
+          }
         />
+
           {activeTab === "env" && (
             <div className="bg-white rounded shadow p-6 mb-6">
-
               <div className="grid grid-cols-1 gap-4 mb-6">
-                <div><strong>IPv4:</strong> {monitoringData.ipv4}</div>
-                <div><strong>Port:</strong> {monitoringData.ports.join(", ")}</div>
-                <div>
-                  <strong>상태:</strong>{" "}
-                  <span>
-                    {monitoringData.isRunning ? "실행중" : "중지됌"}
-                  </span>
-                  {/* <span
-                    className={
-                      monitoringData.isRunning
+                <div><strong>IP:</strong> {monitoringData.ipv4}</div>
+                {/* <div><strong>Port:</strong> {monitoringData.ports.join(", ")}</div> */}
+                <div className="flex items-center gap-2">
+                  <div>
+                    <strong>상태:</strong>{" "}
+                    <span>
+                      {monitoringData.isRunning ? "실행중" : "중지됌"}
+                    </span>
+                    {/* <span
+                      className={
+                        monitoringData.isRunning
+                          ? latestCpu < 70
+                            ? "text-green-600"
+                            : latestCpu < 90
+                            ? "text-yellow-600"
+                            : "text-red-600"
+                          : "text-black"
+                      }
+                    >
+                      {monitoringData.isRunning
                         ? latestCpu < 70
-                          ? "text-green-600"
+                          ? "실행중(양호)"
                           : latestCpu < 90
-                          ? "text-yellow-600"
-                          : "text-red-600"
-                        : "text-black"
-                    }
-                  >
-                    {monitoringData.isRunning
-                      ? latestCpu < 70
-                        ? "실행중(양호)"
-                        : latestCpu < 90
-                        ? "실행중(주의)"
-                        : "실행중(경고)"
-                      : "중지됨"}
-                  </span> */}
-                </div>
-                {typeof monitoringData.isRunning === "boolean" && (
-                  <div className="mt-4">
-                    {monitoringData.isRunning ? (
-                      <button className="bg-gray-500 text-white px-4 py-2 rounded"
-                      onClick={() => serverStop()}>
-                        서버 중단
-                      </button>
-                    ) : (
-                      <button className="bg-gray-500 text-white px-4 py-2 rounded"
-                      onClick={() => serverRestart()}>
-                        서버 가동
-                      </button>
-                    )}
+                          ? "실행중(주의)"
+                          : "실행중(경고)"
+                        : "중지됨"}
+                    </span> */}
                   </div>
-                )}
+                  {/* {typeof monitoringData.isRunning === "boolean" && (
+                    <div className="mt-4">
+                      {monitoringData.isRunning ? (
+                        <button className="bg-gray-500 text-white px-4 py-2 rounded"
+                        onClick={() => serverStop}>
+                          서버 중단
+                        </button>
+                      ) : (
+                        <button className="bg-gray-500 text-white px-4 py-2 rounded"
+                        onClick={() => serverRestart}>
+                          서버 가동
+                        </button>
+                      )}
+                    </div>
+                  )} */}
+                </div>
               </div>
               {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="bg-gray-50 p-4 rounded shadow">
@@ -257,7 +309,7 @@ export default function ServerDetailPage({ params }: { params: { name: string } 
                           </td>
                           <td className="py-2 font-normal">
                             <button className="text-[#880000] hover:underline"
-                            onClick={() => userDel()}>삭제</button>
+                            onClick={() => userDel}>삭제</button>
                           </td>
                         </tr>
                       ))}
@@ -266,17 +318,17 @@ export default function ServerDetailPage({ params }: { params: { name: string } 
                 </div>
                 <div className="text-center mt-3">
                   <button className="text-[#000088] hover:underline font-medium"
-                  onClick={() => userAdd()}>+사용자 추가</button>
+                  onClick={() => userAdd}>+사용자 추가</button>
                 </div>
               </div> */}
               <div className="flex justify-between items-center mt-6">
-                <button className="bg-red-600 text-white px-4 py-2 rounded"
-                onClick={() => serverDel()}>서버삭제</button>
+                {/* <button className="bg-red-600 text-white px-4 py-2 rounded"
+                onClick={() => serverDel}>서버삭제</button> */}
                 <div className="flex gap-2">
                   <button className="bg-gray-300 text-black px-4 py-2 rounded"
-                  onClick={() => cancel()}>취소</button>
+                  onClick={() => cancel}>취소</button>
                   <button className="bg-blue-600 text-white px-4 py-2 rounded"
-                  onClick={() => setSave()}>저장</button>
+                  onClick={() => setSave}>저장</button>
                 </div>
               </div>
             </div>
