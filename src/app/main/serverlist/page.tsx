@@ -30,36 +30,12 @@ export default function ServerListPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
 
-  // const [list, setList] = useState();
-
-
   useEffect(() =>{
     const storedName: string = localStorage.getItem('userName')!;
     setUserName(storedName);
   }, []);
 
   useEffect(() => {
-
-    const dummyServers: Server[] = [
-      {
-        id: "1",
-        name: "마인크랙트 서버",
-        type: "server",
-        createdAt: "2024-12-01",
-        address: "192.168.0.1",
-        status: "running",
-      },
-      {
-        id: "2",
-        name: "포트폴리오 사이트",
-        type: "website",
-        createdAt: "2024-12-05",
-        address: "example.com",
-        status: "stopped",
-      },
-    ];
-    setServers(dummyServers);
-
     const email = localStorage.getItem("userEmail");
     if (!email) return;
 
@@ -232,7 +208,6 @@ export default function ServerListPage() {
                   )}
                 </tbody>
               </table>
-              {/* <p>{JSON.stringify(list)}</p> */}
             </PageWrapper>
           </div>
         </div>
