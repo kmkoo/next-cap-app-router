@@ -44,7 +44,7 @@ export default function Sidebar({
   };
 
   const navItemsTop = [
-    {
+    /*{
       href: '/main/dashboard',
       label: '대시보드',
       icon: (
@@ -54,7 +54,7 @@ export default function Sidebar({
           <path d="M6.4 20a9 9 0 1 1 11.2 0z" />
         </svg>
       )
-    },
+    },*/
     {
       href: '/main/serverlist',
       label: '서버 리스트',

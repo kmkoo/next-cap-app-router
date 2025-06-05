@@ -188,7 +188,7 @@ return (
         title="회원정보"
         tabs={[
           { key: "notification", label: "내 계정" },
-          { key: "display", label: "청구" },
+          //{ key: "display", label: "청구" },
         ]}
         activeTab={activeTab}
         setActiveTab={setActiveTab}

@@ -35,7 +35,7 @@ export default function AuthSidebar({
       if (data.success) {
         localStorage.setItem("userName", data.name);
         localStorage.setItem("userEmail", data.email);
-        router.push("/main/dashboard");
+        router.push("/main/serverlist");
       } else {
         setMessage(data.message);
       }

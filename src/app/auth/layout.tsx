@@ -16,7 +16,7 @@ export default function AuthLayout({
   useEffect(() => {
     const userEmail = localStorage.getItem("userEmail");
     if (userEmail) {
-      router.replace("/main/dashboard");
+      router.replace("/main/serverlist");
     }
   }, [router]);
 
