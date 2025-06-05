@@ -128,7 +128,7 @@ export default function Sidebar({
       <div className="w-full h-[110px] py-2 border-b border-neutral-600/50 flex flex-col justify-between">
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
           {isTextVisible && (
-            <Link href="/main/dashboard">
+            <Link href="/main/serverlist">
               <img src="/logo2.svg" alt="logo2" className="w-12 h-6" style={{ filter: 'brightness(0) invert(1)' }} />
             </Link>
           )}
