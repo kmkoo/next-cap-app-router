@@ -91,8 +91,13 @@ export default function ServerListPage() {
   };
 
   const handleClickRow = (id: string) => {
-    alert(`서버 ID ${id} 상세 페이지로 이동 예정`);
+    const server = servers.find((s) => s.id === id);
+    if (!server) return;
+
+    sessionStorage.setItem("serverDetail", JSON.stringify(server));
+    window.location.href = `/main/serverlist/${encodeURIComponent(server.name)}`;
   };
+
 
   return (
     <PageWrapper>
