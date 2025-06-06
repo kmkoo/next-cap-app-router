@@ -21,12 +21,16 @@ export default function TopBar<T extends string>({
   rightElement?: ReactNode;
 }) {
   return (
-    <div className="bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-      <div className="flex justify-between items-center mx-1 p-1 text-[20px]">
-        <div>{title}</div>
-        {rightElement && <div>{rightElement}</div>}
+    <div className="relative bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
+      <div className="absolute top-6 left-6 w-fit text-[20px]">
+        {title}
       </div>
-      <div className="flex flex-row gap-4 mt-4">
+      {rightElement && (
+        <div className="absolute top-6 right-6 w-fit">
+          {rightElement}
+        </div>
+      )}
+      <div className="absolute mt-[55px] flex gap-4">
         {tabs.map((tab) => (
           <button
             key={tab.key}

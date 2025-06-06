@@ -153,7 +153,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
             </div>
           }
         />
-
+        <div className="px-6 pt-6">
           {activeTab === "env" && (
             <div className="bg-white rounded shadow p-6 mb-6">
               <div className="grid grid-cols-1 gap-4 mb-6">
@@ -342,6 +342,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
             </div>
           )}
         </div>
+      </div>
     </PageWrapper>
   );
 }
