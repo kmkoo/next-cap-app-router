@@ -15,7 +15,7 @@ import { use } from "react";
 // } from 'recharts';
 
 export default function ServerDetailPage({ params }: { params: Promise<{ name: string }> }) {
-  const { name } = use(params);
+  const { name } = use(params); // 비동기 언랩
   const serverName = decodeURIComponent(name);
 
   const [server, setServer] = useState<any>(null);

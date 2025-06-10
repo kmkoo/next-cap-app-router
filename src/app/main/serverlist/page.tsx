@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
 import dayjs from "dayjs";
@@ -24,6 +25,7 @@ type Server = {
 };
 
 export default function ServerListPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"all" | "server" | "website">("all");
   const [servers, setServers] = useState<Server[]>([]);
   const [showAddress, setShowAddress] = useState<boolean | null>(null);
@@ -84,11 +86,9 @@ export default function ServerListPage() {
     setServers((prev) => prev.filter((s) => s.id !== id));
   };
 
-  const handleClickRow = (id: string) => {
-    const server = servers.find((s) => s.id === id);
-    if (!server) return;
+  const handleCardClick = (server: Server) => {
     sessionStorage.setItem("serverDetail", JSON.stringify(server));
-    window.location.href = `/main/serverlist/${encodeURIComponent(server.name)}`;
+    router.push(`/main/serverlist/${encodeURIComponent(server.name)}`);
   };
 
   return (
@@ -113,7 +113,7 @@ export default function ServerListPage() {
                 {filteredServers.map((server) => (
                   <div
                     key={server.id}
-                    onClick={() => handleClickRow(server.id)}
+                    onClick={() => handleCardClick(server)}
                     className="bg-white rounded-lg shadow p-5 space-y-2 cursor-pointer hover:bg-gray-50"
                   >
                     <div className="flex justify-between items-center">
@@ -144,7 +144,6 @@ export default function ServerListPage() {
                         </button>
                       </div>
                     </div>
-
                     <div className="text-sm text-gray-600">종류: {server.type}</div>
                     <div className="text-sm text-gray-600">생성일: {server.createdAt}</div>
                     <div className="text-sm text-gray-600 flex items-center gap-2">
