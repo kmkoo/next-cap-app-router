@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { startInstance } from '@/lib/aws-ec2';
+import db from "@/lib/dbcon";
 
 export async function POST(req: NextRequest) {
   try {
