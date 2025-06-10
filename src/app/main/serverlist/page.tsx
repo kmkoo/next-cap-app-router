@@ -80,6 +80,17 @@ export default function ServerListPage() {
     );
   };
 
+  const handleDelete = (id: string) => {
+    setServers((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleClickRow = (id: string) => {
+    const server = servers.find((s) => s.id === id);
+    if (!server) return;
+    sessionStorage.setItem("serverDetail", JSON.stringify(server));
+    window.location.href = `/main/serverlist/${encodeURIComponent(server.name)}`;
+  };
+
   return (
     <PageWrapper>
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
@@ -87,6 +98,8 @@ export default function ServerListPage() {
           title="서버리스트"
           tabs={[
             { key: "all", label: "전체" },
+            { key: "server", label: "서버" },
+            { key: "website", label: "웹사이트" },
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -98,20 +111,38 @@ export default function ServerListPage() {
             ) : (
               <div className="space-y-4">
                 {filteredServers.map((server) => (
-                  <div key={server.id} className="bg-white rounded-lg shadow p-5 space-y-2">
+                  <div
+                    key={server.id}
+                    onClick={() => handleClickRow(server.id)}
+                    className="bg-white rounded-lg shadow p-5 space-y-2 cursor-pointer hover:bg-gray-50"
+                  >
                     <div className="flex justify-between items-center">
                       <h3 className="text-[16px] font-medium">{server.name}</h3>
-                      <button
-                        onClick={() => handleStop(server.id)}
-                        disabled={server.status === "stopped"}
-                        className={`px-3 py-1 rounded text-sm ${
-                          server.status === "stopped"
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-blue-500 text-white hover:bg-blue-600"
-                        }`}
-                      >
-                        {server.status === "stopped" ? "중단됨" : "중단"}
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStop(server.id);
+                          }}
+                          disabled={server.status === "stopped"}
+                          className={`px-3 py-1 rounded text-sm ${
+                            server.status === "stopped"
+                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              : "bg-blue-500 text-white hover:bg-blue-600"
+                          }`}
+                        >
+                          {server.status === "stopped" ? "중단됨" : "중단"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(server.id);
+                          }}
+                          className="px-3 py-1 rounded text-sm bg-red-500 text-white hover:bg-red-600"
+                        >
+                          삭제
+                        </button>
+                      </div>
                     </div>
 
                     <div className="text-sm text-gray-600">종류: {server.type}</div>
@@ -142,7 +173,8 @@ export default function ServerListPage() {
                         height="18"
                         strokeWidth="2"
                         className="cursor-pointer"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           copyToClipboard(server.address);
                           setCopiedId(server.id);
                           setTimeout(() => setCopiedId(null), 1500);
