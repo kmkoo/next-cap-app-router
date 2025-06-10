@@ -82,10 +82,6 @@ export default function ServerListPage() {
     );
   };
 
-  const handleDelete = (id: string) => {
-    setServers((prev) => prev.filter((s) => s.id !== id));
-  };
-
   const handleCardClick = (server: Server) => {
     sessionStorage.setItem("serverDetail", JSON.stringify(server));
     router.push(`/main/serverlist/${encodeURIComponent(server.name)}`);
@@ -98,8 +94,8 @@ export default function ServerListPage() {
           title="서버리스트"
           tabs={[
             { key: "all", label: "전체" },
-            { key: "server", label: "서버" },
-            { key: "website", label: "웹사이트" },
+            // { key: "server", label: "서버" },
+            // { key: "website", label: "웹사이트" },
           ]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -132,15 +128,6 @@ export default function ServerListPage() {
                           }`}
                         >
                           {server.status === "stopped" ? "중단됨" : "중단"}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(server.id);
-                          }}
-                          className="px-3 py-1 rounded text-sm bg-red-500 text-white hover:bg-red-600"
-                        >
-                          삭제
                         </button>
                       </div>
                     </div>
