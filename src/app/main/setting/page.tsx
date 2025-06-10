@@ -5,7 +5,7 @@ import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
 
 export default function SettingPage() {
-  const [activeTab, setActiveTab] = useState<"notification" | "display">("notification");
+  const [activeTab, setActiveTab] = useState<"notification" | "display">("display");
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [settings, setSettings] = useState({
     emailNotification: false,
@@ -74,7 +74,7 @@ export default function SettingPage() {
         <TopBar
           title="환경설정"
           tabs={[
-            { key: "notification", label: "알림" },
+            //{ key: "notification", label: "알림" },
             { key: "display", label: "디스플레이" },
           ]}
           activeTab={activeTab}
