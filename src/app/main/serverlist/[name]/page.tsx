@@ -21,6 +21,8 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
   const [server, setServer] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<"env" | "config" | "log">("env");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [serverOwner, setServerOwner] = useState('');
+  const [response, setResponse] = useState<any>(null);
 
   useEffect(() => {
     const raw = sessionStorage.getItem("serverDetail");
@@ -36,6 +38,9 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
     }
 
     setServer(data);
+
+    const storedName: string = localStorage.getItem('userName')!;
+    setServerOwner(storedName);
   }, [serverName]);
 
   if (!server) return;
@@ -73,14 +78,38 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
   // const latestCpu = timeSeriesData[timeSeriesData.length - 1]?.cpu ?? 0;
 
   // 이벤트
-  const serverStop = () =>{
-    alert("인스턴스 중단. DB에 상태 flase. 누르면 '중단하시겠습니까?'에서 예/아니요 선택");
+  const serverStop = async () => {
+    const res = await fetch('/api/aws/ec2/stop', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverOwner, serverName }),
+    });
+    const data = await res.json();
+    setResponse(data);
+    // alert("인스턴스 중단. DB에 상태 flase. 누르면 '중단하시겠습니까?'에서 예/아니요 선택");
   }
-  const serverRestart = () =>{
-    alert("인스턴스 재시작. DB에 상태 true");
+    const serverStart = async () => {
+    const res = await fetch('/api/aws/ec2/start', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverOwner, serverName }),
+    });
+    const data = await res.json();
+    setResponse(data);
+    // alert("인스턴스 중단. DB에 상태 flase. 누르면 '시작하시겠습니까?'에서 예/아니요 선택");
+  }
+  const serverRestart = async () =>{
+    const res = await fetch('/api/aws/ec2/reboot', {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverOwner, serverName }),
+    });
+    const data = await res.json();
+    setResponse(data);
+    // alert("인스턴스 재시작. DB에 상태 true");
   }
   const serverDel = () =>{
-    alert("서버 주인만 실행 가능. 비밀번호 입력 창 생성. DB 살려두고 유저만제거");
+    alert("권한을 받지 못했습니다.ㅠㅠ"); // 권한 못받음 ㅠ
   }
   const setSave = () =>{
     alert("설정 저장. 인스턴스 DB 수정 및 인스턴스 재설정");
@@ -120,13 +149,24 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
                   <button
                     disabled={monitoringData.isRunning}
                     onClick={() => {
-                      serverRestart();
+                      serverStart();
                       setDropdownOpen(false);
                     }}
                     className={`w-full text-left px-4 py-2 ${!monitoringData.isRunning?"hover:bg-gray-100":""}`}
                     style={{color:!monitoringData.isRunning?"#000000":"#cccccc"}}
                   >
                     서버 가동
+                  </button>
+                   <button
+                    disabled={!monitoringData.isRunning}
+                    onClick={() => {
+                      serverRestart();
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 ${monitoringData.isRunning?"hover:bg-gray-100":""}`}
+                    style={{color:monitoringData.isRunning?"#000000":"#cccccc"}}
+                  >
+                    서버 재시작 
                   </button>
                   <button
                     disabled={!monitoringData.isRunning}
@@ -165,6 +205,19 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
                     <span>
                       {monitoringData.isRunning ? "실행중" : "중지됌"}
                     </span>
+                    {response && ( // 인스턴스 조작에 대한 디버깅 출력
+                      <div className="mt-4 bg-gray-100 p-4 rounded border-1 w-250 wrap-anywhere">
+                        {response.success ? (
+                          <>
+                            <p><strong>서버 상태 변경에 성공했습니다.</strong></p>
+                          </>
+                        ) : (
+                          <>
+                          <p className="text-red-500">서버 상태 변경에 실패했습니다. {response.error}</p>
+                          </>
+                        )}
+                      </div>
+                    )}
                     {/* <span
                       className={
                         monitoringData.isRunning
