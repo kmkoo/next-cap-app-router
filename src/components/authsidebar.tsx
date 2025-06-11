@@ -103,7 +103,7 @@ export default function AuthSidebar({
               placeholder="이메일"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="px-1 border-none outline-none text-white w-full text-[16px] md:text-[14px]"
+              className="px-1 bg-neutral-600 border-none outline-none text-white w-full text-[16px] md:text-[14px]"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function AuthSidebar({
               placeholder="비밀번호"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="px-1 border-none outline-none text-white w-full text-[16px] md:text-[14px]"
+              className="px-1 bg-neutral-600 border-none outline-none text-white w-full text-[16px] md:text-[14px]"
             />
           </div>
 
