@@ -74,10 +74,32 @@ export default function ServerListPage() {
     activeTab === "all" ? true : server.type === activeTab
   );
 
-  const handleStop = (id: string) => {
+  const handleTogglePower = async (server: Server) => {
+    const action = server.status === "stopped" ? "start" : "stop";
+
+    const response = await fetch(`/api/aws/ec2/${action}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        serverName: server.name,
+        serverOwner: userName
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!data.success) {
+      alert(`${action === "stop" ? "중단" : "시작"} 실패: ${data.error || data.errorMassage}`);
+      return;
+    }
+
+    const updatedIp = data.updatedIp || (action === "stop" ? "" : server.address);
+
     setServers((prev) =>
       prev.map((s) =>
-        s.id === id ? { ...s, status: "stopped" } : s
+        s.id === server.id
+          ? { ...s, status: action === "stop" ? "stopped" : "running", address: updatedIp }
+          : s
       )
     );
   };
@@ -92,11 +114,7 @@ export default function ServerListPage() {
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
         <TopBar
           title="서버리스트"
-          tabs={[
-            { key: "all", label: "전체" },
-            // { key: "server", label: "서버" },
-            // { key: "website", label: "웹사이트" },
-          ]}
+          tabs={[{ key: "all", label: "전체" }]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -118,16 +136,15 @@ export default function ServerListPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleStop(server.id);
+                            handleTogglePower(server);
                           }}
-                          disabled={server.status === "stopped"}
                           className={`px-3 py-1 rounded text-sm ${
                             server.status === "stopped"
-                              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                              ? "bg-green-500 text-white hover:bg-green-600"
                               : "bg-blue-500 text-white hover:bg-blue-600"
                           }`}
                         >
-                          {server.status === "stopped" ? "중단됨" : "중단"}
+                          {server.status === "stopped" ? "시작" : "중단"}
                         </button>
                       </div>
                     </div>
@@ -145,7 +162,7 @@ export default function ServerListPage() {
                               : ""
                           }`}
                         >
-                          {server.address}
+                          {server.address || "-"}
                         </span>
                       )}
                       <svg
