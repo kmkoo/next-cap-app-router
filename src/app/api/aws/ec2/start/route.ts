@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
     }
 
     await db.query(
-      `UPDATE Server SET serverAddr = ? WHERE instanceId = ?`,
-      [publicIp, instanceId]
+      `UPDATE Server SET serverAddr = ?, status = ? WHERE instanceId = ?`,
+      [publicIp, 'ON', instanceId]
     );
 
     return NextResponse.json({ success: true, instanceList, updatedIp: publicIp });

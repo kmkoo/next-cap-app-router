@@ -31,10 +31,9 @@ export async function POST(req: NextRequest) {
     const instanceId = rows[0].instanceId;
     const instanceList = await stopInstance([instanceId]);
 
-    // 퍼블릭 IP가 해제되므로 DB에서 주소 비우기
     await db.query(
-      `UPDATE Server SET serverAddr = NULL WHERE instanceId = ?`,
-      [instanceId]
+      `UPDATE Server SET serverAddr = NULL, status = ? WHERE instanceId = ?`,
+      ['OFF', instanceId]
     );
 
     return NextResponse.json({ success: true, instanceList });

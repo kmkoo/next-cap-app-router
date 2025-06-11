@@ -70,12 +70,25 @@ export default function ServerListPage() {
       });
   }, [userName]);
 
+  const getScaleLabel = (type: string) => {
+    switch (type) {
+      case 't3.micro':
+        return '소규모';
+      case 't3.small':
+        return '중간규모';
+      case 't3.medium':
+        return '대규모';
+      default:
+        return type;
+    }
+  };
+
   const filteredServers = servers.filter((server) =>
     activeTab === "all" ? true : server.type === activeTab
   );
 
   const handleTogglePower = async (server: Server) => {
-    const action = server.status === "stopped" ? "start" : "stop";
+    const action = server.status === "OFF" ? "start" : "stop";
 
     const response = await fetch(`/api/aws/ec2/${action}`, {
       method: "POST",
@@ -98,7 +111,7 @@ export default function ServerListPage() {
     setServers((prev) =>
       prev.map((s) =>
         s.id === server.id
-          ? { ...s, status: action === "stop" ? "stopped" : "running", address: updatedIp }
+          ? { ...s, status: action === "stop" ? "OFF" : "ON", address: updatedIp }
           : s
       )
     );
@@ -128,67 +141,77 @@ export default function ServerListPage() {
                   <div
                     key={server.id}
                     onClick={() => handleCardClick(server)}
-                    className="bg-white rounded-lg shadow p-5 space-y-2 cursor-pointer hover:bg-gray-50"
+                    className="flex justify-between items-center bg-white px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer"
                   >
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-[16px] font-medium">{server.name}</h3>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleTogglePower(server);
-                          }}
-                          className={`px-3 py-1 rounded text-sm ${
-                            server.status === "stopped"
-                              ? "bg-green-500 text-white hover:bg-green-600"
-                              : "bg-blue-500 text-white hover:bg-blue-600"
-                          }`}
-                        >
-                          {server.status === "stopped" ? "시작" : "중단"}
-                        </button>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-5 text-2xl font-semibold">
+                        <span>{server.name}</span>
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          {showAddress === null ? (
+                            <div className="w-20 h-4 bg-gray-200 rounded animate-pulse" />
+                          ) : (
+                            <>
+                              {server.address ? (
+                                <>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    width="16"
+                                    height="16"
+                                    strokeWidth="2"
+                                    className="cursor-pointer text-blue-600"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      copyToClipboard(server.address);
+                                      setCopiedId(server.id);
+                                      setTimeout(() => setCopiedId(null), 1500);
+                                    }}
+                                  >
+                                    <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
+                                    <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
+                                  </svg>
+                                  <span
+                                    className={`relative ml-1 ${
+                                      !showAddress
+                                        ? "text-transparent select-none after:content-['●●●●●●'] after:absolute after:inset-0 after:text-gray-500"
+                                        : "text-blue-500"
+                                    }`}
+                                  >
+                                    {server.address}
+                                  </span>
+                                  {copiedId === server.id && (
+                                    <span className="text-xs text-green-600 ml-1">복사완료!</span>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="text-red-500">● 중단됨</span>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        {getScaleLabel(server.type)} · 생성일: {server.createdAt}
                       </div>
                     </div>
-                    <div className="text-sm text-gray-600">종류: {server.type}</div>
-                    <div className="text-sm text-gray-600">생성일: {server.createdAt}</div>
-                    <div className="text-sm text-gray-600 flex items-center gap-2">
-                      주소:
-                      {showAddress === null ? (
-                        <div className="w-24 h-4 bg-gray-200 rounded animate-pulse" />
-                      ) : (
-                        <span
-                          className={`relative ${
-                            !showAddress
-                              ? "text-transparent select-none after:content-['●●●●●●'] after:absolute after:inset-0 after:text-black"
-                              : ""
-                          }`}
-                        >
-                          {server.address || "-"}
-                        </span>
-                      )}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        width="18"
-                        height="18"
-                        strokeWidth="2"
-                        className="cursor-pointer"
+                    <div className="flex items-center h-full">
+                      <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          copyToClipboard(server.address);
-                          setCopiedId(server.id);
-                          setTimeout(() => setCopiedId(null), 1500);
+                          handleTogglePower(server);
                         }}
+                        className={`px-4 py-2 rounded text-sm font-medium ${
+                          server.status === "OFF"
+                            ? "bg-blue-500 text-white hover:bg-blue-600"
+                            : "bg-red-500 text-white hover:bg-red-600"
+                        }`}
                       >
-                        <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"></path>
-                        <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"></path>
-                      </svg>
-                      {copiedId === server.id && (
-                        <span className="text-xs text-green-600 ml-2">복사완료!</span>
-                      )}
+                        {server.status === "OFF" ? "시작" : "중단"}
+                      </button>
                     </div>
                   </div>
                 ))}
