@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
     const instanceId = rows[0].instanceId;
     const instanceList = await startInstance([instanceId]);
 
-    const publicIp = await waitForPublicIp(instanceId);
+    const publicIp = await waitForPublicIp(instanceId, 20, 5000);
 
     if (!publicIp) {
       return NextResponse.json({ success: false, errorMassage: "퍼블릭 IP를 얻지 못했습니다." }, { status: 500 });
