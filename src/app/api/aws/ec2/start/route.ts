@@ -5,6 +5,17 @@ import { EC2Client, DescribeInstancesCommand } from "@aws-sdk/client-ec2";
 
 const ec2 = new EC2Client({ region: "ap-northeast-2" });
 
+async function waitForPublicIp(instanceId: string, retries = 10, delayMs = 3000): Promise<string | null> {
+  for (let i = 0; i < retries; i++) {
+    const describeCommand = new DescribeInstancesCommand({ InstanceIds: [instanceId] });
+    const describeResult = await ec2.send(describeCommand);
+    const ip = describeResult.Reservations?.[0]?.Instances?.[0]?.PublicIpAddress;
+    if (ip) return ip;
+    await new Promise((res) => setTimeout(res, delayMs));
+  }
+  return null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -34,12 +45,12 @@ export async function POST(req: NextRequest) {
     const instanceId = rows[0].instanceId;
     const instanceList = await startInstance([instanceId]);
 
-    // EC2에서 퍼블릭 IP 재조회
-    const describeCommand = new DescribeInstancesCommand({ InstanceIds: [instanceId] });
-    const describeResult = await ec2.send(describeCommand);
-    const publicIp = describeResult.Reservations?.[0]?.Instances?.[0]?.PublicIpAddress || "";
+    const publicIp = await waitForPublicIp(instanceId);
 
-    // 서버 주소 DB 갱신
+    if (!publicIp) {
+      return NextResponse.json({ success: false, errorMassage: "퍼블릭 IP를 얻지 못했습니다." }, { status: 500 });
+    }
+
     await db.query(
       `UPDATE Server SET serverAddr = ? WHERE instanceId = ?`,
       [publicIp, instanceId]
