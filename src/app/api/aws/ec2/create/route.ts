@@ -50,15 +50,22 @@ export async function POST(req: NextRequest) {
     }
 
     const instance = await createInstance({ instanceType, serverTag: serverName, serverOwner });
-
     const instanceId = instance?.[0]?.InstanceId;
+
     if (!instanceId) {
       return NextResponse.json({ success: false, errorMassage: "인스턴스 ID 없음" }, { status: 500 });
     }
 
-    const describeCommand = new DescribeInstancesCommand({ InstanceIds: [instanceId] });
-    const describeResult = await ec2.send(describeCommand);
-    const publicIp = describeResult.Reservations?.[0]?.Instances?.[0]?.PublicIpAddress || "";
+    // 퍼블릭 IP 재시도 조회 (최대 5회, 2초 간격)
+    let publicIp = "";
+    for (let i = 0; i < 5; i++) {
+      const describeResult = await ec2.send(
+        new DescribeInstancesCommand({ InstanceIds: [instanceId] })
+      );
+      publicIp = describeResult.Reservations?.[0]?.Instances?.[0]?.PublicIpAddress || "";
+      if (publicIp) break;
+      await new Promise(res => setTimeout(res, 2000));
+    }
 
     await db.query(
       `INSERT INTO Server (userNumber, serverName, serverType, instanceId, serverAddr)
