@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
 
 export default function NewServerPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"server" | "website">("server");
   const [serverScale, setServerScale] = useState("small");
   const [serverName, setServerName] = useState("");
@@ -27,6 +29,12 @@ export default function NewServerPage() {
     const data = await res.json();
     setResponse(data);
     setLoading(false);
+
+    if (data.success) {
+      setTimeout(() => {
+        router.push("/main/serverlist");
+      }, 1000);
+    }
   };
 
   return (
@@ -34,10 +42,7 @@ export default function NewServerPage() {
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
         <TopBar
           title="서버 생성"
-          tabs={[
-            { key: "server", label: "서버" },
-            // { key: "website", label: "웹사이트" },
-          ]}
+          tabs={[{ key: "server", label: "서버" }]}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
@@ -45,39 +50,56 @@ export default function NewServerPage() {
           <PageWrapper key={activeTab}>
             {activeTab === "server" && (
               <div className="space-y-6">
-                <div className="bg-white rounded-lg shadow p-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="py-1.5 text-[16px]">게임 서버 생성</h2>
+                <div className="bg-white rounded-xl shadow p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="28" height="28" strokeWidth="2">
+                      <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                      <path d="M3 12m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                      <path d="M7 8l0 .01" />
+                      <path d="M7 16l0 .01" />
+                    </svg>
+                    <h2 className="text-lg font-bold">게임 서버 생성</h2>
                   </div>
-                  <div className="space-y-5">
-                    <div className="flex items-center gap-11 px-5 text-[15px]">
-                      서버 이름
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">서버 이름</label>
                       <input
                         type="text"
-                        placeholder="서버 이름 (고유해야 합니다)"
+                        placeholder="예: 나의 게임 서버"
                         value={serverName}
                         onChange={(e) => setServerName(e.target.value)}
-                        className="flex-1 min-h-[38px] px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1"
+                        className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
-                    <div className="flex items-center gap-11 px-5 text-[15px]">
-                      서버 규모
-                      <select
-                        value={serverScale}
-                        onChange={(e) => setServerScale(e.target.value)}
-                        className="flex-1 min-h-[38px] px-4 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1"
-                      >
-                        <option value="small">소규모 ( 3인 이하 )</option>
-                        <option value="medium">중규모 ( 3 ~ 5 인 )</option>
-                        <option value="big">대규모 ( 5인 이상 )</option>
-                      </select>
-                    </div>
 
-                    <div className="flex justify-end px-5">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">서버 규모</label>
+                      <div className="flex justify-between gap-3">
+                        {[
+                          { label: "소규모", value: "small" },
+                          { label: "중규모", value: "medium" },
+                          { label: "대규모", value: "big" },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => setServerScale(option.value)}
+                            className={`flex-1 py-5 mb-8 rounded-md text-sm font-medium border transition-all duration-150 ${
+                              serverScale === option.value
+                                ? "bg-blue-500 text-white border-blue-500"
+                                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                            }`}
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
                       <button
                         onClick={handleCreate}
                         disabled={loading}
-                        className="h-[38px] px-4 rounded-md text-white bg-blue-600 hover:bg-blue-700 flex items-center text-sm"
+                        className="w-full py-5 rounded-md text-white bg-blue-500 hover:bg-blue-600 flex items-center justify-center text-sm font-medium gap-2"
                       >
                         {loading ? (
                           <>
@@ -88,20 +110,27 @@ export default function NewServerPage() {
                             생성중...
                           </>
                         ) : (
-                          "서버 만들기"
+                          <>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" strokeWidth="2">
+                              <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                              <path d="M15 20h-9a3 3 0 0 1 -3 -3v-2a3 3 0 0 1 3 -3h12" />
+                              <path d="M7 8v.01" />
+                              <path d="M7 16v.01" />
+                              <path d="M20 15l-2 3h3l-2 3" />
+                            </svg>
+                            서버 만들기
+                          </>
                         )}
                       </button>
                     </div>
 
                     {response && (
-                      <div className="mt-4 px-5">
-                        <div className={`p-4 rounded border text-sm ${response.success ? 'bg-green-100 text-green-700 border-green-400' : 'bg-red-100 text-red-700 border-red-400'}`}>
-                          {response.success ? (
-                            <p>✅ 서버 생성에 성공했습니다.</p>
-                          ) : (
-                            <p>❌ 서버를 생성하지 못했습니다. {response.errorMessage || "오류 발생"}</p>
-                          )}
-                        </div>
+                      <div className={`mt-4 p-4 rounded border text-sm ${response.success ? 'bg-green-100 text-green-700 border-green-400' : 'bg-red-100 text-red-700 border-red-400'}`}>
+                        {response.success ? (
+                          <p>✅ 서버 생성에 성공했습니다. 잠시 후 이동합니다.</p>
+                        ) : (
+                          <p>❌ 서버를 생성하지 못했습니다. {response.errorMessage || "오류 발생"}</p>
+                        )}
                       </div>
                     )}
                   </div>
