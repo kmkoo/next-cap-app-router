@@ -34,6 +34,10 @@ export default function NewServerPage() {
       setTimeout(() => {
         router.push("/main/serverlist");
       }, 1000);
+    } else {
+      setTimeout(() => {
+        setResponse(null);
+      }, 2000);
     }
   };
 
@@ -86,7 +90,7 @@ export default function NewServerPage() {
                             onClick={() => setServerScale(option.value)}
                             className={`flex-1 py-5 mb-8 rounded-md text-sm font-medium border transition-all duration-150 ${
                               serverScale === option.value
-                                ? "bg-blue-500 text-white border-blue-500"
+                                ? "bg-neutral-600 text-white"
                                 : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                             }`}
                           >
@@ -99,7 +103,7 @@ export default function NewServerPage() {
                       <button
                         onClick={handleCreate}
                         disabled={loading}
-                        className="w-full py-5 rounded-md text-white bg-blue-500 hover:bg-blue-600 flex items-center justify-center text-sm font-medium gap-2"
+                        className="w-full py-5 rounded-md text-white bg-neutral-600 hover:bg-neutral-700 flex items-center justify-center text-sm font-medium gap-2"
                       >
                         {loading ? (
                           <>
