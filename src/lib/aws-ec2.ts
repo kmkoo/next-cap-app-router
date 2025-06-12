@@ -1,6 +1,9 @@
 import { _InstanceType, DescribeInstancesCommand, EC2Client, RebootInstancesCommand, RunInstancesCommand, StartInstancesCommand, StopInstancesCommand, TerminateInstancesCommand } from "@aws-sdk/client-ec2";
 
 const ec2Client = new EC2Client({ region: process.env.AWS_REGION });
+const REGION = "ap-northeast-2";
+
+const ec2 = new EC2Client({ region: REGION });
 
 export async function getInstanceData(instanceIds:string[]) {
   const command = new DescribeInstancesCommand({
