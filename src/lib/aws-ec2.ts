@@ -56,7 +56,7 @@ export async function createInstance(params:{
 export async function startInstance(instanceIds:string[]) {
   const command = new StartInstancesCommand({
     InstanceIds: instanceIds,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
 
   const response = await ec2Client.send(command);
@@ -66,7 +66,7 @@ export async function startInstance(instanceIds:string[]) {
 export async function stopInstance(instanceIds:string[]) {
   const command = new StopInstancesCommand({
     InstanceIds: instanceIds,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
   
   const response = await ec2Client.send(command);

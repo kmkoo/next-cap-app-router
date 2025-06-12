@@ -1,24 +1,25 @@
 'use client';
 
 import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 import TopBar from "@/components/topbar";
 import { use } from "react";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   ResponsiveContainer,
-//   CartesianGrid,
-// } from 'recharts';
+
+type ServerData = {
+  name: string;
+  serverAddr: string | null;
+  status: "ON" | "OFF";
+  serverType: string;
+  createdAt: string;
+};
 
 export default function ServerDetailPage({ params }: { params: Promise<{ name: string }> }) {
   const { name } = use(params);
   const serverName = decodeURIComponent(name);
+  const router = useRouter();
 
-  const [server, setServer] = useState<any>(null);
+  const [server, setServer] = useState<ServerData | null>(null);
   const [activeTab, setActiveTab] = useState<"env" | "config" | "log">("env");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [serverOwner, setServerOwner] = useState('');
@@ -26,103 +27,70 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
 
   useEffect(() => {
     const raw = sessionStorage.getItem("serverDetail");
-    if (!raw) {
+    const userName = localStorage.getItem("userName");
+    if (!raw || !userName) {
       window.location.href = "/403";
       return;
     }
 
-    const data = JSON.parse(raw);
-    if (data.name !== serverName) {
+    const sessionData = JSON.parse(raw);
+    if (sessionData.name !== serverName) {
       window.location.href = "/403";
       return;
     }
 
-    setServer(data);
-
-    const storedName: string = localStorage.getItem('userName')!;
-    setServerOwner(storedName);
+    fetch("/api/aws/ec2/detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverName, serverOwner: userName }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setServer({ name: serverName, ...data.server });
+        } else {
+          window.location.href = "/403";
+        }
+      });
   }, [serverName]);
 
-  if (!server) return;
+  const handleAction = async (type: "start" | "stop" | "reboot" | "delete") => {
+    const userName = localStorage.getItem("userName");
+    if (!userName || !server) return;
 
-  // 데이터 (샘플)
-  const monitoringData = {
-    ipv4: "0.0.0.0",
-    ports: [22, 3000, 8080],
-    isRunning: true
+    const confirmMsg =
+      type === "delete"
+        ? "정말 서버를 삭제하시겠습니까? (복구 불가)"
+        : type === "stop"
+        ? "서버를 중단하시겠습니까?"
+        : type === "start"
+        ? "서버를 시작하시겠습니까?"
+        : "서버를 재시작하시겠습니까?";
+
+    if (!window.confirm(confirmMsg)) return;
+
+    const res = await fetch(`/api/aws/ec2/${type}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverName: server.name, serverOwner: userName }),
+    });
+
+    const result = await res.json();
+    if (result.success) {
+      if (type === "stop") {
+        setServer((prev) => prev && { ...prev, status: "OFF", serverAddr: null });
+      } else if (type === "start" || type === "reboot") {
+        setServer((prev) => prev && { ...prev, status: "ON", serverAddr: result.updatedIp ?? prev.serverAddr });
+      } else if (type === "delete") {
+        alert("삭제되었습니다.");
+        router.push("/main/serverlist");
+      }
+    } else {
+      alert(result.error || "실패했습니다.");
+    }
   };
-  // const timeSeriesData = [
-  //   { time: "10:00", cpu: 10, mem: 100, in: 30, out: 20 },
-  //   { time: "10:01", cpu: 20, mem: 100, in: 40, out: 25 },
-  //   { time: "10:02", cpu: 35, mem: 100, in: 50, out: 35 },
-  //   { time: "10:03", cpu: 25, mem: 97, in: 70, out: 45 },
-  //   { time: "10:04", cpu: 89, mem: 100, in: 65, out: 50 }
-  // ];
-  const logLines = [
-    "[10:30] 인스턴스 생성됌",
-    "[10:31] 인스턴스 시작됌",
-    "[10:32] 인스턴스 해킹됌",
-    "[10:35] 포트 3000열림"
-  ];
-  // const sharedUsers = [
-  //   { name: "user1", permissions: 7 },
-  //   { name: "user2", permissions: 3 },
-  //   { name: "user3", permissions: 0 }
-  // ];
 
-  // const PERMISSION = {
-  //   ACCESS: 1,
-  //   READ: 2,
-  //   WRITE: 4
-  // };
-  // const latestCpu = timeSeriesData[timeSeriesData.length - 1]?.cpu ?? 0;
-
-  // 이벤트
-  const serverStop = async () => {
-    const res = await fetch('/api/aws/ec2/stop', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverOwner, serverName }),
-    });
-    const data = await res.json();
-    setResponse(data);
-    // alert("인스턴스 중단. DB에 상태 flase. 누르면 '중단하시겠습니까?'에서 예/아니요 선택");
-  }
-    const serverStart = async () => {
-    const res = await fetch('/api/aws/ec2/start', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverOwner, serverName }),
-    });
-    const data = await res.json();
-    setResponse(data);
-    // alert("인스턴스 중단. DB에 상태 flase. 누르면 '시작하시겠습니까?'에서 예/아니요 선택");
-  }
-  const serverRestart = async () =>{
-    const res = await fetch('/api/aws/ec2/reboot', {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverOwner, serverName }),
-    });
-    const data = await res.json();
-    setResponse(data);
-    // alert("인스턴스 재시작. DB에 상태 true");
-  }
-  const serverDel = () =>{
-    alert("권한을 받지 못했습니다.ㅠㅠ"); // 권한 못받음 ㅠ
-  }
-  const setSave = () =>{
-    alert("설정 저장. 인스턴스 DB 수정 및 인스턴스 재설정");
-  }
-  // const userAdd = () =>{
-  //   alert("닉네임, 권한 설정 창 생성 후 추가. 유저와 서버 매칭 DB에 권한과 함께 추가");
-  // }
-  // const userDel = () =>{
-  //   alert("유저 삭제. 유저와 서버 매칭 DB에서 삭제");
-  // }
-  const cancel = () =>{
-    alert("설정 변경 취소. 서버 리스트 페이지로 이동");
-  }
+  if (!server) return null;
 
   return (
     <PageWrapper>
@@ -147,44 +115,33 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow w-32 text-sm z-50">
                   <button
-                    disabled={monitoringData.isRunning}
+                    disabled={server.status === "ON"}
                     onClick={() => {
-                      serverStart();
+                      handleAction("start");
                       setDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 ${!monitoringData.isRunning?"hover:bg-gray-100":""}`}
-                    style={{color:!monitoringData.isRunning?"#000000":"#cccccc"}}
+                    className={`w-full text-left px-4 py-2 ${server.status !== "ON" ? "hover:bg-gray-100" : ""}`}
+                    style={{ color: server.status !== "ON" ? "#000000" : "#cccccc" }}
                   >
                     서버 가동
                   </button>
-                   <button
-                    disabled={!monitoringData.isRunning}
-                    onClick={() => {
-                      serverRestart();
-                      setDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 ${monitoringData.isRunning?"hover:bg-gray-100":""}`}
-                    style={{color:monitoringData.isRunning?"#000000":"#cccccc"}}
-                  >
-                    서버 재시작 
-                  </button>
                   <button
-                    disabled={!monitoringData.isRunning}
+                    disabled={server.status === "OFF"}
                     onClick={() => {
-                      serverStop();
+                      handleAction("stop");
                       setDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 ${monitoringData.isRunning?"hover:bg-gray-100":""}`}
-                    style={{color:monitoringData.isRunning?"#000000":"#cccccc"}}
+                    className={`w-full text-left px-4 py-2 ${server.status === "ON" ? "hover:bg-gray-100" : ""}`}
+                    style={{ color: server.status === "ON" ? "#000000" : "#cccccc" }}
                   >
                     서버 중단
                   </button>
                   <button
                     onClick={() => {
-                      serverDel();
+                      handleAction("delete");
                       setDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2 hover:bg-red-100 text-red-600`}
+                    className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
                   >
                     서버 삭제
                   </button>
@@ -197,192 +154,29 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
           {activeTab === "env" && (
             <div className="bg-white rounded shadow p-6 mb-6">
               <div className="grid grid-cols-1 gap-4 mb-6">
-                <div><strong>IP:</strong> {monitoringData.ipv4}</div>
-                {/* <div><strong>Port:</strong> {monitoringData.ports.join(", ")}</div> */}
-                <div className="flex items-center gap-2">
-                  <div>
-                    <strong>상태:</strong>{" "}
-                    <span>
-                      {monitoringData.isRunning ? "실행중" : "중지됌"}
-                    </span>
-                    {response && ( // 인스턴스 조작에 대한 디버깅 출력
-                      <div className="mt-4 bg-gray-100 p-4 rounded border-1 w-250 wrap-anywhere">
-                        {response.success ? (
-                          <>
-                            <p><strong>서버 상태 변경에 성공했습니다.</strong></p>
-                          </>
-                        ) : (
-                          <>
-                          <p className="text-red-500">서버 상태 변경에 실패했습니다. {response.error}</p>
-                          </>
-                        )}
-                      </div>
-                    )}
-                    {/* <span
-                      className={
-                        monitoringData.isRunning
-                          ? latestCpu < 70
-                            ? "text-green-600"
-                            : latestCpu < 90
-                            ? "text-yellow-600"
-                            : "text-red-600"
-                          : "text-black"
-                      }
-                    >
-                      {monitoringData.isRunning
-                        ? latestCpu < 70
-                          ? "실행중(양호)"
-                          : latestCpu < 90
-                          ? "실행중(주의)"
-                          : "실행중(경고)"
-                        : "중지됨"}
-                    </span> */}
-                  </div>
-                  {/* {typeof monitoringData.isRunning === "boolean" && (
-                    <div className="mt-4">
-                      {monitoringData.isRunning ? (
-                        <button className="bg-gray-500 text-white px-4 py-2 rounded"
-                        onClick={() => serverStop}>
-                          서버 중단
-                        </button>
-                      ) : (
-                        <button className="bg-gray-500 text-white px-4 py-2 rounded"
-                        onClick={() => serverRestart}>
-                          서버 가동
-                        </button>
-                      )}
-                    </div>
-                  )} */}
-                </div>
+                <div><strong>IP:</strong> {server.serverAddr || "없음"}</div>
+                <div><strong>상태:</strong> {server.status === "ON" ? "실행중" : "중지됨"}</div>
               </div>
-              {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-gray-50 p-4 rounded shadow">
-                  <p className="font-semibold mb-2">CPU 사용량 (%)</p>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={timeSeriesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="cpu" stroke="#000088" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="bg-gray-50 p-4 rounded shadow">
-                  <p className="font-semibold mb-2">메모리 사용량 (%)</p>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={timeSeriesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis domain={[0, 100]} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="mem" stroke="#000088" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="bg-gray-50 p-4 rounded shadow">
-                  <p className="font-semibold mb-2">네트워크 수신량 (MB)</p>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={timeSeriesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="in" stroke="#000088" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="bg-gray-50 p-4 rounded shadow">
-                  <p className="font-semibold mb-2">네트워크 송신량 (MB)</p>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={timeSeriesData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="time" />
-                      <YAxis />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="out" stroke="#000088" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div> */}
             </div>
           )}
 
           {activeTab === "config" && (
             <div className="bg-white rounded shadow p-6 mb-6">
               <div className="mb-4">
-                <label className="block mb-1 font-medium">서버 이름 변경</label>
+                <label className="block mb-1 font-medium">서버 이름</label>
                 <input
-                  defaultValue={server.name}
-                  className="border border-gray-300 rounded px-3 py-2 w-full"
+                  value={server.name}
+                  disabled
+                  className="border border-gray-300 rounded px-3 py-2 w-full bg-gray-100 text-gray-600"
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-1 font-medium">서버 규모 변경</label>
-                <select className="border border-gray-300 rounded px-3 py-2 w-full">
-                  <option>작음</option>
-                  <option>중간</option>
-                  <option>큼</option>
-                </select>
-                <p className="text-sm text-gray-500 mt-1">
-                  해당 옵션 변경 시 적용까지 시간이 걸릴 수 있습니다.
-                </p>
-              </div>
-              {/* <div className="mb-6">
-                <h3 className="font-semibold mb-2">서버 공유</h3>
-                <div className="max-h-[300px] overflow-y-auto border border-gray-300 rounded">
-                  <table className="w-full text-sm">
-                    <thead className="bg-[#F1F3F7] sticky top-0 z-10">
-                      <tr className="text-center font-bold">
-                        <th className="py-2">닉네임</th>
-                        <th className="py-2">접근권한</th>
-                        <th className="py-2">읽기권한</th>
-                        <th className="py-2">수정권한</th>
-                        <th className="py-2"> </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sharedUsers.map((user, idx) => (
-                        <tr key={idx} className="text-center bg-white font-bold border-t border-gray-200">
-                          <td className="py-2">{user.name}</td>
-                          <td className="py-2">
-                            <span className={user.permissions & PERMISSION.ACCESS ? "text-green-600" : "text-red-600"}>
-                              {user.permissions & PERMISSION.ACCESS ? "V" : "X"}
-                            </span>
-                          </td>
-                          <td className="py-2">
-                            <span className={user.permissions & PERMISSION.READ ? "text-green-600" : "text-red-600"}>
-                              {user.permissions & PERMISSION.READ ? "V" : "X"}
-                            </span>
-                          </td>
-                          <td className="py-2">
-                            <span className={user.permissions & PERMISSION.WRITE ? "text-green-600" : "text-red-600"}>
-                              {user.permissions & PERMISSION.WRITE ? "V" : "X"}
-                            </span>
-                          </td>
-                          <td className="py-2 font-normal">
-                            <button className="text-[#880000] hover:underline"
-                            onClick={() => userDel}>삭제</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="text-center mt-3">
-                  <button className="text-[#000088] hover:underline font-medium"
-                  onClick={() => userAdd}>+사용자 추가</button>
-                </div>
-              </div> */}
-              <div className="flex justify-between items-center mt-6">
-                {/* <button className="bg-red-600 text-white px-4 py-2 rounded"
-                onClick={() => serverDel}>서버삭제</button> */}
-                <div className="flex gap-2">
-                  <button className="bg-gray-300 text-black px-4 py-2 rounded"
-                  onClick={() => cancel}>취소</button>
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded"
-                  onClick={() => setSave}>저장</button>
-                </div>
+                <label className="block mb-1 font-medium">서버 타입</label>
+                <input
+                  value={server.serverType}
+                  disabled
+                  className="border border-gray-300 rounded px-3 py-2 w-full bg-gray-100 text-gray-600"
+                />
               </div>
             </div>
           )}
@@ -390,7 +184,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
           {activeTab === "log" && (
             <div className="bg-white rounded shadow p-6">
               <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
-                {logLines.slice().reverse().join("\n")}
+                [생성일] {server.createdAt}
               </pre>
             </div>
           )}
