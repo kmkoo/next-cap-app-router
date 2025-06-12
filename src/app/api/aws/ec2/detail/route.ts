@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     }
 
     const [result] = await db.query(
-      `SELECT serverAddr, status, serverType, createdAt
+      `SELECT serverAddr, status, serverType, createdAt, serverImage
        FROM Server
        WHERE serverName = ?
        AND userNumber = (SELECT userNumber FROM User WHERE userName = ?)`,

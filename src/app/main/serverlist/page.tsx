@@ -139,12 +139,12 @@ return (
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="absolute top-6 right-6">
+      <div className="absolute top-16 right-6">
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="text-[12px] bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700"
         >
-          + 새 서버
+          서버 생성
         </button>
       </div>
       <div className="px-6 pt-6">
@@ -167,7 +167,20 @@ return (
                     />
                   )}
                   <div className="flex flex-col flex-grow text-sm text-gray-700">
-                    <span className="text-xl font-semibold mb-3">{server.name}</span>
+                    <span className="text-xl font-semibold mb-3 flex items-center gap-2">
+                      {server.name}
+                      <span className={`text-[11px] px-1 font-medium rounded ${
+                        server.status === "OFF"
+                          ? "text-red-500 bg-red-500/10"
+                          : "text-green-600 bg-green-600/10"
+                      } flex items-center`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                          <line x1="12" y1="2" x2="12" y2="12"></line>
+                        </svg>
+                        {server.status === "OFF" ? "중단됨" : "실행중"}
+                      </span>
+                    </span>
                     <div className="flex items-center text-gray-500">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><line x1="22" y1="12" x2="2" y2="12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><line x1="6" y1="16" x2="6.01" y2="16" /><line x1="10" y1="16" x2="10.01" y2="16" /></svg>
                       <span>{getScaleLabel(server.type)}</span>
@@ -185,10 +198,6 @@ return (
                     </div>
                   </div>
                   <div className="flex flex-col items-end text-sm gap-3 ml-4">
-                    <div className={`flex items-center text-[13px] mb-2 p-1 ${server.status === "OFF" ? "text-red-500 bg-red-500/10" : "text-green-600 bg-green-600/10"}`}>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                      {server.status === "OFF" ? "중단됨" : "실행중"}
-                    </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -197,7 +206,7 @@ return (
                       disabled={loadingId === server.id}
                       className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-1 ${
                         server.status === "OFF"
-                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          ? "bg-green-700 text-white hover:bg-green-800"
                           : "bg-red-500 text-white hover:bg-red-600"
                       }`}
                     >
@@ -235,4 +244,5 @@ return (
     </div>
   </PageWrapper>
 );
+
 }
