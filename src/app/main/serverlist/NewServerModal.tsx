@@ -1,0 +1,97 @@
+'use client';
+
+import { useState } from "react";
+
+type Props = {
+  onClose: () => void;
+  onCreated: () => void;
+  serverOwner: string;
+};
+
+export default function NewServerModal({ onClose, onCreated, serverOwner }: Props) {
+  const [serverScale, setServerScale] = useState("small");
+  const [serverName, setServerName] = useState("");
+  const [response, setResponse] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleCreate = async () => {
+    if (!serverName.trim()) return;
+
+    setLoading(true);
+    const res = await fetch("/api/aws/ec2/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ serverScale, serverName, serverOwner }),
+    });
+    const data = await res.json();
+    setResponse(data);
+    setLoading(false);
+
+    if (data.success) {
+      onCreated();
+      onClose();
+    } else {
+      setTimeout(() => setResponse(null), 2000);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-black"
+        >
+          ×
+        </button>
+        <h2 className="text-xl font-bold mb-4">서버 생성</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">서버 이름</label>
+            <input
+              type="text"
+              placeholder="예: 마인크래프트 서버"
+              value={serverName}
+              onChange={(e) => setServerName(e.target.value)}
+              className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">서버 규모</label>
+            <div className="flex gap-2">
+              {[
+                { label: "소규모", value: "small" },
+                { label: "중간규모", value: "medium" },
+                { label: "대규모", value: "big" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setServerScale(opt.value)}
+                  className={`flex-1 py-2 rounded border text-sm ${
+                    serverScale === opt.value
+                      ? "bg-neutral-700 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={handleCreate}
+            disabled={loading}
+            className="w-full py-3 rounded bg-neutral-700 text-white hover:bg-neutral-800"
+          >
+            {loading ? "생성 중..." : "서버 만들기"}
+          </button>
+          {response && !response.success && (
+            <div className="text-red-600 text-sm mt-2">
+              ❌ {response.errorMessage || "서버 생성에 실패했습니다."}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
