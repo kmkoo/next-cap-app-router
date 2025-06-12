@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   try {
     console.log(userName);
     const [rows]: any = await db.query(
-      `SELECT serverNumber, serverName, serverType, createdAt, serverAddr, status
+      `SELECT serverNumber, serverName, serverType, createdAt, serverAddr, status, serverImage
         FROM Server
         WHERE userNumber = (
           SELECT userNumber 

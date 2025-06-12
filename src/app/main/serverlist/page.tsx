@@ -23,6 +23,7 @@ type Server = {
   createdAt: string;
   address: string;
   status: string;
+  imageUrl?: string;
 };
 
 export default function ServerListPage() {
@@ -75,6 +76,7 @@ export default function ServerListPage() {
               createdAt: dayjs(row.createdAt).tz("Asia/Seoul").format("YYYY-MM-DD"),
               address: row.serverAddr,
               status: row.status,
+              imageUrl: row.serverImage,
             }));
           setServers(serverList);
         }
@@ -128,102 +130,109 @@ export default function ServerListPage() {
     router.push(`/main/serverlist/${encodeURIComponent(server.name)}`);
   };
 
-  return (
-    <PageWrapper>
-      <div className="bg-[#F1F3F7] flex-grow min-h-screen relative">
-        <TopBar
-          title="서버리스트"
-          tabs={[{ key: "all", label: "전체" }]}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-        <div className="absolute top-6 right-6">
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            + 새 서버
-          </button>
-        </div>
-        <div className="px-6 pt-6">
-          <PageWrapper key={activeTab}>
-            {filteredServers.length === 0 ? (
-              <div className="text-center text-gray-500 mt-10">등록된 서버가 없습니다.</div>
-            ) : (
-              <div className="space-y-4">
-                {filteredServers.map((server) => (
-                  <div
-                    key={server.id}
-                    onClick={() => handleCardClick(server)}
-                    className="flex justify-between items-center bg-white px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer"
-                  >
-                    <div className="flex flex-col text-sm text-gray-700">
-                      <span className="text-xl font-semibold mb-3">{server.name}</span>
-                      <div className="flex items-center text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><line x1="22" y1="12" x2="2" y2="12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><line x1="6" y1="16" x2="6.01" y2="16" /><line x1="10" y1="16" x2="10.01" y2="16" /></svg>
-                        <span>{getScaleLabel(server.type)}</span>
-                        {server.status === "ON" && server.address && (
-                          <>
-                            <span className="mx-2 text-blue-500">{showAddress === false ? "●●●●●●" : server.address}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4 text-blue-600 cursor-pointer" onClick={(e) => { e.stopPropagation(); copyToClipboard(server.address); setCopiedId(server.id); setTimeout(() => setCopiedId(null), 1500); }}><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
-                            {copiedId === server.id && <span className="ml-2 text-xs text-green-600">복사완료!</span>}
-                          </>
-                        )}
-                      </div>
-                      <div className="flex items-center text-gray-500 mt-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                        <span>생성일 : {server.createdAt}</span>
-                      </div>
+return (
+  <PageWrapper>
+    <div className="bg-[#F1F3F7] flex-grow min-h-screen relative">
+      <TopBar
+        title="서버리스트"
+        tabs={[{ key: "all", label: "전체" }]}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <div className="absolute top-6 right-6">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          + 새 서버
+        </button>
+      </div>
+      <div className="px-6 pt-6">
+        <PageWrapper key={activeTab}>
+          {filteredServers.length === 0 ? (
+            <div className="text-center text-gray-500 mt-10">등록된 서버가 없습니다.</div>
+          ) : (
+            <div className="space-y-4">
+              {filteredServers.map((server) => (
+                <div
+                  key={server.id}
+                  onClick={() => handleCardClick(server)}
+                  className="flex items-center bg-white px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer"
+                >
+                  {server.imageUrl && (
+                    <img
+                      src={server.imageUrl}
+                      alt="서버 이미지"
+                      className="w-20 h-20 rounded-full object-cover border mr-6"
+                    />
+                  )}
+                  <div className="flex flex-col flex-grow text-sm text-gray-700">
+                    <span className="text-xl font-semibold mb-3">{server.name}</span>
+                    <div className="flex items-center text-gray-500">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><line x1="22" y1="12" x2="2" y2="12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><line x1="6" y1="16" x2="6.01" y2="16" /><line x1="10" y1="16" x2="10.01" y2="16" /></svg>
+                      <span>{getScaleLabel(server.type)}</span>
+                      {server.status === "ON" && server.address && (
+                        <>
+                          <span className="mx-2 text-blue-500">{showAddress === false ? "●●●●●●" : server.address}</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4 text-blue-600 cursor-pointer" onClick={(e) => { e.stopPropagation(); copyToClipboard(server.address); setCopiedId(server.id); setTimeout(() => setCopiedId(null), 1500); }}><path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" /></svg>
+                          {copiedId === server.id && <span className="ml-2 text-xs text-green-600">복사완료!</span>}
+                        </>
+                      )}
                     </div>
-                    <div className="flex flex-col items-end text-sm gap-3">
-                      <div className={`flex items-center text-[13px] mb-2 p-1 ${server.status === "OFF" ? "text-red-500 bg-red-500/10" : "text-green-600 bg-green-600/10"}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
-                        {server.status === "OFF" ? "중단됨" : "실행중"}
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTogglePower(server);
-                        }}
-                        disabled={loadingId === server.id}
-                        className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-1 ${
-                          server.status === "OFF"
-                            ? "bg-blue-500 text-white hover:bg-blue-600"
-                            : "bg-red-500 text-white hover:bg-red-600"
-                        }`}
-                      >
-                        {loadingId === server.id ? (
-                          <svg className="animate-spin h-5 w-[46px] text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                          </svg>
-                        ) : server.status === "OFF" ? (
-                          <>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                            시작
-                          </>
-                        ) : (
-                          <>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
-                            중지
-                          </>
-                        )}
-                      </button>
+                    <div className="flex items-center text-gray-500 mt-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                      <span>생성일 : {server.createdAt}</span>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </PageWrapper>
-        </div>
-        {showModal && (
-          <NewServerModal
-            onClose={() => setShowModal(false)}
-            onCreated={fetchServers}
-            serverOwner={userName}
-          />
-        )}
+                  <div className="flex flex-col items-end text-sm gap-3 ml-4">
+                    <div className={`flex items-center text-[13px] mb-2 p-1 ${server.status === "OFF" ? "text-red-500 bg-red-500/10" : "text-green-600 bg-green-600/10"}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                      {server.status === "OFF" ? "중단됨" : "실행중"}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTogglePower(server);
+                      }}
+                      disabled={loadingId === server.id}
+                      className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-1 ${
+                        server.status === "OFF"
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "bg-red-500 text-white hover:bg-red-600"
+                      }`}
+                    >
+                      {loadingId === server.id ? (
+                        <svg className="animate-spin h-5 w-[46px] text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                      ) : server.status === "OFF" ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                          시작
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
+                          중지
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </PageWrapper>
       </div>
-    </PageWrapper>
-  );
+      {showModal && (
+        <NewServerModal
+          onClose={() => setShowModal(false)}
+          onCreated={fetchServers}
+          serverOwner={userName}
+        />
+      )}
+    </div>
+  </PageWrapper>
+);
 }
