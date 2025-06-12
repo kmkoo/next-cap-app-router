@@ -14,6 +14,16 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const defaultImages = [
+    "/images/default1.png",
+    "/images/default2.png",
+    "/images/default3.png",
+    "/images/default4.png",
+    "/images/default5.png",
+  ];
+
+  const [selectedImage, setSelectedImage] = useState(defaultImages[0]);
+
   const handleCreate = async () => {
     if (!serverName.trim()) return;
 
@@ -21,7 +31,7 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
     const res = await fetch("/api/aws/ec2/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverScale, serverName, serverOwner }),
+      body: JSON.stringify({ serverScale, serverName, serverOwner, imageUrl: selectedImage }),
     });
     const data = await res.json();
     setResponse(data);
@@ -46,6 +56,20 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
         </button>
         <h2 className="text-xl font-bold mb-4">서버 생성</h2>
         <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">서버 이미지 선택</label>
+            <div className="flex gap-3 justify-between">
+              {defaultImages.map((img) => (
+                <img
+                  key={img}
+                  src={img}
+                  onClick={() => setSelectedImage(img)}
+                  className={`w-16 h-16 rounded-full border-2 cursor-pointer transition
+                    ${selectedImage === img ? "border-blue-500" : "border-gray-300 opacity-70 hover:opacity-100"}`}
+                />
+              ))}
+            </div>
+          </div>
           <div>
             <label className="block text-sm font-medium mb-1">서버 이름</label>
             <input

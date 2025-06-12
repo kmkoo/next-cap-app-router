@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { serverScale, serverName, serverOwner } = body;
+    const { serverScale, serverName, serverOwner, imageUrl } = body;
 
     if (!serverOwner || !serverName || serverName.trim() === "" || !serverScale) {
       return NextResponse.json({ success: false, errorMassage: "Missing parameters" }, { status: 400 });
@@ -56,7 +56,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, errorMassage: "인스턴스 ID 없음" }, { status: 500 });
     }
 
-    // 퍼블릭 IP 재시도 조회 (최대 5회, 2초 간격)
     let publicIp = "";
     for (let i = 0; i < 5; i++) {
       const describeResult = await ec2.send(
@@ -68,11 +67,11 @@ export async function POST(req: NextRequest) {
     }
 
     await db.query(
-      `INSERT INTO Server (userNumber, serverName, serverType, instanceId, serverAddr)
-       SELECT userNumber, ?, ?, ?, ?
+      `INSERT INTO Server (userNumber, serverName, serverType, instanceId, serverAddr, serverImage)
+       SELECT userNumber, ?, ?, ?, ?, ?
        FROM User
        WHERE userName = ?`,
-      [serverName, instanceType, instanceId, publicIp, serverOwner]
+      [serverName, instanceType, instanceId, publicIp, imageUrl, serverOwner]
     );
 
     return NextResponse.json({ success: true, instance, publicIp });
