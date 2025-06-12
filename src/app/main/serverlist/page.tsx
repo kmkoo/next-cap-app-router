@@ -57,18 +57,20 @@ export default function ServerListPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && Array.isArray(data.serverList)) {
-          const serverList: Server[] = data.serverList.map((row: any) => ({
-            id: row.serverNumber.toString(),
-            name: row.serverName,
-            type: row.serverType,
-            createdAt: dayjs(row.createdAt).tz("Asia/Seoul").format("YYYY-MM-DD"),
-            address: row.serverAddr,
-            status: row.status,
-          }));
-          setServers(serverList);
-        }
-      });
+    if (data.success && Array.isArray(data.serverList)) {
+      const serverList: Server[] = data.serverList
+        .filter((row: any) => row.status !== 'DEL')
+        .map((row: any) => ({
+          id: row.serverNumber.toString(),
+          name: row.serverName,
+          type: row.serverType,
+          createdAt: dayjs(row.createdAt).tz("Asia/Seoul").format("YYYY-MM-DD"),
+          address: row.serverAddr,
+          status: row.status,
+        }));
+      setServers(serverList);
+    }
+  });
   }, [userName]);
 
   const getScaleLabel = (type: string) => {

@@ -1,25 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
-import { terminateInstance } from '@/lib/aws-ec2';
+import { stopInstance } from '@/lib/aws-ec2';
 import db from "@/lib/dbcon";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { instances } = body;
+    const { serverName, serverOwner } = body;
 
-    if (!instances || !Array.isArray(instances)) {
-      return NextResponse.json({ success: false, error: "인스턴스 리스트를 받지 못했습니다." }, { status: 400 });
+    if (!serverName || serverName.trim() === "") {
+      return NextResponse.json({ success: false, errorMassage: "서버 이름을 받지 못했습니다." }, { status: 400 });
     }
 
-    const instanceList = await terminateInstance(instances);
+    const [result] = await db.query(
+      `SELECT instanceId
+       FROM Server
+       WHERE userNumber = (
+         SELECT userNumber 
+         FROM User 
+         WHERE userName = ?) 
+       AND serverName = ?`,
+      [serverOwner, serverName]
+    );
 
-    // DB에서 상태 업데이트
-    for (const inst of instances) {
-      await db.query(
-        `UPDATE Server SET status = 'terminated', serverAddr = NULL WHERE instanceId = ?`,
-        [inst.instanceId]
-      );
+    const rows = result as any[];
+
+    if (rows.length === 0) {
+      return NextResponse.json({ success: false, errorMassage: "서버를 찾지 못했습니다." }, { status: 404 });
     }
+
+    const instanceId = rows[0].instanceId;
+    const instanceList = await stopInstance([instanceId]);
+
+    await db.query(
+      `UPDATE Server SET serverAddr = NULL, status = ? WHERE instanceId = ?`,
+      ['DEL', instanceId]
+    );
 
     return NextResponse.json({ success: true, instanceList });
 
