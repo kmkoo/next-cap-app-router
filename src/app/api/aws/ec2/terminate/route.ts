@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     }
 
     const [result] = await db.query(
-      `SELECT instanceId
+      `SELECT instanceId, status
        FROM Server
        WHERE userNumber = (
          SELECT userNumber 
@@ -34,11 +34,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, errorMassage: "서버를 찾지 못했습니다." }, { status: 404 });
     }
 
-    const instanceId = rows[0].instanceId;
-    const instanceList = await stopInstance([instanceId]);
-
+    const { instanceId, status } = rows[0];
     const timestamp = dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmss");
     const newName = `${serverName}_del_${timestamp}`;
+
+    if (status === "OFF") {
+      await db.query(
+        `UPDATE Server 
+         SET serverName = ?, serverAddr = NULL, status = ? 
+         WHERE instanceId = ?`,
+        [newName, 'DEL', instanceId]
+      );
+
+      return NextResponse.json({ success: true, instanceList: null });
+    }
+
+    const instanceList = await stopInstance([instanceId]);
 
     await db.query(
       `UPDATE Server 
