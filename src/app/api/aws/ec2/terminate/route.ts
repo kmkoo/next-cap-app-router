@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stopInstance } from '@/lib/aws-ec2';
 import db from "@/lib/dbcon";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,9 +37,14 @@ export async function POST(req: NextRequest) {
     const instanceId = rows[0].instanceId;
     const instanceList = await stopInstance([instanceId]);
 
+    const timestamp = dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmss");
+    const newName = `${serverName}_del_${timestamp}`;
+
     await db.query(
-      `UPDATE Server SET serverAddr = NULL, status = ? WHERE instanceId = ?`,
-      ['DEL', instanceId]
+      `UPDATE Server 
+       SET serverName = ?, serverAddr = NULL, status = ? 
+       WHERE instanceId = ?`,
+      [newName, 'DEL', instanceId]
     );
 
     return NextResponse.json({ success: true, instanceList });

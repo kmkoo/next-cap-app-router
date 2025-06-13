@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 import { use } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type ServerData = {
   name: string;
@@ -23,6 +29,10 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
   const [loading, setLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [updating, setUpdating] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const defaultImages = [
     "/images/default1.png",
@@ -56,11 +66,21 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
         if (data.success) {
           setServer({ name: serverName, ...data.server });
           setSelectedImage(data.server.serverImage || null);
+          setNewName(serverName);
         } else {
           window.location.href = "/403";
         }
       });
   }, [serverName]);
+
+  const getScaleLabel = (type: string) => {
+    switch (type) {
+      case 't3.micro': return '소규모';
+      case 't3.small': return '중간규모';
+      case 't3.medium': return '대규모';
+      default: return type;
+    }
+  };
 
   const handleAction = async (type: "start" | "stop" | "delete") => {
     const userName = localStorage.getItem("userName");
@@ -102,7 +122,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
   const handleImageUpdate = async () => {
     if (!server || !selectedImage) return;
     const userName = localStorage.getItem("userName");
-    const res = await fetch("/api/updateImage", {
+    const res = await fetch("/api/update/Image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ serverName: server.name, serverOwner: userName, imageUrl: selectedImage }),
@@ -113,6 +133,29 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
       setShowTooltip(false);
     } else {
       alert("이미지 변경 실패: " + data.error);
+    }
+  };
+
+  const handleNameUpdate = async () => {
+    if (!server || newName === server.name) return;
+    const userName = localStorage.getItem("userName");
+    setUpdating(true);
+    const res = await fetch("/api/update/servername", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        serverOwner: userName,
+        oldName: server.name,
+        newName,
+      }),
+    });
+    const data = await res.json();
+    setUpdating(false);
+    if (data.success) {
+      setServer((prev) => prev && { ...prev, name: newName });
+      setEditingName(false);
+    } else {
+      alert("변경 실패: " + data.error);
     }
   };
 
@@ -186,51 +229,138 @@ export default function ServerDetailPage({ params }: { params: Promise<{ name: s
               </button>
 
               {showTooltip && (
-              <div className="absolute left-[110%] bottom-[50%] translate-y-1/2 bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max">
-                <div className="text-center text-sm font-semibold mb-2">이미지 선택</div>
-                <div className="flex gap-2 mb-2 flex-wrap justify-center">
-                  {defaultImages.map((img) => (
-                    <img
-                      key={img}
-                      src={img}
-                      onClick={() => setSelectedImage(img)}
-                      className={`w-10 h-10 rounded-full border-2 cursor-pointer transition ${
-                        selectedImage === img ? "border-blue-500" : "border-gray-300 opacity-70 hover:opacity-100"
-                      }`}
-                    />
-                  ))}
+                <div className="absolute left-[110%] bottom-[50%] translate-y-1/2 bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max">
+                  <div className="text-center text-sm font-semibold mb-2">이미지 선택</div>
+                  <div className="flex gap-2 mb-2 flex-wrap justify-center">
+                    {defaultImages.map((img) => (
+                      <img
+                        key={img}
+                        src={img}
+                        onClick={() => setSelectedImage(img)}
+                        className={`w-10 h-10 rounded-full border-2 cursor-pointer transition ${
+                          selectedImage === img ? "border-blue-500" : "border-gray-300 opacity-70 hover:opacity-100"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleImageUpdate}
+                    className="w-full py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs"
+                  >
+                    변경
+                  </button>
                 </div>
-                <button
-                  onClick={handleImageUpdate}
-                  className="w-full py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs"
-                >
-                  변경
-                </button>
-              </div>
-            )}
+              )}
             </div>
           </div>
         </div>
 
-        <div className="w-full flex justify-center mt-8 px-6">
-          <div className="bg-white w-full rounded-lg shadow-lg p-6">
-            <div className="grid grid-cols-1 gap-6 text-sm text-gray-700">
-              <div><label className="block font-medium mb-1">서버 이름</label><div className="px-3 py-2 bg-gray-100 rounded">{server.name}</div></div>
-              <div><label className="block font-medium mb-1">서버 상태</label><div className="px-3 py-2 bg-gray-100 rounded">{server.status === "ON" ? "실행중" : "중지됨"}</div></div>
-              <div><label className="block font-medium mb-1">서버 타입</label><div className="px-3 py-2 bg-gray-100 rounded">{server.serverType}</div></div>
-              <div><label className="block font-medium mb-1">생성일</label><div className="px-3 py-2 bg-gray-100 rounded">{server.createdAt}</div></div>
-              <div><label className="block font-medium mb-1">IP 주소</label><div className="px-3 py-2 bg-gray-100 rounded">{server.serverAddr || "없음"}</div></div>
-            </div>
-            <div className="mt-8 flex justify-end">
+<div className="w-full flex justify-center mt-8 px-6">
+  <div className="bg-white w-full rounded-lg shadow-lg p-6">
+    <div className="grid grid-cols-1 gap-6 text-sm text-gray-700">
+      <div>
+        <label className="block font-medium mb-1">서버 이름</label>
+        <div className="px-3 py-2 bg-gray-100 rounded flex items-center justify-between gap-2">
+          {editingName ? (
+            <>
+              <input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                className="bg-gray-100 text-sm flex-1 focus:outline-none"
+              />
+              <div className="flex items-center gap-1">
+                {newName !== server.name && (
+                  <button
+                    onClick={handleNameUpdate}
+                    disabled={updating}
+                    className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded"
+                  >
+                    {updating ? "..." : "확인"}
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    setEditingName(false);
+                    setNewName(server.name);
+                  }}
+                  className="px-2 py-1 text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 rounded"
+                >
+                  취소
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="flex-1">{server.name}</span>
               <button
-                onClick={() => handleAction("delete")}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded shadow"
+                className="ml-2 text-gray-500 hover:text-blue-600 transition-colors"
+                onClick={() => setEditingName(true)}
               >
-                서버 삭제
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
               </button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">서버 상태</label>
+        <div className="px-3 py-2 bg-gray-100 rounded">
+          {server.status === "ON" ? "실행중" : "중지됨"}
+        </div>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">IP 주소</label>
+        <div className="px-3 py-2 bg-gray-100 rounded flex items-center justify-between gap-2">
+          <span className="flex-1">{server.serverAddr || "없음"}</span>
+          {server.serverAddr && (
+            <div className="flex items-center gap-1">
+              <button
+                className="text-gray-500 hover:text-blue-600 text-xs"
+                onClick={() => {
+                  navigator.clipboard.writeText(server.serverAddr!);
+                  setCopiedId(server.serverAddr!);
+                  setTimeout(() => setCopiedId(null), 1500);
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+              {copiedId === server.serverAddr && (
+                <span className="text-green-600 text-xs">복사됨!</span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">서버 타입</label>
+        <div className="px-3 py-2 bg-gray-100 rounded">
+          {getScaleLabel(server.serverType)}
+        </div>
+      </div>
+
+      <div>
+        <label className="block font-medium mb-1">생성일</label>
+        <div className="px-3 py-2 bg-gray-100 rounded">
+          {dayjs(server.createdAt).tz("Asia/Seoul").format("YYYY-MM-DD")}
+        </div>
+      </div>
+    </div>
+
+    <div className="mt-8 flex justify-end">
+      <button
+        onClick={() => handleAction("delete")}
+        className="text-[12px] bg-white text-red-500 hover:text-white hover:bg-red-500 font-semibold px-3 py-2 rounded-3xl border shadow-sm hover:shadow-md hover:bg-gray-100/30 flex items-center gap-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        서버 삭제
+      </button>
+    </div>
+  </div>
+</div>
+
       </div>
     </PageWrapper>
   );
