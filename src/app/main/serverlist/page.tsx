@@ -139,11 +139,12 @@ return (
         activeTab={activeTab}
         setActiveTab={setActiveTab}
       />
-      <div className="absolute top-16 right-6">
+      <div className="absolute top-[68px] right-6">
         <button
           onClick={() => setShowModal(true)}
-          className="text-[12px] bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700"
+          className="text-[12px] bg-white text-blue-500 font-semibold px-3 py-2 rounded-3xl border shadow-sm hover:shadow-md hover:bg-gray-100/30 flex items-center gap-1"
         >
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           서버 생성
         </button>
       </div>
@@ -206,8 +207,8 @@ return (
                       disabled={loadingId === server.id}
                       className={`px-4 py-2 rounded text-sm font-medium flex items-center gap-1 ${
                         server.status === "OFF"
-                          ? "bg-green-700 text-white hover:bg-green-800"
-                          : "bg-red-500 text-white hover:bg-red-600"
+                          ? "bg-[#03588C] text-white hover:bg-[#011C40] shadow-sm hover:shadow-md rounded-3xl"
+                          : "bg-[#F25C5C] text-white hover:bg-[#D92525] shadow-sm hover:shadow-md rounded-3xl"
                       }`}
                     >
                       {loadingId === server.id ? (
