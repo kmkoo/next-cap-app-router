@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInstance } from '@/lib/aws-ec2';
-import { _InstanceType } from "@aws-sdk/client-ec2";
+import { _InstanceType, ServiceType } from "@aws-sdk/client-ec2";
 import db from "@/lib/dbcon";
 import { RowDataPacket } from "mysql2";
+import { serviceCommands } from "@/lib/commands";
 
 export async function POST(req: NextRequest) {
   let instanceType: _InstanceType;
@@ -11,6 +12,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { serverScale, serverName, serverOwner } = body;
+    const serviceType = "minecrafe";
+    const userCommand = serviceCommands[serviceType].join("\n");
 
 
     if (!serverOwner || !serverName || serverName.trim() === "" || !serverScale) {
@@ -50,7 +53,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: false, errorMassage: "잘못된 서버 스케일" }, { status: 400 }); 
     }
 
-    const instance = await createInstance({ instanceType, serverTag:serverName, serverOwner }); // 인스턴스 생성
+    const instance = await createInstance({ instanceType, serverTag:serverName, serverOwner, userCommand }); // 인스턴스 생성
     await db.query( // 인스턴스 생성 후 DB에 입력
       `INSERT INTO Server (userNumber, serverName, serverType, instanceId)
       SELECT userNumber, ?, ?, ?
