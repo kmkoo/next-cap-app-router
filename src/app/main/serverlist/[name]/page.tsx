@@ -418,15 +418,17 @@ export default function ServerDetailPage({
                         className="bg-gray-100 text-sm flex-1 focus:outline-none"
                       />
                       <div className="flex items-center gap-1">
-                        {newName !== server.name && (
-                          <button
-                            onClick={handleNameUpdate}
-                            disabled={updating}
-                            className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded"
-                          >
-                            {updating ? "..." : "확인"}
-                          </button>
-                        )}
+                        {newName !== server.name &&
+                          newName.trim().length >= 2 &&
+                          newName.trim().length <= 10 && (
+                            <button
+                              onClick={handleNameUpdate}
+                              disabled={updating}
+                              className="px-2 py-1 text-xs bg-blue-500 hover:bg-blue-600 text-white rounded"
+                            >
+                              {updating ? "..." : "확인"}
+                            </button>
+                          )}
                         <button
                           onClick={() => {
                             setEditingName(false);
@@ -463,6 +465,12 @@ export default function ServerDetailPage({
                     </>
                   )}
                 </div>
+                {editingName &&
+                  (newName.trim().length < 2 || newName.trim().length > 10) && (
+                    <p className="text-red-600 text-xs mt-1 ml-1">
+                      서버 이름은 2자 이상 10자 이하여야 합니다.
+                    </p>
+                  )}
               </div>
 
               <div>

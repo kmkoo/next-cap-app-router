@@ -13,11 +13,6 @@ export default function NewServerModal({
   onCreated,
   serverOwner,
 }: Props) {
-  const [serverScale, setServerScale] = useState("small");
-  const [serverName, setServerName] = useState("");
-  const [response, setResponse] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-
   const defaultImages = [
     "/images/default1.png",
     "/images/default2.png",
@@ -26,10 +21,17 @@ export default function NewServerModal({
     "/images/default5.png",
   ];
 
+  const [serverScale, setServerScale] = useState("small");
+  const [serverName, setServerName] = useState("");
+  const [response, setResponse] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(defaultImages[0]);
 
+  const isValidName =
+    serverName.trim().length >= 2 && serverName.trim().length <= 10;
+
   const handleCreate = async () => {
-    if (!serverName.trim()) return;
+    if (!isValidName) return;
 
     setLoading(true);
     const res = await fetch("/api/aws/ec2/create", {
@@ -99,6 +101,11 @@ export default function NewServerModal({
               onChange={(e) => setServerName(e.target.value)}
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {!isValidName && (
+              <p className="text-gray-600 text-sm mt-1">
+                서버 이름은 2자 이상 10자 이하여야 합니다.
+              </p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">서버 규모</label>
@@ -124,8 +131,12 @@ export default function NewServerModal({
           </div>
           <button
             onClick={handleCreate}
-            disabled={loading}
-            className="w-full py-3 rounded bg-neutral-700 text-white hover:bg-neutral-800"
+            disabled={loading || !isValidName}
+            className={`w-full py-3 rounded ${
+              loading || !isValidName
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-neutral-700 text-white hover:bg-neutral-800"
+            }`}
           >
             {loading ? "생성 중..." : "서버 만들기"}
           </button>
