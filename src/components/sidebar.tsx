@@ -67,7 +67,7 @@ export default function Sidebar({
         </svg>
       )
     },
-    {
+    /*{
       href: '/main/newserver',
       label: '서버 생성',
       icon: (
@@ -79,7 +79,7 @@ export default function Sidebar({
           <path d="M20 15l-2 3h3l-2 3" />
         </svg>
       )
-    },
+    },*/
     {
       href: '/main/guide',
       label: '사용 가이드',

@@ -1,26 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { rebootInstance } from "@/lib/aws-ec2";
+import { stopInstance } from "@/lib/aws-ec2";
 import db from "@/lib/dbcon";
-import { EC2Client, DescribeInstancesCommand } from "@aws-sdk/client-ec2";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 
-const ec2 = new EC2Client({ region: "ap-northeast-2" });
-
-async function waitForPublicIp(
-  instanceId: string,
-  retries = 10,
-  delayMs = 3000
-): Promise<string | null> {
-  for (let i = 0; i < retries; i++) {
-    const describeResult = await ec2.send(
-      new DescribeInstancesCommand({ InstanceIds: [instanceId] })
-    );
-    const ip =
-      describeResult.Reservations?.[0]?.Instances?.[0]?.PublicIpAddress;
-    if (ip) return ip;
-    await new Promise((res) => setTimeout(res, delayMs));
-  }
-  return null;
-}
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,7 +21,7 @@ export async function POST(req: NextRequest) {
     }
 
     const [result] = await db.query(
-      `SELECT instanceId
+      `SELECT instanceId, status
        FROM Server
        WHERE userNumber = (
          SELECT userNumber 
@@ -54,18 +40,31 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const instanceId = rows[0].instanceId;
-    await rebootInstance([instanceId]);
+    const { instanceId, status } = rows[0];
+    const timestamp = dayjs().tz("Asia/Seoul").format("YYYYMMDDHHmmss");
+    const newName = `${serverName}_del_${timestamp}`;
 
-    const publicIp = await waitForPublicIp(instanceId, 20, 5000);
-    if (publicIp) {
-      await db.query(`UPDATE Server SET serverAddr = ? WHERE instanceId = ?`, [
-        publicIp,
-        instanceId,
-      ]);
+    if (status === "OFF") {
+      await db.query(
+        `UPDATE Server 
+         SET serverName = ?, serverAddr = NULL, status = ? 
+         WHERE instanceId = ?`,
+        [newName, "DEL", instanceId]
+      );
+
+      return NextResponse.json({ success: true, instanceList: null });
     }
 
-    return NextResponse.json({ success: true, updatedIp: publicIp || null });
+    const instanceList = await stopInstance([instanceId]);
+
+    await db.query(
+      `UPDATE Server 
+       SET serverName = ?, serverAddr = NULL, status = ? 
+       WHERE instanceId = ?`,
+      [newName, "DEL", instanceId]
+    );
+
+    return NextResponse.json({ success: true, instanceList });
   } catch (error) {
     return NextResponse.json(
       { success: false, error: (error as Error).message },
