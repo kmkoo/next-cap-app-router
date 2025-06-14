@@ -306,7 +306,7 @@ export default function ServerListPage() {
                         <span>생성일 : {server.createdAt}</span>
                       </div>
                     </div>
-                    <div className="hidden sm:flex flex-col items-end text-sm gap-3 ml-4">
+                    <div className="hidden sm:flex flex-col items-end text-sm gap-1 ml-4 mt-5">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -377,6 +377,26 @@ export default function ServerListPage() {
                           </>
                         )}
                       </button>
+                      <div className="text-[12px] flex items-center gap-1 text-gray-500 mt-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="8" x2="12" y2="12"></line>
+                          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {server.status === "OFF" || loadingId === server.id
+                          ? "서버 시작은 최대 1분 정도 소요될 수 있습니다."
+                          : "서버 중단은 최대 5분 정도 소요될 수 있습니다."}
+                      </div>
                     </div>
                   </div>
                 ))}
