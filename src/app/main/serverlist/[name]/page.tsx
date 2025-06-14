@@ -51,8 +51,8 @@ export default function ServerDetailPage({
 
   useEffect(() => {
     const raw = sessionStorage.getItem("serverDetail");
-    const userName = localStorage.getItem("userName");
-    if (!raw || !userName) {
+    const userEmail = localStorage.getItem("userEmail");
+    if (!raw || !userEmail) {
       window.location.href = "/403";
       return;
     }
@@ -66,7 +66,7 @@ export default function ServerDetailPage({
     fetch("/api/aws/ec2/detail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverName, serverOwner: userName }),
+      body: JSON.stringify({ serverName, serverOwner: userEmail }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -94,14 +94,14 @@ export default function ServerDetailPage({
   };
 
   const handleAction = async (type: "start" | "stop") => {
-    const userName = localStorage.getItem("userName");
-    if (!userName || !server) return;
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userEmail || !server) return;
 
     setLoading(true);
     const res = await fetch(`/api/aws/ec2/${type}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverName: server.name, serverOwner: userName }),
+      body: JSON.stringify({ serverName: server.name, serverOwner: userEmail }),
     });
 
     const result = await res.json();
@@ -129,13 +129,13 @@ export default function ServerDetailPage({
 
   const handleImageUpdate = async () => {
     if (!server || !selectedImage) return;
-    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
     const res = await fetch("/api/update/Image", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         serverName: server.name,
-        serverOwner: userName,
+        serverOwner: userEmail,
         imageUrl: selectedImage,
       }),
     });
@@ -150,13 +150,13 @@ export default function ServerDetailPage({
 
   const handleNameUpdate = async () => {
     if (!server || newName === server.name) return;
-    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
     setUpdating(true);
     const res = await fetch("/api/update/servername", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        serverOwner: userName,
+        serverOwner: userEmail,
         oldName: server.name,
         newName,
       }),
@@ -173,13 +173,13 @@ export default function ServerDetailPage({
 
   const handleConfirmDelete = async () => {
     if (!server) return;
-    const userName = localStorage.getItem("userName");
+    const userEmail = localStorage.getItem("userEmail");
     setLoading(true);
 
     const res = await fetch(`/api/aws/ec2/delete`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverName: server.name, serverOwner: userName }),
+      body: JSON.stringify({ serverName: server.name, serverOwner: userEmail }),
     });
 
     const result = await res.json();

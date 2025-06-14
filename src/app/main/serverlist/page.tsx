@@ -34,20 +34,19 @@ export default function ServerListPage() {
   const [servers, setServers] = useState<Server[]>([]);
   const [showAddress, setShowAddress] = useState<boolean | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (storedName) setUserName(storedName);
+    const storedEmail = localStorage.getItem("userEmail");
+    if (storedEmail) setUserEmail(storedEmail);
   }, []);
 
   useEffect(() => {
-    const email = localStorage.getItem("userEmail");
-    if (!email) return;
+    if (!userEmail) return;
 
-    fetch(`/api/settings?email=${email}`)
+    fetch(`/api/settings?email=${userEmail}`)
       .then((res) => res.json())
       .then((data) => {
         if (typeof data.showServerAddress === "boolean") {
@@ -55,16 +54,14 @@ export default function ServerListPage() {
         }
       });
 
-    if (userName) {
-      fetchServers();
-    }
-  }, [userName]);
+    fetchServers();
+  }, [userEmail]);
 
   const fetchServers = () => {
     fetch("/api/getServerList", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userName }),
+      body: JSON.stringify({ userEmail }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -111,7 +108,7 @@ export default function ServerListPage() {
     const response = await fetch(`/api/aws/ec2/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverName: server.name, serverOwner: userName }),
+      body: JSON.stringify({ serverName: server.name, serverOwner: userEmail }),
     });
 
     const data = await response.json();
@@ -408,7 +405,7 @@ export default function ServerListPage() {
           <NewServerModal
             onClose={() => setShowModal(false)}
             onCreated={fetchServers}
-            serverOwner={userName}
+            serverOwner={userEmail}
           />
         )}
       </div>
