@@ -237,11 +237,11 @@ export default function ServerDetailPage({
           </div>
 
           <div className="relative w-full h-[110px] bg-white flex items-center justify-between px-6">
-            <div className="flex items-center ml-[150px] gap-4">
+            <div className="flex items-center ml-[90px] sm:ml-[150px] gap-4">
               <div className="text-xl font-semibold flex items-center gap-2 mt-14">
                 {server.name}
                 <span
-                  className={`text-[11px] px-2 py-[2px] font-medium rounded ${
+                  className={`hidden sm:flex text-[11px] px-2 py-[2px] font-medium rounded ${
                     server.status === "OFF"
                       ? "text-red-500 bg-red-500/10"
                       : "text-green-600 bg-green-600/10"
@@ -266,7 +266,7 @@ export default function ServerDetailPage({
                 </span>
               </div>
             </div>
-            <div className="mt-14">
+            <div className="absolute top-[67px] right-6">
               <button
                 onClick={() =>
                   handleAction(server.status === "OFF" ? "start" : "stop")
@@ -339,7 +339,7 @@ export default function ServerDetailPage({
             </div>
           </div>
 
-          <div className="absolute top-[30px] left-10 w-[120px] h-[120px]">
+          <div className="absolute top-[50px] left-6 w-[80px] h-[80px] sm:left-10 sm:top-[30px] sm:w-[120px] sm:h-[120px]">
             <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg">
               <img
                 src={server.serverImage || "/default.png"}
@@ -353,7 +353,7 @@ export default function ServerDetailPage({
             >
               <button
                 onClick={() => setShowTooltip((prev) => !prev)}
-                className="w-7 h-7 bg-gray-500 hover:bg-gray-600 border-2 border-white text-white text-xs rounded-full flex items-center justify-center shadow-md z-10"
+                className="w-5 h-5 sm:w-7 sm:h-7 bg-gray-500 hover:bg-gray-600 border-2 border-white text-white text-xs rounded-full flex items-center justify-center shadow-md z-10"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -374,7 +374,7 @@ export default function ServerDetailPage({
               </button>
 
               {showTooltip && (
-                <div className="absolute left-[110%] bottom-[-40px] bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max opacity-0 animate-fade-in">
+                <div className="absolute left-[-70px] top-[40px] bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max opacity-0 animate-fade-in">
                   <div className="text-center text-sm font-semibold mb-2">
                     이미지 선택
                   </div>

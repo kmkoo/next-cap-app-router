@@ -60,7 +60,7 @@ export default function NewServerModal({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative opacity-0 translate-y-4 animate-fade-in"
+        className="bg-white rounded-lg shadow-xl w-[90%] max-w-md max-h-screen overflow-y-auto p-6 relative opacity-0 translate-y-4 animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -75,7 +75,7 @@ export default function NewServerModal({
             <label className="block text-sm font-medium mb-1">
               서버 이미지 선택
             </label>
-            <div className="flex gap-3 justify-between">
+            <div className="flex gap-3 justify-between flex-wrap">
               {defaultImages.map((img) => (
                 <img
                   key={img}
