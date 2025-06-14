@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 
@@ -8,7 +8,11 @@ type Props = {
   serverOwner: string;
 };
 
-export default function NewServerModal({ onClose, onCreated, serverOwner }: Props) {
+export default function NewServerModal({
+  onClose,
+  onCreated,
+  serverOwner,
+}: Props) {
   const [serverScale, setServerScale] = useState("small");
   const [serverName, setServerName] = useState("");
   const [response, setResponse] = useState<any>(null);
@@ -31,7 +35,12 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
     const res = await fetch("/api/aws/ec2/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ serverScale, serverName, serverOwner, imageUrl: selectedImage }),
+      body: JSON.stringify({
+        serverScale,
+        serverName,
+        serverOwner,
+        imageUrl: selectedImage,
+      }),
     });
     const data = await res.json();
     setResponse(data);
@@ -46,8 +55,14 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+    <div
+      className="fixed inset-0 bg-black/50 z-50 flex justify-center items-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative opacity-0 translate-y-4 animate-fade-in"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-2xl text-gray-500 hover:text-black"
@@ -57,15 +72,20 @@ export default function NewServerModal({ onClose, onCreated, serverOwner }: Prop
         <h2 className="text-xl font-bold mb-4">서버 생성</h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">서버 이미지 선택</label>
+            <label className="block text-sm font-medium mb-1">
+              서버 이미지 선택
+            </label>
             <div className="flex gap-3 justify-between">
               {defaultImages.map((img) => (
                 <img
                   key={img}
                   src={img}
                   onClick={() => setSelectedImage(img)}
-                  className={`w-16 h-16 rounded-full border-2 cursor-pointer transition
-                    ${selectedImage === img ? "border-blue-500" : "border-gray-300 opacity-70 hover:opacity-100"}`}
+                  className={`w-16 h-16 rounded-full border-2 cursor-pointer transition ${
+                    selectedImage === img
+                      ? "border-blue-500"
+                      : "border-gray-300 opacity-70 hover:opacity-100"
+                  }`}
                 />
               ))}
             </div>

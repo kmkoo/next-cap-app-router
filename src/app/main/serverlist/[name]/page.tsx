@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 import { use } from "react";
@@ -39,6 +39,7 @@ export default function ServerDetailPage({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const tooltipWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const defaultImages = [
     "/images/default1.png",
@@ -192,12 +193,49 @@ export default function ServerDetailPage({
     }
   };
 
+  useEffect(() => {
+    if (!showTooltip) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        tooltipWrapperRef.current &&
+        !tooltipWrapperRef.current.contains(e.target as Node)
+      ) {
+        setShowTooltip(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showTooltip]);
+
   if (!server) return null;
 
   return (
     <PageWrapper>
       <div className="bg-[#F1F3F7] flex-grow min-h-screen">
         <div className="relative w-full flex flex-col items-center">
+          <div className="absolute p-2 top-5 left-2 z-10">
+            <button
+              onClick={() => router.push("/main/serverlist")}
+              className="flex items-center text-gray-500 hover:text-black text-sm"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
           <div className="relative w-full h-[110px] bg-white flex items-center justify-between px-6">
             <div className="flex items-center ml-[150px] gap-4">
               <div className="text-xl font-semibold flex items-center gap-2 mt-14">
@@ -309,7 +347,10 @@ export default function ServerDetailPage({
                 alt="프로필"
               />
             </div>
-            <div className="absolute bottom-[4px] right-[4px]">
+            <div
+              ref={tooltipWrapperRef}
+              className="absolute bottom-[4px] right-[4px]"
+            >
               <button
                 onClick={() => setShowTooltip((prev) => !prev)}
                 className="w-7 h-7 bg-gray-500 hover:bg-gray-600 border-2 border-white text-white text-xs rounded-full flex items-center justify-center shadow-md z-10"
@@ -333,7 +374,7 @@ export default function ServerDetailPage({
               </button>
 
               {showTooltip && (
-                <div className="absolute left-[110%] bottom-[50%] translate-y-1/2 bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max">
+                <div className="absolute left-[110%] bottom-[-40px] bg-white border border-gray-300 rounded-lg shadow-lg text-xs text-gray-700 px-3 py-2 z-20 whitespace-normal max-w-[260px] w-max opacity-0 animate-fade-in">
                   <div className="text-center text-sm font-semibold mb-2">
                     이미지 선택
                   </div>
