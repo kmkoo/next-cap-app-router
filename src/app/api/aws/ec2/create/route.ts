@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInstance } from '@/lib/aws-ec2';
-import { _InstanceType, ServiceType } from "@aws-sdk/client-ec2";
+import { _InstanceType } from "@aws-sdk/client-ec2";
 import db from "@/lib/dbcon";
 import { RowDataPacket } from "mysql2";
 import { serviceCommands } from "@/lib/commands";
@@ -12,8 +12,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { serverScale, serverName, serverOwner } = body;
-    const serviceType = "minecrafe";
-    const userCommand = serviceCommands[serviceType].join("\n");
+    const serverType = "minecraft";
+    const userCommand = serviceCommands[serverType].join("\n");
 
 
     if (!serverOwner || !serverName || serverName.trim() === "" || !serverScale) {
