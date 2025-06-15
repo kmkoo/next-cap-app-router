@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { serverScale, serverName, serverOwner } = body;
     const serverType = "minecraft";
-    const userCommand = serviceCommands[serverType].join("\n");
+    const userCommand = serviceCommands[serverType];
 
 
     if (!serverOwner || !serverName || serverName.trim() === "" || !serverScale) {
