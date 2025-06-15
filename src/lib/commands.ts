@@ -3,7 +3,9 @@ export const serviceCommands: Record<string, string> = {
     `#!/bin/bash
 sudo dnf install -y java-21-amazon-corretto
 cd /home/ec2-user
-mkdir -p minecraft && cd minecraft
+mkdir -p minecraft
+chown -R ec2-user:ec2-user /home/ec2-user/minecraft
+cd minecraft
 wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O minecraft_server.1.21.5.jar
 echo "eula=true" > eula.txt
 
@@ -27,7 +29,7 @@ After=network.target
 Type=simple
 User=ec2-user
 WorkingDirectory=/home/ec2-user/minecraft
-ExecStart=/home/ec2-user/minecraft/autostarter.sh
+ExecStart=/home/ec2-user/minecraft/auto-starter.sh
 Restart=on-failure
 
 [Install]
