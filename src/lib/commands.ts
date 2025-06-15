@@ -10,7 +10,7 @@ export const serviceCommands: Record<string, string> = {
     echo "SQUD [info] 서버 실행준비 완료"
     echo "SQUD [info] 게임서버를 서비스로 등록합니다."
 
-    cat << 'EOF' > /home/ec2-user/minecraft/auto-starter.sh
+    cat << EOF > /home/ec2-user/minecraft/auto-starter.sh
     #1/bin/bash
     cd /home/ec2-user/minecraft
     nohup java -Xmx1024M -Xms1024M -jar minecraft_server.1.21.5.jar nogui &
