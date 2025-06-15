@@ -6,8 +6,8 @@ cd /home/ec2-user
 mkdir -p minecraft
 chown -R ec2-user:ec2-user /home/ec2-user/minecraft
 cd minecraft
-wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O minecraft_server.1.21.5.jar
-echo "eula=true" > eula.txt
+sudo -u ec2-user wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O minecraft_server.1.21.5.jar
+sudo -u ec2-user echo "eula=true" > eula.txt
 
 echo "SQUD [info] 서버 실행준비 완료"
 echo "SQUD [info] 게임서버를 서비스로 등록합니다."
@@ -15,10 +15,11 @@ echo "SQUD [info] 게임서버를 서비스로 등록합니다."
 cat << EOF > /home/ec2-user/minecraft/auto-starter.sh
 #!/bin/bash
 cd /home/ec2-user/minecraft
-nohup java -Xmx1024M -Xms1024M -jar minecraft_server.1.21.5.jar nogui &
+java -Xmx1024M -Xms1024M -jar minecraft_server.1.21.5.jar nogui
 EOF
     
 chmod +x /home/ec2-user/minecraft/auto-starter.sh
+chown ec2-user:ec2-user /home/ec2-user/minecraft/auto-starter.sh
 
 cat << EOF > /etc/systemd/system/minecraft.service
 [Unit]
