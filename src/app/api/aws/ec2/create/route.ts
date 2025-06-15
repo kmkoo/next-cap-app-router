@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-ec2";
 import db from "@/lib/dbcon";
 import { RowDataPacket } from "mysql2";
+import { serviceCommands } from "@/lib/commands";
 
 const ec2 = new EC2Client({ region: "ap-northeast-2" });
 
@@ -22,17 +23,12 @@ export async function POST(req: NextRequest) {
       serverOwner: serverEmail,
       imageUrl,
     } = body;
+    const serverType = "minecraft";
+    const userCommand = serviceCommands[serverType];
 
-    if (
-      !serverEmail ||
-      !serverName ||
-      serverName.trim() === "" ||
-      !serverScale
-    ) {
-      return NextResponse.json(
-        { success: false, errorMassage: "Missing parameters" },
-        { status: 400 }
-      );
+
+    if (!serverEmail || !serverName || serverName.trim() === "" || !serverScale) {
+      return NextResponse.json({ success: false, errorMassage: "Missing parameters" }, { status: 400 });
     }
 
     const [userRow] = await db.query<ExistRow[]>(
@@ -79,6 +75,7 @@ export async function POST(req: NextRequest) {
       instanceType,
       serverTag: serverName,
       serverOwner: serverEmail,
+      userCommand
     });
     const instanceId = instance?.[0]?.InstanceId;
 
