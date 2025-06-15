@@ -23,8 +23,7 @@ export async function createInstance(params:{
   const {instanceType, serverTag, serverOwner, userCommand } = params;
 
   // 서버가 생성된 후 실행할 명령어를 command에 받아옴
-	const script = `#!/bin/bash\n${userCommand}`;
-	const userData = Buffer.from(script).toString("base64");
+	const userData = Buffer.from(userCommand!).toString("base64");
 
   const command = new RunInstancesCommand({
     ImageId: process.env.AWS_IMAGEID,
