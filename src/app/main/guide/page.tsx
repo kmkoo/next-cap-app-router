@@ -25,7 +25,7 @@ export default function GuidePage() {
         <div className="mx-5 my-10">
           <div className="relative w-full h-[0] pt-[56.2500%] pb-0 [box-shadow:0_2px_8px_0_rgba(63,69,81,0.16)] mt-[1.6em] mb-[0.9em] overflow-hidden rounded-[8px]">
             <iframe loading="lazy" className="absolute w-full h-full top-[0] left-[0] border-[none] p-0 m-0"
-              src="https://www.canva.com/design/DAGZOZE-2HI/JYjQ5xZer4xHfNX7WPiALA/view?embed" allow="fullscreen">
+              src="https://www.canva.com/design/DAGqeNMTJ9k/lfTiRZhPFrr3Ryh7-7ztKg/view?embed" allow="fullscreen">
             </iframe>
           </div>
         </div>
