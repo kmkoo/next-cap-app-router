@@ -17,6 +17,7 @@
     "mysql2": "^3.14.1",
     "next": "15.3.1",
     "nodemailer": "^7.0.3",
+    "rcon-client": "^4.2.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "recharts": "^2.15.3"

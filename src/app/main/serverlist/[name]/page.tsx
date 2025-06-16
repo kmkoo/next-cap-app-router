@@ -7,6 +7,7 @@ import { use } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import ConsoleConnection from "@/components/console-connection";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -627,6 +628,7 @@ export default function ServerDetailPage({
                 </div>
               </div>
             )}
+            <ConsoleConnection addr={server.serverAddr}/>
           </div>
         </div>
       </div>

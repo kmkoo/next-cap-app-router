@@ -7,7 +7,10 @@ mkdir -p minecraft
 chown -R ec2-user:ec2-user /home/ec2-user/minecraft
 cd minecraft
 sudo -u ec2-user wget https://piston-data.mojang.com/v1/objects/e6ec2f64e6080b9b5d9b471b291c33cc7f509733/server.jar -O minecraft_server.1.21.5.jar
-sudo -u ec2-user echo "eula=true" > eula.txt
+java -jar minecraft_server.1.21.5.jar --initSettings nogui 
+sudo sed 's/eula=false/eula=true/g eula.txt
+sudo sed 's/enable-rcon=false/enable-rcon=true/g server.properties
+sudo sed 's/rcon.password=/rcon.password=${process.env.RCON_PASSWORD}/g server.properties
 
 echo "SQUD [info] 서버 실행준비 완료"
 echo "SQUD [info] 게임서버를 서비스로 등록합니다."
