@@ -391,7 +391,7 @@ export default function ServerListPage() {
                           <line x1="12" y1="16" x2="12.01" y2="16"></line>
                         </svg>
                         {server.status === "OFF" || loadingId === server.id
-                          ? "서버 시작은 최대 1분 정도 소요될 수 있습니다."
+                          ? "서버 시작은 최대 5분 정도 소요될 수 있습니다."
                           : "서버 중단은 최대 5분 정도 소요될 수 있습니다."}
                       </div>
                     </div>
