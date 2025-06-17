@@ -1,3 +1,4 @@
+import db from "@/lib/dbcon";
 import { DescribeInstancesCommand, EC2Client } from "@aws-sdk/client-ec2";
 import { NextRequest, NextResponse } from "next/server";
 import Rcon from 'rcon-client';
