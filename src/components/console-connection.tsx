@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 
-export default function ConsoleConnenction(props: { addr: any; }) {
+export default function ConsoleConnenction(props: { serverName: any; }) {
   const [command, setCommand] = useState('');
   const [respose, setRespose] = useState('');
+
+  const userEmail = localStorage.getItem("userEmail");
 
   const sendCommand = async () => {
     const res = await fetch('/api/rcon', {
       method: 'POST',
-      body: JSON.stringify({ addr: props.addr, command }),
+      body: JSON.stringify({ serverName: props.serverName, userEmail, command }),
       headers: {
         'Content-Type': 'application/json',
       },

@@ -628,7 +628,7 @@ export default function ServerDetailPage({
                 </div>
               </div>
             )}
-            <ConsoleConnection addr={server.serverAddr}/>
+            <ConsoleConnection serverName={server.name}/>
           </div>
         </div>
       </div>
