@@ -20,10 +20,11 @@ export async function POST(req: NextRequest) {
     const {
       serverScale,
       serverName,
+      gameName,
       serverOwner: serverEmail,
       imageUrl,
     } = body;
-    const serverType = "minecraft";
+    const serverType = gameName;
     const userCommand = serviceCommands[serverType];
 
 

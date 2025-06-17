@@ -21,8 +21,9 @@ export default function NewServerModal({
     "/images/default5.png",
   ];
 
-  const [serverScale, setServerScale] = useState("small");
+  const [serverScale, setServerScale] = useState("medium"); // t3.micro는 안돌아가는듯
   const [serverName, setServerName] = useState("");
+  const [gameName, setGameName] = useState("minecraft");
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(defaultImages[0]);
@@ -40,6 +41,7 @@ export default function NewServerModal({
       body: JSON.stringify({
         serverScale,
         serverName,
+        gameName,
         serverOwner,
         imageUrl: selectedImage,
       }),
@@ -106,6 +108,27 @@ export default function NewServerModal({
                 서버 이름은 2자 이상 10자 이하여야 합니다.
               </p>
             )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">게임 종류</label>
+            <div className="flex gap-2">
+              {[
+                { label: "마인크래프트", value: "minecraft" },
+                { label: "테라리아", value: "terraria" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setGameName(opt.value)}
+                  className={`flex-1 py-2 rounded border text-sm ${
+                    gameName === opt.value
+                      ? "bg-neutral-700 text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">서버 규모</label>
