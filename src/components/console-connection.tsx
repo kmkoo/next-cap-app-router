@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 
-export default function ConsoleConnenction(props: { serverName: any; userEmail: any; }) {
+export default function ConsoleConnenction(props: { addr: any; }) {
   const [command, setCommand] = useState('');
   const [respose, setRespose] = useState('');
 
   const sendCommand = async () => {
     const res = await fetch('/api/rcon', {
       method: 'POST',
-      body: JSON.stringify({ serverName: props.serverName, userEmail: props.userEmail, command }),
+      body: JSON.stringify({ addr: props.addr, command }),
       headers: {
         'Content-Type': 'application/json',
       },
     });
     const data = await res.json();
-    setRespose(data);
+    setRespose(data.response);
   };
 
   return(
@@ -31,7 +31,7 @@ export default function ConsoleConnenction(props: { serverName: any; userEmail: 
         명령어 전송
       </button>
       <div className="text-sm text-gray-700 wrap-break-word">
-        서버 응답: {respose[0]}
+        서버 응답: {respose}
       </div>
     </div>
   );
