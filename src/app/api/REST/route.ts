@@ -6,10 +6,6 @@ export async function POST(req: NextRequest) {
   try {
     const res = await fetch(`http://${addr}:7878/v3/server/rawcmd?cmd=${command}&token=${process.env.RCON_PASSWORD}`, {
       method: 'POST',
-      body: JSON.stringify({ addr, command }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
     const data = await res.json();
 
