@@ -5,7 +5,7 @@ import Rcon from 'rcon-client';
 
 const ec2 = new EC2Client({ region: "ap-northeast-2" });
 
-async function waitForPublicIp(
+async function waitForIp(
   instanceId: string,
   retries = 10,
   delayMs = 3000
@@ -25,7 +25,7 @@ async function waitForPublicIp(
 
 export async function POST(req: NextRequest) {
   try {
-    const { serverName, serverOwner: serverEmail, command } = await req.json();
+    const { serverName, userEmail, command } = await req.json();
 
     if (!serverName || serverName.trim() === "") {
       return NextResponse.json(
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         FROM User 
         WHERE userEmail = ?) 
       AND serverName = ?`,
-      [serverEmail, serverName]
+      [userEmail, serverName]
     );
 
     const rows = result as any[];
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     const instanceId = rows[0].instanceId;
 
-    const Ipaddr = await waitForPublicIp(instanceId, 20, 5000);
+    const Ipaddr = await waitForIp(instanceId, 20, 5000);
 
     const rcon = await Rcon.Rcon.connect({
       host: Ipaddr!,

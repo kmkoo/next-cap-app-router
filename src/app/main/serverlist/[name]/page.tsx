@@ -36,6 +36,7 @@ export default function ServerDetailPage({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [updating, setUpdating] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -53,6 +54,7 @@ export default function ServerDetailPage({
   useEffect(() => {
     const raw = sessionStorage.getItem("serverDetail");
     const userEmail = localStorage.getItem("userEmail");
+    if (userEmail) setUserEmail(userEmail);
     if (!raw || !userEmail) {
       window.location.href = "/403";
       return;
@@ -628,7 +630,7 @@ export default function ServerDetailPage({
                 </div>
               </div>
             )}
-            <ConsoleConnection serverName={server.name}/>
+            <ConsoleConnection serverName={server.name} userEmail={userEmail}/>
           </div>
         </div>
       </div>
