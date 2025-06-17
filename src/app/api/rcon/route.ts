@@ -14,8 +14,6 @@ export async function POST(req: NextRequest) {
     const response = await rcon.send(command);
     await rcon.end();
 
-    console.log(response);
-
     return NextResponse.json({ response });
   } catch (err: any) {
     console.error('RCON Error:', err);
