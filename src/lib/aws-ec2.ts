@@ -23,8 +23,7 @@ export async function createInstance(params:{
   const {instanceType, serverTag, serverOwner, userCommand } = params;
 
   // 서버가 생성된 후 실행할 명령어를 command에 받아옴
-	const script = `#!/bin/bash\n${userCommand}`;
-	const userData = Buffer.from(script).toString("base64");
+	const userData = Buffer.from(userCommand!).toString("base64");
 
   const command = new RunInstancesCommand({
     ImageId: process.env.AWS_IMAGEID,
@@ -56,7 +55,7 @@ export async function createInstance(params:{
 export async function startInstance(instanceIds:string[]) {
   const command = new StartInstancesCommand({
     InstanceIds: instanceIds,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
 
   const response = await ec2Client.send(command);
@@ -66,7 +65,7 @@ export async function startInstance(instanceIds:string[]) {
 export async function stopInstance(instanceIds:string[]) {
   const command = new StopInstancesCommand({
     InstanceIds: instanceIds,
-    DryRun: true,  // 실제 작동 방지
+    // DryRun: true,  // 실제 작동 방지
   });
   
   const response = await ec2Client.send(command);

@@ -22,7 +22,7 @@ export default function TopBar<T extends string>({
 }) {
   return (
     <div className="relative bg-white h-[110px] pt-4 px-4 py-2 border-b border-gray-300">
-      <div className="absolute top-6 left-6 w-fit text-[20px]">
+      <div className="absolute top-6 left-6 w-fit font-semibold text-[20px]">
         {title}
       </div>
       {rightElement && (
