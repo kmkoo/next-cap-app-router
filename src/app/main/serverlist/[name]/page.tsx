@@ -507,36 +507,7 @@ export default function ServerDetailPage({
                   <span className="flex-1">{server.serverAddr || "없음"}</span>
                   {server.serverAddr && (
                     <div className="flex items-center gap-1">
-                      <button
-                        className="text-gray-500 hover:text-blue-600 text-xs"
-                        onClick={() => {
-                          navigator.clipboard.writeText(server.serverAddr!);
-                          setCopiedId(server.serverAddr!);
-                          setTimeout(() => setCopiedId(null), 1500);
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <rect
-                            x="9"
-                            y="9"
-                            width="13"
-                            height="13"
-                            rx="2"
-                            ry="2"
-                          ></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                      </button>
+                      
                       {copiedId === server.serverAddr && (
                         <span className="text-green-600 text-xs">복사됨!</span>
                       )}
