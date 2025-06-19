@@ -250,23 +250,6 @@ export default function ServerListPage() {
                                 ? "●●●●●●"
                                 : server.address}
                             </span>
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              viewBox="0 0 24 24"
-                              className="w-4 h-4 text-blue-600 cursor-pointer"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                copyToClipboard(server.address);
-                                setCopiedId(server.id);
-                                setTimeout(() => setCopiedId(null), 1500);
-                              }}
-                            >
-                              <path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" />
-                              <path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1" />
-                            </svg>
                             {copiedId === server.id && (
                               <span className="ml-2 text-xs text-green-600">
                                 복사완료!
